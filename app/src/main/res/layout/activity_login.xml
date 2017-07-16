@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="157dp"
+            android:orientation="horizontal"
+            tools:ignore="UselessLeaf"
+            android:weightSum="1">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/logo1"
+                tools:ignore="ContentDescription" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="305dp"
+            android:layout_height="176dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="128dp"
+            android:background="@drawable/round_outline"
+            android:elevation="1dp"
+            android:orientation="vertical"
+            android:weightSum="1"
+            tools:ignore="UselessLeaf">
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:text="Seu e-mail ou matrícula" />
+
+            <EditText
+                android:id="@+id/editText1"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="18dp"
+                android:layout_marginTop="-8dp"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:text="Senha" />
+
+            <EditText
+                android:id="@+id/editText3"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="18dp"
+                android:layout_marginTop="-8dp"
+                android:ems="10"
+                android:inputType="textPassword" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="305dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="280dp"
+            android:layout_gravity="center_horizontal"
+            android:elevation="1dp"
+            tools:ignore="UselessLeaf"
+            android:weightSum="1"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="256dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:textAllCaps="false"
+                android:background="@drawable/button_cadastrar"
+                android:textColor="#FFFFFF"
+                android:text="Entrar" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="43dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="10dp"
+                android:elevation="1dp"
+                android:orientation="horizontal"
+                android:weightSum="1"
+                tools:ignore="UselessLeaf">
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="5dp"
+                    android:text="Não possui conta?"
+                    android:layout_weight="0.11" />
+
+                <Button
+                    android:id="@+id/button2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:layout_marginTop="4dp"
+
+                    android:text="Cadastre-se"
+                    android:textAllCaps="false"
+                    android:textColor="#BC2B3B"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:textSize="14dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+</ScrollView>
