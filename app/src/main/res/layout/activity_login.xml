@@ -92,7 +92,8 @@
                 android:textAllCaps="false"
                 android:background="@drawable/button_cadastrar"
                 android:textColor="#FFFFFF"
-                android:text="Entrar" />
+                android:text="Entrar"
+                android:onClick="entrar"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="43dp"
