@@ -5,13 +5,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.vma.ufveventos.model.Categoria;
+
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
 
 public class login extends AppCompatActivity {
 
@@ -27,13 +27,5 @@ public class login extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         Categoria service = retrofit.create(Categoria.class);
-
-        Call<List<String>> repos = service.listRepos();
-        try {
-            List<String> aux = repos.execute();
-        }catch (java.io.IOException e){Toast.makeText(this,"ERRO:"+e.getMessage(),Toast.LENGTH_SHORT).show();}
-
-        Toast.makeText(this,repos.toString(),Toast.LENGTH_SHORT).show();
-        Toast.makeText(this,"Clicou",Toast.LENGTH_SHORT).show();
     }
 }
