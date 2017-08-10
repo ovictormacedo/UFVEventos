@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
-    tools:context="com.example.vma.ufveventos.notificacoes"
+    tools:context="com.example.vma.ufveventos.controller.notificacoes"
     tools:showIn="@layout/app_bar_notificacoes"
     android:id="@+id/frameLayout"
     android:layout_width="wrap_content"

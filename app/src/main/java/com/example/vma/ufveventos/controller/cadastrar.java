@@ -1,7 +1,9 @@
-package com.example.vma.ufveventos;
+package com.example.vma.ufveventos.controller;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.example.vma.ufveventos.R;
 
 public class cadastrar extends AppCompatActivity {
 

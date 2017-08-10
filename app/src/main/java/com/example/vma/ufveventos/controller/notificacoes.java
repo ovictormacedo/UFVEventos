@@ -1,4 +1,4 @@
-package com.example.vma.ufveventos;
+package com.example.vma.ufveventos.controller;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.example.vma.ufveventos.R;
 
 public class notificacoes extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
