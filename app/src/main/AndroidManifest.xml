@@ -9,10 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".controller.cadastrar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
+        <activity android:name=".controller.cadastrar"
+            android:label="Cadastro">
         </activity>
         <activity android:name=".controller.login">
             <intent-filter>
@@ -24,19 +22,11 @@
             android:name=".controller.editar_perfil"
             android:label="@string/title_activity_editar_perfil"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-            </intent-filter>
         </activity>
         <activity
             android:name=".controller.notificacoes"
             android:label="@string/title_activity_notificacoes"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-            </intent-filter>
         </activity>
     </application>
 
