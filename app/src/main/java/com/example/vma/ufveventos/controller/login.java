@@ -60,7 +60,7 @@ public class login extends AppCompatActivity {
 
                     @Override
                     public void onNext(Object response){
-
+                        Toast.makeText(getBaseContext(),response.toString(),Toast.LENGTH_SHORT).show();
                     }
                 });
 
