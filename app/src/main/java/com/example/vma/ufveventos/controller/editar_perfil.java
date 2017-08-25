@@ -74,7 +74,7 @@ public class editar_perfil extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_inicio) {
-            // Handle the camera action
+
         } else if (id == R.id.nav_editar_perfil) {
 
         } else if (id == R.id.nav_notificacoes) {
