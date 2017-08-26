@@ -9,8 +9,10 @@ import android.widget.Toast;
 
 import com.example.vma.ufveventos.R;
 import com.example.vma.ufveventos.model.Api;
+import com.example.vma.ufveventos.model.Categoria;
 
 import java.io.ObjectStreamException;
+import java.util.List;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -35,67 +37,31 @@ public class login extends AppCompatActivity {
     }
 
     public void entrar(View view){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://meettest.esy.es/API/api.php/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .build();
+        //Cria objeto para acessar a API de dados Siseventos
+        RetrofitAPI retrofit = new RetrofitAPI();
+        Api api = retrofit.retrofit().create(Api.class);
 
-        Api api = retrofit.create(Api.class);
-
-        Observable<Object> observable =  api.getCategorias();
+        //Chama método
+        Observable<List<Categoria>> observable =  api.getCategorias();
 
         observable.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Object>(){
+                .subscribe(new Observer<List<Categoria>>(){
                     @Override
-                    public void onCompleted(){
-
-                    }
+                    public void onCompleted(){}
 
                     @Override
                     public void onError(Throwable e){
-
+                        Toast.makeText(getBaseContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void onNext(Object response){
-                        Toast.makeText(getBaseContext(),response.toString(),Toast.LENGTH_SHORT).show();
+                    public void onNext(List<Categoria> response){
+                        Toast.makeText(getBaseContext(),response.get(0).getNome(),Toast.LENGTH_SHORT).show();
                     }
                 });
 
         Toast.makeText(getBaseContext(),"Clicou",Toast.LENGTH_SHORT).show();
-
-        /*
-        Call<Object> call = api.getCategorias();
-
-        call.enqueue(new Callback<Object>() {
-            @Override
-            public void onResponse(Call<Object> call, Response<Object> response) {
-                List<Categoria> categoria = new ArrayList<Categoria>();
-                //Verifica se a resposta é uma lista de categorias
-                if (response.body() instanceof ArrayList) {
-                    //Copia o response para a lista de categorias
-                    Gson gson = new Gson();
-                    for (int i = 0; i < ((ArrayList) response.body()).size(); i++)
-                        categoria.add(gson.fromJson(((ArrayList) response.body()).get(i).toString(), Categoria.class));
-
-                    Log.i("Retrofit error",""+categoria.get(1).getNome());
-                }
-                else{
-                    String aux = "TESTE";
-                    if (!response.isSuccessful())
-                        aux = "TESTE_ERRO";
-                    Log.i("Retrofit error",""+response.code()+aux);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Object> call, Throwable t) {
-                Log.e("Retrofit error","ERRO:"+t.getMessage());
-            }
-        });
-        */
     }
 }
 
