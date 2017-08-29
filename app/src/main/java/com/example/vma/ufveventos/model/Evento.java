@@ -1,5 +1,8 @@
 package com.example.vma.ufveventos.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -7,23 +10,35 @@ import java.util.List;
  */
 
 public class Evento {
-    private int id, numeroParticipantes;
-    private String denominacao, horaInicio, horaFim, dataInicio, dataFim, publicoAlvo;
-    private List<Servico> servicos;
+    private int id;
+    private String denominacao;
+    private String horainicio;
+    private String horafim;
+    private String datainicio;
+    private String datafim;
+    private int participantes;
+    private String publico;
+    @SerializedName("categorias")
+    @Expose
     private List<Categoria> categorias;
+    @SerializedName("locais")
+    @Expose
     private List<Local> locais;
+    @SerializedName("servicos")
+    @Expose
+    private List<Servico> servicos;
 
-    public Evento(int id, int numeroParticipantes, String denominacao, String horaInicio,
-                  String horaFim, String dataInicio, String dataFim, String publicoAlvo,
-                  List<Servico> servicos, List<Categoria> categorias, List<Local> locais) {
+    public Evento(int id, String denominacao, String horainicio,
+                  String horafim, String datainicio, String datafim, int participantes, String publico,
+                  List<Categoria> categorias, List<Local> locais, List<Servico> servicos) {
         this.id = id;
-        this.numeroParticipantes = numeroParticipantes;
+        this.participantes = participantes;
         this.denominacao = denominacao;
-        this.horaInicio = horaInicio;
-        this.horaFim = horaFim;
-        this.dataInicio = dataInicio;
-        this.dataFim = dataFim;
-        this.publicoAlvo = publicoAlvo;
+        this.horainicio = horainicio;
+        this.horafim = horafim;
+        this.datainicio = datainicio;
+        this.datafim = datafim;
+        this.publico = publico;
         this.servicos = servicos;
         this.categorias = categorias;
         this.locais = locais;
@@ -38,11 +53,11 @@ public class Evento {
     }
 
     public int getNumeroParticipantes() {
-        return numeroParticipantes;
+        return participantes;
     }
 
-    public void setNumeroParticipantes(int numeroParticipantes) {
-        this.numeroParticipantes = numeroParticipantes;
+    public void setNumeroParticipantes(int participantes) {
+        this.participantes = participantes;
     }
 
     public String getDenominacao() {
@@ -54,43 +69,43 @@ public class Evento {
     }
 
     public String getHoraInicio() {
-        return horaInicio;
+        return horainicio;
     }
 
-    public void setHoraInicio(String horaInicio) {
-        this.horaInicio = horaInicio;
+    public void setHoraInicio(String horainicio) {
+        this.horainicio = horainicio;
     }
 
     public String getHoraFim() {
-        return horaFim;
+        return horafim;
     }
 
-    public void setHoraFim(String horaFim) {
-        this.horaFim = horaFim;
+    public void setHoraFim(String horafim) {
+        this.horafim = horafim;
     }
 
     public String getDataInicio() {
-        return dataInicio;
+        return datainicio;
     }
 
-    public void setDataInicio(String dataInicio) {
-        this.dataInicio = dataInicio;
+    public void setDataInicio(String datainicio) {
+        this.datainicio = datainicio;
     }
 
     public String getDataFim() {
-        return dataFim;
+        return datafim;
     }
 
     public void setDataFim(String dataFim) {
-        this.dataFim = dataFim;
+        this.datafim = datafim;
     }
 
     public String getPublicoAlvo() {
-        return publicoAlvo;
+        return publico;
     }
 
-    public void setPublicoAlvo(String publicoAlvo) {
-        this.publicoAlvo = publicoAlvo;
+    public void setPublicoAlvo(String publico) {
+        this.publico = publico;
     }
 
     public List<Servico> getServicos() {

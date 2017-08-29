@@ -10,6 +10,10 @@ import android.widget.Toast;
 import com.example.vma.ufveventos.R;
 import com.example.vma.ufveventos.model.Api;
 import com.example.vma.ufveventos.model.Categoria;
+import com.example.vma.ufveventos.model.Evento;
+import com.example.vma.ufveventos.model.Usuario;
+
+import org.json.JSONObject;
 
 import java.io.ObjectStreamException;
 import java.util.List;
@@ -42,22 +46,32 @@ public class login extends AppCompatActivity {
         Api api = retrofit.retrofit().create(Api.class);
 
         //Chama método
-        Observable<List<Categoria>> observable =  api.getCategorias();
+        JSONObject json = new JSONObject();
+        String usuario = "1";
+        String senha = "1234";
+        try {
+            json.put("usuario", usuario);
+            json.put("senha", senha);
+        }catch (Exception e){Toast.makeText(getBaseContext(),e.getMessage(),Toast.LENGTH_SHORT).show();}
+
+        Observable<Usuario> observable =  api.getUsuario2(json);
 
         observable.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Categoria>>(){
+                .subscribe(new Observer<Usuario>(){
                     @Override
                     public void onCompleted(){}
 
                     @Override
                     public void onError(Throwable e){
-                        Toast.makeText(getBaseContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                        Log.i("Retrofit error","Erro:"+e.getMessage());
+                        Toast.makeText(getBaseContext(),"Erro:"+e.getMessage(),Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void onNext(List<Categoria> response){
-                        Toast.makeText(getBaseContext(),response.get(0).getNome(),Toast.LENGTH_SHORT).show();
+                    public void onNext(Usuario response){
+                        Log.i("Retrofit error",response.getNome());
+                        Toast.makeText(getBaseContext(),response.getNome(),Toast.LENGTH_SHORT).show();
                     }
                 });
 

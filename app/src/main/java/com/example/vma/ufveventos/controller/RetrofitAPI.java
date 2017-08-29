@@ -1,6 +1,9 @@
 package com.example.vma.ufveventos.controller;
 
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -11,9 +14,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitAPI {
     public Retrofit retrofit(){
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
         Retrofit retrofit = new retrofit2.Retrofit.Builder()
                 .baseUrl("http://meettest.esy.es/API/api.php/")
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
 

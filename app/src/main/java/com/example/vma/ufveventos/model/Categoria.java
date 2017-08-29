@@ -1,7 +1,5 @@
 package com.example.vma.ufveventos.model;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
  * Created by vma on 21/07/2017.
  */

@@ -7,13 +7,14 @@ package com.example.vma.ufveventos.model;
 public class Local {
     private int id;
     private String descricao;
-    private double latitude, longitude;
+    private String lat; //latitude
+    private String lng;  //latitude
 
-    public Local(int id, String descricao, double latitude, double longitude) {
+    public Local(int id, String descricao, String lat, String lng) {
         this.id = id;
         this.descricao = descricao;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.lat = lat;
+        this.lng = lng;
     }
 
     public int getId() {
@@ -32,19 +33,19 @@ public class Local {
         this.descricao = descricao;
     }
 
-    public double getLatitude() {
-        return latitude;
+    public String getLatitude() {
+        return lat;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    public void setLatitude(String lat) {
+        this.lat = lat;
     }
 
-    public double getLongitude() {
-        return longitude;
+    public String getLongitude() {
+        return lng;
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    public void setLongitude(String longitude) {
+        this.lng = lng;
     }
 }
