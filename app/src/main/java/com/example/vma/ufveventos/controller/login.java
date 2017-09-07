@@ -64,4 +64,3 @@ public class login extends AppCompatActivity {
         Toast.makeText(getBaseContext(),"Clicou",Toast.LENGTH_SHORT).show();
     }
 }
-

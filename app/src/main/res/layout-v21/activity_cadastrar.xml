@@ -30,7 +30,7 @@
 
         <LinearLayout
             android:layout_width="305dp"
-            android:layout_height="350dp"
+            android:layout_height="430dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="128dp"
             android:background="@drawable/round_outline"
@@ -58,6 +58,15 @@
                 android:text="" />
 
             <TextView
+                android:id="@+id/nomeErroCadastro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="2dp"
+                android:text=""
+                android:textColor="@color/red"/>
+
+            <TextView
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -73,6 +82,15 @@
                 android:layout_marginTop="-8dp"
                 android:ems="10"
                 android:inputType="textEmailAddress" />
+
+            <TextView
+                android:id="@+id/emailErroCadastro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="2dp"
+                android:text=""
+                android:textColor="@color/red"/>
 
             <TextView
                 android:id="@+id/textView3"
@@ -92,6 +110,15 @@
                 android:inputType="textPassword" />
 
             <TextView
+                android:id="@+id/senhaErroCadastro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="2dp"
+                android:text=""
+                android:textColor="@color/red"/>
+
+            <TextView
                 android:id="@+id/textView4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -106,6 +133,7 @@
                 android:layout_marginLeft="18dp"
                 android:layout_marginTop="-8dp"
                 android:ems="10"
+                android:focusable="false"
                 android:inputType="date" />
 
             <TextView
@@ -126,7 +154,7 @@
                 tools:ignore="UselessLeaf">
 
                 <RadioButton
-                    android:id="@+id/radioButton1"
+                    android:id="@+id/mCadastro"
                     style="@android:style/Widget.CompoundButton.RadioButton"
                     android:layout_width="90dp"
                     android:layout_height="wrap_content"
@@ -134,13 +162,13 @@
                     android:text="Masc." />
 
                 <RadioButton
-                    android:id="@+id/radioButton2"
+                    android:id="@+id/fCadastro"
                     android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:text="Fem." />
 
                 <RadioButton
-                    android:id="@+id/radioButton3"
+                    android:id="@+id/oCadastro"
                     android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:text="Outro" />
@@ -150,14 +178,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="5dp"
-                android:text="Data de nascimento" />
+                android:layout_marginBottom="2dp"
+                android:text=""
+                android:textColor="@color/red"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="305dp"
             android:layout_height="135dp"
             android:layout_marginLeft="5dp"
-            android:layout_marginTop="430dp"
+            android:layout_marginTop="512dp"
             android:layout_gravity="center_horizontal"
             android:elevation="1dp"
             android:orientation="vertical"
