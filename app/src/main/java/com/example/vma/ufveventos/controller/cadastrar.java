@@ -72,7 +72,7 @@ public class cadastrar extends AppCompatActivity {
             }catch(Exception e){Toast.makeText(getBaseContext(),e.getMessage(),Toast.LENGTH_SHORT).show();};
 
             //Cria objeto para acessar a API de dados Siseventos
-            RetrofitAPI retrofit = new RetrofitAPI();
+            a retrofit = new a();
             Api api = retrofit.retrofit().create(Api.class);
 
             //Faz requisição ao servidor
@@ -102,7 +102,7 @@ public class cadastrar extends AppCompatActivity {
                             }catch (Exception e){Toast.makeText(getBaseContext(),e.getMessage(),Toast.LENGTH_SHORT).show();}
 
                             //Cria objeto para acessar a API de dados Siseventos
-                            RetrofitAPI retrofit = new RetrofitAPI();
+                            a retrofit = new a();
                             Api api = retrofit.retrofit().create(Api.class);
 
                             //Faz requisição ao servidor para buscar id do usuário
