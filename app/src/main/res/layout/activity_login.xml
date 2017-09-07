@@ -27,10 +27,9 @@
                 app:srcCompat="@drawable/logo1"
                 tools:ignore="ContentDescription" />
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="305dp"
-            android:layout_height="176dp"
+            android:layout_height="206dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="128dp"
             android:background="@drawable/round_outline"
@@ -48,7 +47,7 @@
                 android:text="Seu e-mail ou matrícula" />
 
             <EditText
-                android:id="@+id/editText1"
+                android:id="@+id/emailmatriculaLogin"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="18dp"
@@ -58,7 +57,16 @@
                 android:text="" />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/emailmatriculaErroLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="20dp"
+                android:text=""
+                android:textColor="@color/red" />
+
+            <TextView
+                android:id="@+id/senha"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -66,18 +74,27 @@
                 android:text="Senha" />
 
             <EditText
-                android:id="@+id/editText3"
+                android:id="@+id/senhaLogin"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="18dp"
                 android:layout_marginTop="-8dp"
                 android:ems="10"
                 android:inputType="textPassword" />
+
+            <TextView
+                android:id="@+id/senhaErroLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="20dp"
+                android:text=""
+                android:textColor="@color/red" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="305dp"
             android:layout_height="166dp"
-            android:layout_marginTop="280dp"
+            android:layout_marginTop="310dp"
             android:layout_gravity="center_horizontal"
             android:elevation="1dp"
             tools:ignore="UselessLeaf"
