@@ -134,7 +134,8 @@
                 android:layout_marginTop="-8dp"
                 android:ems="10"
                 android:focusable="false"
-                android:inputType="date" />
+                android:onClick="showDatePickerDialog"
+                android:inputType="text" />
 
             <TextView
                 android:id="@+id/textView5"

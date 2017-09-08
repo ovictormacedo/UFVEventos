@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.vma.ufveventos.R;
 import com.example.vma.ufveventos.model.Api;
 import com.example.vma.ufveventos.model.Usuario;
+import com.example.vma.ufveventos.model.UsuarioSingleton;
+import com.example.vma.ufveventos.util.RetrofitAPI;
 import org.json.JSONObject;
 import rx.Observable;
 import rx.Observer;
@@ -42,8 +45,8 @@ public class login extends AppCompatActivity {
 
             //Chama método
             JSONObject json = new JSONObject();
-            String usuario = "1";
-            String senha = "1234";
+            String usuario = ((EditText) findViewById(R.id.emailmatriculaLogin)).getText().toString();
+            String senha = ((EditText) findViewById(R.id.senhaLogin)).getText().toString();
             try {
                 json.put("usuario", usuario);
                 json.put("senha", senha);
@@ -51,7 +54,7 @@ public class login extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             }
 
-            Observable<Usuario> observable = api.getUsuario2(json);
+            Observable<Usuario> observable = api.authUsuario(json);
 
             observable.subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -68,12 +71,21 @@ public class login extends AppCompatActivity {
 
                         @Override
                         public void onNext(Usuario response) {
-                            Log.i("Retrofit error", response.getNome());
-                            Toast.makeText(getBaseContext(), response.getNome(), Toast.LENGTH_SHORT).show();
+                            //Popula o singleton do usuário logado com os dados
+                            UsuarioSingleton usuario = UsuarioSingleton.getInstance();
+                            usuario.setId(response.getId());
+                            usuario.setEmail(response.getEmail());
+                            usuario.setMatricula(response.getMatricula());
+                            usuario.setNascimento(response.getNascimento());
+                            usuario.setNome(response.getNome());
+                            usuario.setSenha(response.getSenha());
+
+                            //Dispara intent para a tela inicial
+                            Intent it = new Intent(getBaseContext(),inicial.class);
+                            startActivity(it);
                         }
                     });
         }
-        Toast.makeText(getBaseContext(),"Clicou",Toast.LENGTH_SHORT).show();
     }
     public boolean validaEditText(String idErro, String idCampo, String msg){
         //Busca referência do campo
@@ -91,8 +103,8 @@ public class login extends AppCompatActivity {
             texto = getResources().getIdentifier(idErro, "id",
                     this.getBaseContext().getPackageName());
             //Escrever texto embaixo do campo
-            TextView aux2 = ((TextView) findViewById(texto));
-            aux2.setText(msg);
+            TextView senhaErro = ((TextView) findViewById(texto));
+            senhaErro.setText(msg);
 
             return false;
         }else{
@@ -107,5 +119,46 @@ public class login extends AppCompatActivity {
             emailmatriculaErro.setText("");
             return true;
         }
+    }
+    public boolean validaRadioGroup(String idErro,String id1,String id2,String id3,String msg){
+        //Busca referência do campo
+        int erro = getResources().getIdentifier(idErro, "id",
+                this.getBaseContext().getPackageName());
+
+        int r1 = getResources().getIdentifier(id1, "id",
+                this.getBaseContext().getPackageName());
+
+        int r2 = getResources().getIdentifier(id2, "id",
+                this.getBaseContext().getPackageName());
+
+        int r3 = getResources().getIdentifier(id3, "id",
+                this.getBaseContext().getPackageName());
+
+        RadioButton rb1 = ((RadioButton) findViewById(r1));
+        RadioButton rb2 = ((RadioButton) findViewById(r2));
+        RadioButton rb3 = ((RadioButton) findViewById(r3));
+        TextView er = ((TextView) findViewById(erro));
+
+        boolean valida = false;
+        if (rb1 != null)
+            if(rb1.isChecked())
+                valida = true;
+
+        if (rb2 != null)
+            if(rb2.isChecked())
+                valida = true;
+
+        if (rb3 != null)
+            if(rb3.isChecked())
+                valida = true;
+
+        //Caso nenhum sexo tenha sido selecionado informado msg de erro
+        if (!valida){
+            er.setText(msg);
+        }else{
+            er.setText("");
+        }
+
+        return valida;
     }
 }

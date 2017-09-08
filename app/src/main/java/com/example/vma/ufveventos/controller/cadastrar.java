@@ -6,13 +6,28 @@ import android.graphics.PorterDuff;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.vma.ufveventos.R;
+import com.example.vma.ufveventos.model.Api;
+import com.example.vma.ufveventos.model.Usuario;
+import com.example.vma.ufveventos.model.UsuarioSingleton;
+import com.example.vma.ufveventos.util.RetrofitAPI;
+
+import org.json.JSONObject;
+
 import java.util.Calendar;
+
+import rx.Observable;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class cadastrar extends AppCompatActivity {
 
@@ -32,17 +47,15 @@ public class cadastrar extends AppCompatActivity {
         valido = validaEditText("nomeErroCadastro","nomeCadastro","O campo não pode estar vazio.");
         valido = validaEditText("emailErroCadastro","emailCadastro","O campo não pode estar vazio.");
         valido = validaEditText("senhaErroCadastro","senhaCadastro","O campo não pode estar vazio.");
-        valido = validaRadioGroup("sexoErroCadastro","mCadastro","fCadastro","oCadastro","O campo não pode estar vazio.");
+        valido = validaRadioGroup("sexoErroEditarPerfil","mEditarPerfil","fEditarPerfil","oEditarPerfil",
+                "O campo não pode estar vazio.");
 
         //Se os dados digitados estão corretos envia ao servidor
         if (valido){
             //Recupera dados do formulário
             String nome = ((EditText) findViewById(R.id.nomeCadastro)).getText().toString();
-
             final String email = ((EditText) findViewById(R.id.emailCadastro)).getText().toString();
-
             final String senha = ((EditText) findViewById(R.id.senhaCadastro)).getText().toString();
-
             String nascimento = ((EditText) findViewById(R.id.nascimentoCadastro)).getText().toString();
 
             //Recupera referências aos radio buttons contendo as opções de sexo
@@ -60,7 +73,6 @@ public class cadastrar extends AppCompatActivity {
                 sexo = "o";
 
             //Toast.makeText(getBaseContext(),nascimento,Toast.LENGTH_LONG).show();
-            /*
             //Cria json object
             JSONObject json = new JSONObject();
             try {
@@ -69,10 +81,10 @@ public class cadastrar extends AppCompatActivity {
                 json.put("senha", senha);
                 json.put("nascimento",nascimento);
                 json.put("sexo", sexo);
-            }catch(Exception e){Toast.makeText(getBaseContext(),e.getMessage(),Toast.LENGTH_SHORT).show();};
+            }catch(Exception e){Toast.makeText(getBaseContext(),e.getMessage(), Toast.LENGTH_SHORT).show();};
 
             //Cria objeto para acessar a API de dados Siseventos
-            a retrofit = new a();
+            RetrofitAPI retrofit = new RetrofitAPI();
             Api api = retrofit.retrofit().create(Api.class);
 
             //Faz requisição ao servidor
@@ -102,11 +114,11 @@ public class cadastrar extends AppCompatActivity {
                             }catch (Exception e){Toast.makeText(getBaseContext(),e.getMessage(),Toast.LENGTH_SHORT).show();}
 
                             //Cria objeto para acessar a API de dados Siseventos
-                            a retrofit = new a();
+                            RetrofitAPI retrofit = new RetrofitAPI();
                             Api api = retrofit.retrofit().create(Api.class);
 
                             //Faz requisição ao servidor para buscar id do usuário
-                            Observable<Usuario> observable2 =  api.getUsuario(json);
+                            Observable<Usuario> observable2 =  api.authUsuario(json);
 
                             //Intercepta a resposta da requisição
                             observable2.subscribeOn(Schedulers.newThread())
@@ -138,7 +150,6 @@ public class cadastrar extends AppCompatActivity {
                                     });
                         }
                     });
-                    */
         }
     }
     public boolean validaEditText(String idErro, String idCampo, String msg){

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.vma.ufveventos">
+
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,23 +11,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".controller.cadastrar"
-            android:label="Cadastro">
-        </activity>
+        <activity
+            android:name=".controller.cadastrar"
+            android:label="Cadastro"></activity>
         <activity android:name=".controller.login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".controller.editar_perfil"
             android:label="@string/title_activity_editar_perfil"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
         </activity>
         <activity
             android:name=".controller.notificacoes"
             android:label="@string/title_activity_notificacoes"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        </activity>
+        <activity
+            android:name=".controller.inicial"
+            android:label="@string/title_activity_inicial"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
     </application>

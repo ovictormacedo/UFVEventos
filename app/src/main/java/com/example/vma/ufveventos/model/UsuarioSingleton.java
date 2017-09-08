@@ -4,13 +4,13 @@ package com.example.vma.ufveventos.model;
  * Created by vma on 07/09/2017.
  */
 
-class UsuarioSingleton {
+public class UsuarioSingleton {
     private static final UsuarioSingleton ourInstance = new UsuarioSingleton();
 
     private int id;
     private String nome, email, senha, nascimento, sexo, matricula;
 
-    static UsuarioSingleton getInstance() {
+    public static UsuarioSingleton getInstance() {
         return ourInstance;
     }
 

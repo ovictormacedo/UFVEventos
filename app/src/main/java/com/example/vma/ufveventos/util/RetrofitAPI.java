@@ -1,4 +1,4 @@
-package com.example.vma.ufveventos.controller;
+package com.example.vma.ufveventos.util;
 
 
 import com.google.gson.Gson;

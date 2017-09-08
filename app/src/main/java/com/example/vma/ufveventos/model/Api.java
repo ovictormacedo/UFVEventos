@@ -12,6 +12,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import rx.Observable;
 
@@ -42,11 +43,6 @@ public interface Api{
     @GET("usuario/{idUsuario}")
     Observable<String> getUsuario(@Header("a") String password, @Path("idUsuario") int idUsuario);
 
-    @FormUrlEncoded
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
-    @POST("usuario_auth")
-    Observable<Usuario> getUsuario2(@Field("data") JSONObject data);
-
     //Não testado
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @GET("preferencias_notificacoes/{idUsuario}")
@@ -61,4 +57,22 @@ public interface Api{
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @GET("dispositivos/{idUsuario}")
     Observable<Usuario> getDispositivos(@Path("idUsuario") int idUsuario);
+
+    //Autentica usuário
+    @FormUrlEncoded
+    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @POST("usuario_auth")
+    Observable<Usuario> authUsuario(@Field("data") JSONObject data);
+
+    //Cria novo usuário
+    @FormUrlEncoded
+    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @POST("usuario")
+    Observable<Void> setUsuario(@Field("data") JSONObject data);
+
+    //Atualiza dados do cadastro do usuário
+    @FormUrlEncoded
+    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @PUT("usuario")
+    Observable<Void> updateUsuario(@Field("data") JSONObject data);
 }
