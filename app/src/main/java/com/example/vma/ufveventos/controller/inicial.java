@@ -3,6 +3,7 @@ package com.example.vma.ufveventos.controller;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -13,13 +14,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.vma.ufveventos.R;
+import com.example.vma.ufveventos.model.Evento;
+import com.example.vma.ufveventos.model.RecyclerViewAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class inicial extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private RecyclerView myRecyclerView;
+    private RecyclerViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +46,30 @@ public class inicial extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         myRecyclerView = (RecyclerView) findViewById(R.id.lista_eventos);
-        adapter = new CustomAdapter(myDataSet);
+        myRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        //Teste
+        List<Evento> eventos = new ArrayList<>();
+        Evento e = new Evento(1,"Simpósio de Integração Acadêmica - UFV ","9:00","19:00","27/05/1994","27/05/1994",100,null,null,null,null);
+        eventos.add(e);
+        eventos.add(e);
+        eventos.add(e);
+        eventos.add(e);
+        eventos.add(e);
+        eventos.add(e);
+        eventos.add(e);
+        eventos.add(e);
+        eventos.add(e);
+        adapter = new RecyclerViewAdapter(getBaseContext(),eventos);
         myRecyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(Evento item) {
+                Toast.makeText(inicial.this, item.getDenominacao(), Toast.LENGTH_LONG).show();
+
+            }
+        });
     }
 
     @Override

@@ -13,13 +13,10 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
             android:name=".controller.cadastrar"
-            android:label="Cadastro"></activity>
-        <activity android:name=".controller.login">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:label="Cadastro">
+        </activity>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <activity android:name=".controller.login">
         </activity>
         <activity
             android:name=".controller.editar_perfil"
@@ -36,6 +33,11 @@
             android:name=".controller.inicial"
             android:label="@string/title_activity_inicial"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 
