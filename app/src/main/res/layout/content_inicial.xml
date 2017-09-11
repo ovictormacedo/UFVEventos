@@ -40,8 +40,22 @@
                 android:elevation="10dp"
                 android:textAllCaps="false"
                 android:textSize="16dp"
+                android:onClick="escolher_categorias"
                 android:text="Escolha as categorias"/>
         </LinearLayout>
+        <ProgressBar
+            android:id="@+id/progressBarTelaInicial"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:max="100"
+            android:minHeight="50dp"
+            android:minWidth="50dp"
+            android:indeterminate="true"
+            android:indeterminateDrawable="@drawable/progress_bar"/>
         <android.support.v7.widget.RecyclerView
             android:id="@+id/lista_eventos"
             android:layout_width="match_parent"

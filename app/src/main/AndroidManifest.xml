@@ -13,22 +13,16 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
             android:name=".controller.cadastrar"
-            android:label="Cadastro">
-        </activity>
-
-        <activity android:name=".controller.login">
-        </activity>
+            android:label="Cadastro"></activity>
+        <activity android:name=".controller.login"></activity>
         <activity
             android:name=".controller.editar_perfil"
             android:label="@string/title_activity_editar_perfil"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
-        </activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
         <activity
             android:name=".controller.notificacoes"
             android:label="@string/title_activity_notificacoes"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-
-        </activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
         <activity
             android:name=".controller.inicial"
             android:label="@string/title_activity_inicial"
@@ -39,6 +33,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".controller.categorias_pagina_inicial"
+            android:label="@string/title_activity_categorias_pagina_inicial"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>

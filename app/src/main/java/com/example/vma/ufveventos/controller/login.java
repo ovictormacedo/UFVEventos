@@ -55,7 +55,6 @@ public class login extends AppCompatActivity {
             }
 
             Observable<Usuario> observable = api.authUsuario(json);
-
             observable.subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<Usuario>() {

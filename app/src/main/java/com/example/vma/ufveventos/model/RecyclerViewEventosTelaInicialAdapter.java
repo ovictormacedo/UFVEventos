@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.vma.ufveventos.R;
-import com.example.vma.ufveventos.controller.OnItemClickListener;
+import com.example.vma.ufveventos.controller.OnEventoTelaInicialClickListener;
 
 import java.util.List;
 
@@ -17,11 +17,11 @@ import java.util.List;
  * Created by vma on 08/09/2017.
  */
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.CustomViewHolder> {
+public class RecyclerViewEventosTelaInicialAdapter extends RecyclerView.Adapter<RecyclerViewEventosTelaInicialAdapter.CustomViewHolder> {
     private List<Evento> eventos;
     private Context mContext;
 
-    public RecyclerViewAdapter(Context context, List<Evento> eventos) {
+    public RecyclerViewEventosTelaInicialAdapter(Context context, List<Evento> eventos) {
         this.eventos = eventos;
         this.mContext = context;
     }
@@ -41,21 +41,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         //Seta denominação do evento
         customViewHolder.denominacao.setText(evento.getDenominacao());
         //Seta data do evento
-        customViewHolder.data.setText(evento.getDataInicio());
+        String data = evento.getDataInicio().substring(8,10)+"/"+evento.getDataInicio().substring(5,7);
+        customViewHolder.data.setText(data);
         //Seta horário de início e fim do evento
         customViewHolder.horario.setText("Horário: "+evento.getHoraInicio()+" - "+evento.getHoraFim());
 
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClickListener.onItemClick(evento);
+                onEventoTelaInicialClickListener.onItemClick(evento);
             }
         };
 
-        customViewHolder.imagem.setOnClickListener(listener);
-        customViewHolder.data.setOnClickListener(listener);
-        customViewHolder.horario.setOnClickListener(listener);
-        customViewHolder.denominacao.setOnClickListener(listener);
+        customViewHolder.itemView.setOnClickListener(listener);
     }
 
     @Override
@@ -75,12 +73,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             this.data = (TextView) view.findViewById(R.id.dataEventoRow);
         }
     }
-    private OnItemClickListener onItemClickListener;
-    public OnItemClickListener getOnItemClickListener() {
-        return onItemClickListener;
+    private OnEventoTelaInicialClickListener onEventoTelaInicialClickListener;
+
+    public OnEventoTelaInicialClickListener getOnEventoTelaInicialClickListener() {
+        return onEventoTelaInicialClickListener;
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
+    public void setOnEventoTelaInicialClickListener(OnEventoTelaInicialClickListener onEventoTelaInicialClickListener) {
+        this.onEventoTelaInicialClickListener = onEventoTelaInicialClickListener;
     }
 }

@@ -1,10 +1,9 @@
 package com.example.vma.ufveventos.controller;
-import android.content.Intent;
+
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,12 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.example.vma.ufveventos.R;
 import com.example.vma.ufveventos.model.Api;
+import com.example.vma.ufveventos.model.Categoria;
 import com.example.vma.ufveventos.model.Evento;
-import com.example.vma.ufveventos.model.RecyclerViewEventosTelaInicialAdapter;
+import com.example.vma.ufveventos.model.RecyclerViewCategoriasAdapter;
 import com.example.vma.ufveventos.util.RetrofitAPI;
 import java.util.List;
 import rx.Observable;
@@ -26,16 +27,16 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class inicial extends AppCompatActivity
+public class categorias_pagina_inicial extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private RecyclerView myRecyclerView;
-    private RecyclerViewEventosTelaInicialAdapter adapter;
+    private RecyclerViewCategoriasAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_inicial);
+        setContentView(R.layout.activity_categorias_pagina_inicial);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -48,24 +49,21 @@ public class inicial extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        myRecyclerView = (RecyclerView) findViewById(R.id.lista_eventos);
+        myRecyclerView = (RecyclerView) findViewById(R.id.lista_categorias);
         myRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        //Cria barra de progresso
-
+        //Inicia barra de carregamento
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarCategorias);
+        progressBar.setProgress(0);
 
         //Cria objeto para acessar a API de dados Siseventos
         RetrofitAPI retrofit = new RetrofitAPI();
         Api api = retrofit.retrofit().create(Api.class);
 
-        //Inicia barra de carregamento
-        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarTelaInicial);
-        progressBar.setProgress(0);
-
-        Observable<List<Evento>> observable = api.getEventos(100,115);
+        Observable<List<Categoria>> observable = api.getCategorias();
         observable.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Evento>>() {
+                .subscribe(new Observer<List<Categoria>>() {
                     @Override
                     public void onCompleted() {
                     }
@@ -75,32 +73,25 @@ public class inicial extends AppCompatActivity
                         //Encerra barra de carregamento
                         progressBar.setVisibility(View.GONE);
                         Log.i("Retrofit error", "Erro:" + e.getMessage());
-                        Toast.makeText(getBaseContext(), "Não foi possível carregar os eventos.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getBaseContext(), "Não foi possível carregar as categorias.", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void onNext(List<Evento> response) {
+                    public void onNext(List<Categoria> response) {
                         //Encerra barra de carregamento
                         progressBar.setVisibility(View.GONE);
-                        //Mostra dados recebidos do servidor na tela
-                        adapter = new RecyclerViewEventosTelaInicialAdapter(getBaseContext(),response);
+                        adapter = new RecyclerViewCategoriasAdapter(getBaseContext(),response);
                         myRecyclerView.setAdapter(adapter);
 
-                        adapter.setOnEventoTelaInicialClickListener(new OnEventoTelaInicialClickListener() {
+                        adapter.setCategoriaClickListener(new OnEventoTelaInicialClickListener() {
                             @Override
                             public void onItemClick(Evento item) {
-                                Toast.makeText(inicial.this, item.getDenominacao(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(categorias_pagina_inicial.this, item.getDenominacao(), Toast.LENGTH_LONG).show();
 
                             }
                         });
                     }
                 });
-    }
-
-    public void escolher_categorias(View view){
-        //Dispara intent para a tela de categorias
-        Intent it = new Intent(getBaseContext(),categorias_pagina_inicial.class);
-        startActivity(it);
     }
 
     @Override
@@ -116,7 +107,7 @@ public class inicial extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.inicial, menu);
+        getMenuInflater().inflate(R.menu.categorias_pagina_inicial, menu);
         return true;
     }
 
