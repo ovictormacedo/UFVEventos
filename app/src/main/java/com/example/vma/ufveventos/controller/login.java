@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,7 +44,10 @@ public class login extends AppCompatActivity {
             RetrofitAPI retrofit = new RetrofitAPI();
             Api api = retrofit.retrofit().create(Api.class);
 
-            //Chama método
+            //Inicia barra de carregamento
+            final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarLogin);
+            progressBar.setProgress(0);
+
             JSONObject json = new JSONObject();
             String usuario = ((EditText) findViewById(R.id.emailmatriculaLogin)).getText().toString();
             String senha = ((EditText) findViewById(R.id.senhaLogin)).getText().toString();
@@ -64,12 +68,17 @@ public class login extends AppCompatActivity {
 
                         @Override
                         public void onError(Throwable e) {
+                            //Encerra barra de carregamento
+                            progressBar.setVisibility(View.GONE);
                             Log.i("Retrofit error", "Erro:" + e.getMessage());
                             Toast.makeText(getBaseContext(), "Erro:" + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void onNext(Usuario response) {
+                            //Encerra barra de carregamento
+                            progressBar.setVisibility(View.GONE);
+
                             //Popula o singleton do usuário logado com os dados
                             UsuarioSingleton usuario = UsuarioSingleton.getInstance();
                             usuario.setId(response.getId());

@@ -44,7 +44,7 @@ public class RecyclerViewEventosTelaInicialAdapter extends RecyclerView.Adapter<
         String data = evento.getDataInicio().substring(8,10)+"/"+evento.getDataInicio().substring(5,7);
         customViewHolder.data.setText(data);
         //Seta horário de início e fim do evento
-        customViewHolder.horario.setText("Horário: "+evento.getHoraInicio()+" - "+evento.getHoraFim());
+        customViewHolder.horario.setText("Horário: "+evento.getHoraInicio().substring(0,5)+" - "+evento.getHoraFim().substring(0,5));
 
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
@@ -73,6 +73,7 @@ public class RecyclerViewEventosTelaInicialAdapter extends RecyclerView.Adapter<
             this.data = (TextView) view.findViewById(R.id.dataEventoRow);
         }
     }
+
     private OnEventoTelaInicialClickListener onEventoTelaInicialClickListener;
 
     public OnEventoTelaInicialClickListener getOnEventoTelaInicialClickListener() {
