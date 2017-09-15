@@ -19,6 +19,7 @@ import com.example.vma.ufveventos.R;
 import com.example.vma.ufveventos.model.Api;
 import com.example.vma.ufveventos.model.Evento;
 import com.example.vma.ufveventos.model.RecyclerViewEventosTelaInicialAdapter;
+import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
 
 import java.util.ArrayList;
@@ -201,13 +202,17 @@ public class inicial extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_inicio) {
-
+            Intent it = new Intent(getBaseContext(),inicial.class);
+            startActivity(it);
         } else if (id == R.id.nav_editar_perfil) {
-
+            Intent it = new Intent(getBaseContext(),editar_perfil.class);
+            startActivity(it);
         } else if (id == R.id.nav_notificacoes) {
-
+            Intent it = new Intent(getBaseContext(),notificacoes.class);
+            startActivity(it);
         } else if (id == R.id.nav_sair) {
-
+            Intent it = new Intent(getBaseContext(),login.class);
+            startActivity(it);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

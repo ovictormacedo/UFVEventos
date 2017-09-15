@@ -66,11 +66,11 @@ public class RecyclerViewCategoriasAdapter extends RecyclerView.Adapter<Recycler
     }
     private OnCategoriaClickListener onCategoriaClickListener;
 
-    public OnCategoriaClickListener getOnEventoTelaInicialClickListener() {
+    public OnCategoriaClickListener getOnCategoriaClickListener() {
         return onCategoriaClickListener;
     }
 
-    public void setCategoriaClickListener(OnEventoTelaInicialClickListener onEventoTelaInicialClickListener) {
+    public void setCategoriaClickListener(OnCategoriaClickListener onCategoriaClickListener) {
         this.onCategoriaClickListener = onCategoriaClickListener;
     }
 }

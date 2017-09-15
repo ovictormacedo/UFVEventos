@@ -26,6 +26,8 @@ public class login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarLogin);
+        progressBar.setVisibility(View.GONE);
     }
 
     public void cadastrar(View view){
@@ -46,7 +48,7 @@ public class login extends AppCompatActivity {
 
             //Inicia barra de carregamento
             final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarLogin);
-            progressBar.setProgress(0);
+            progressBar.setVisibility(View.VISIBLE);
 
             JSONObject json = new JSONObject();
             String usuario = ((EditText) findViewById(R.id.emailmatriculaLogin)).getText().toString();
@@ -87,6 +89,7 @@ public class login extends AppCompatActivity {
                             usuario.setNascimento(response.getNascimento());
                             usuario.setNome(response.getNome());
                             usuario.setSenha(response.getSenha());
+                            usuario.setSexo(response.getSexo());
 
                             //Dispara intent para a tela inicial
                             Intent it = new Intent(getBaseContext(),inicial.class);

@@ -46,7 +46,12 @@ public interface Api{
     //Não testado
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @GET("preferencias_notificacoes/{idUsuario}")
-    Observable<Object> getPreferenciasDeNotificacoes(@Path("idUsuario") int idUsuario);
+    Observable<List<Categoria>> getPreferenciasDeNotificacoes(@Path("idUsuario") int idUsuario);
+
+    //Não testado
+    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @GET("preferencias_categorias/{idUsuario}")
+    Observable<List<Categoria>> getPreferenciasDeCategorias(@Path("idUsuario") int idUsuario);
 
     //TESTADO
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")

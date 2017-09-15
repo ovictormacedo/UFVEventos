@@ -13,20 +13,11 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
             android:name=".controller.cadastrar"
-            android:label="Cadastro"></activity>
-        <activity android:name=".controller.login"></activity>
-        <activity
-            android:name=".controller.editar_perfil"
-            android:label="@string/title_activity_editar_perfil"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
-        <activity
-            android:name=".controller.notificacoes"
-            android:label="@string/title_activity_notificacoes"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
-        <activity
-            android:name=".controller.inicial"
-            android:label="@string/title_activity_inicial"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:label="Cadastro">
+
+        </activity>
+        <activity android:name=".controller.login"
+            android:label="@string/title_activity_login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,9 +25,28 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".controller.editar_perfil"
+            android:label="@string/title_activity_editar_perfil"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        </activity>
+        <activity
+            android:name=".controller.notificacoes"
+            android:label="@string/title_activity_notificacoes"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        </activity>
+        <activity
+            android:name=".controller.inicial"
+            android:label="@string/title_activity_inicial"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
+        <activity
             android:name=".controller.categorias_pagina_inicial"
             android:label="@string/title_activity_categorias_pagina_inicial"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>

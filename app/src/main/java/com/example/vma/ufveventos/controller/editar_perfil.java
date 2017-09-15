@@ -2,6 +2,7 @@ package com.example.vma.ufveventos.controller;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -56,6 +57,21 @@ public class editar_perfil extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //Seta campos com os dados do usuário logado
+        UsuarioSingleton usuario = UsuarioSingleton.getInstance();
+        ((EditText) findViewById(R.id.nomeEditarPerfil)).setText(usuario.getNome());
+        ((EditText) findViewById(R.id.emailEditarPerfil)).setText(usuario.getEmail());
+        ((EditText) findViewById(R.id.senhaEditarPerfil)).setText(usuario.getSenha());
+        if (!usuario.getNascimento().isEmpty()) {
+            String data = usuario.getNascimento().substring(8, 10) + "/" + usuario.getNascimento().substring(5,7)
+                    +"/"+usuario.getNascimento().substring(0,4);
+            ((EditText) findViewById(R.id.nascimentoEditarPefil)).setText(data);
+        }
+
+        int sexo = getResources().getIdentifier(usuario.getSexo()+"EditarPerfil", "id",
+                this.getBaseContext().getPackageName());
+        ((RadioButton) findViewById(sexo)).setChecked(true);
     }
 
     public void alterar_cadastro(View view){
@@ -167,13 +183,17 @@ public class editar_perfil extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_inicio) {
-
+            Intent it = new Intent(getBaseContext(),inicial.class);
+            startActivity(it);
         } else if (id == R.id.nav_editar_perfil) {
-
+            Intent it = new Intent(getBaseContext(),editar_perfil.class);
+            startActivity(it);
         } else if (id == R.id.nav_notificacoes) {
-
+            Intent it = new Intent(getBaseContext(),notificacoes.class);
+            startActivity(it);
         } else if (id == R.id.nav_sair) {
-
+            Intent it = new Intent(getBaseContext(),login.class);
+            startActivity(it);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -271,7 +291,7 @@ public class editar_perfil extends AppCompatActivity
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
             //Seta data no input de data de nascimento
-            EditText aux = (EditText) getActivity().findViewById(R.id.nascimentoCadastro);
+            EditText aux = (EditText) getActivity().findViewById(R.id.nascimentoEditarPefil);
             //Formata a data
             String dia = ""+day;
             if (day < 10)

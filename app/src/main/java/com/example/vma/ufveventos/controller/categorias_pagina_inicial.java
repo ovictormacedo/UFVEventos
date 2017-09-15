@@ -1,6 +1,8 @@
 package com.example.vma.ufveventos.controller;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,14 +15,22 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.example.vma.ufveventos.R;
 import com.example.vma.ufveventos.model.Api;
 import com.example.vma.ufveventos.model.Categoria;
 import com.example.vma.ufveventos.model.Evento;
 import com.example.vma.ufveventos.model.RecyclerViewCategoriasAdapter;
+import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
+
+import java.util.ArrayList;
 import java.util.List;
 import rx.Observable;
 import rx.Observer;
@@ -32,7 +42,7 @@ public class categorias_pagina_inicial extends AppCompatActivity
 
     private RecyclerView myRecyclerView;
     private RecyclerViewCategoriasAdapter adapter;
-
+    private List<Categoria> categorias;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,8 +59,17 @@ public class categorias_pagina_inicial extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        categorias = new ArrayList<>();
         myRecyclerView = (RecyclerView) findViewById(R.id.lista_categorias);
         myRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new RecyclerViewCategoriasAdapter(getBaseContext(),categorias);
+        myRecyclerView.setAdapter(adapter);
+        adapter.setCategoriaClickListener(new OnCategoriaClickListener() {
+            @Override
+            public void onItemClick(Categoria item) {
+                Toast.makeText(categorias_pagina_inicial.this, item.getNome(), Toast.LENGTH_LONG).show();
+            }
+        });
 
         //Inicia barra de carregamento
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarCategorias);
@@ -58,7 +77,7 @@ public class categorias_pagina_inicial extends AppCompatActivity
 
         //Cria objeto para acessar a API de dados Siseventos
         RetrofitAPI retrofit = new RetrofitAPI();
-        Api api = retrofit.retrofit().create(Api.class);
+        final Api api = retrofit.retrofit().create(Api.class);
 
         Observable<List<Categoria>> observable = api.getCategorias();
         observable.subscribeOn(Schedulers.newThread())
@@ -78,18 +97,57 @@ public class categorias_pagina_inicial extends AppCompatActivity
 
                     @Override
                     public void onNext(List<Categoria> response) {
-                        //Encerra barra de carregamento
-                        progressBar.setVisibility(View.GONE);
-                        adapter = new RecyclerViewCategoriasAdapter(getBaseContext(),response);
-                        myRecyclerView.setAdapter(adapter);
+                        //Copia resultados para a lista de categorias
+                        for (int i = 0; i < response.size(); i++)
+                            categorias.add(response.get(i));
+                        UsuarioSingleton usuario = UsuarioSingleton.getInstance();
+                        usuario.setId(1);
+                        Observable<List<Categoria>> observable = api.getPreferenciasDeCategorias(usuario.getId());
+                        observable.subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Observer<List<Categoria>>() {
+                                    @Override
+                                    public void onCompleted() {
+                                    }
 
-                        adapter.setCategoriaClickListener(new OnEventoTelaInicialClickListener() {
-                            @Override
-                            public void onItemClick(Evento item) {
-                                Toast.makeText(categorias_pagina_inicial.this, item.getDenominacao(), Toast.LENGTH_LONG).show();
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        //Encerra barra de carregamento
+                                        progressBar.setVisibility(View.GONE);
+                                        Log.i("Retrofit error", "Erro:" + e.getMessage());
+                                        //Toast.makeText(getBaseContext(), "Não foi possível carregar as categorias personalizadas.", Toast.LENGTH_SHORT).show();
+                                    }
 
-                            }
-                        });
+                                    @Override
+                                    public void onNext(List<Categoria> response) {
+                                        //Atualiza RecyclerView
+                                        adapter.notifyDataSetChanged();
+                                        final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) myRecyclerView
+                                                .getLayoutManager();
+                                        //Varre todas as views para setar as que já são preferências do usuário
+                                        int itemCount = linearLayoutManager.getItemCount();
+                                        TextView test = (TextView) myRecyclerView.getChildAt(0).findViewById(R.id.nomeCategoriaRow);
+
+                                        //String nomeCategoria = ((TextView) view.findViewById(R.id.nomeCategoriaRow))
+                                          //      .getText().toString();
+                                        //Toast.makeText(getBaseContext(),""+test.getText().toString(),Toast.LENGTH_SHORT).show();
+                                        //for (int i = 0; i < itemCount; i++) {
+                                        //    View view = linearLayoutManager.getChildAt(i);
+                                          //  String nomeCategoria = ((TextView) view.findViewById(R.id.nomeCategoriaRow))
+                                          //          .getText().toString();
+                                            /*
+                                            for (int j = 0; j < response.size(); j++) {
+                                                if (response.get(j).getNome() == nomeCategoria) {
+                                                    //Seta CheckBox como checked
+                                                    CheckBox checkBox = ((CheckBox) view.findViewById(R.id.checkBoxCategoriaRow));
+                                                    checkBox.setChecked(true);
+                                                }
+                                            }*/
+                                        //}
+                                        //Encerra barra de carregamento
+                                        progressBar.setVisibility(View.GONE);
+                                    }
+                                });
                     }
                 });
     }
@@ -133,13 +191,17 @@ public class categorias_pagina_inicial extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_inicio) {
-
+            Intent it = new Intent(getBaseContext(),inicial.class);
+            startActivity(it);
         } else if (id == R.id.nav_editar_perfil) {
-
+            Intent it = new Intent(getBaseContext(),editar_perfil.class);
+            startActivity(it);
         } else if (id == R.id.nav_notificacoes) {
-
+            Intent it = new Intent(getBaseContext(),notificacoes.class);
+            startActivity(it);
         } else if (id == R.id.nav_sair) {
-
+            Intent it = new Intent(getBaseContext(),login.class);
+            startActivity(it);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
