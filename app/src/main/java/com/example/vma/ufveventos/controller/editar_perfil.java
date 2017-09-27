@@ -60,7 +60,7 @@ public class editar_perfil extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //Inicia barra de carregamento
-        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarCadastro);
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarEditarPerfil);
         progressBar.setVisibility(View.GONE);
 
         //Seta campos com os dados do usuário logado
@@ -89,7 +89,7 @@ public class editar_perfil extends AppCompatActivity
         //Se os dados digitados estão corretos envia ao servidor
         if (valido1 && valido2 && valido3 && valido4){
             //Mostra barra de carregamento
-            final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarCadastro);
+            final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarEditarPerfil);
             progressBar.setVisibility(View.VISIBLE);
 
             //Recupera dados do formulário
