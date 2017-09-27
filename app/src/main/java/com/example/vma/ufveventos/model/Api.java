@@ -78,6 +78,6 @@ public interface Api{
     //Atualiza dados do cadastro do usuário
     @FormUrlEncoded
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
-    @PUT("usuario")
-    Observable<Void> updateUsuario(@Field("data") JSONObject data);
+    @PUT("usuario/{idUsuario}")
+    Observable<Void> updateUsuario(@Field("data") JSONObject data,@Path("idUsuario") int idUsuario);
 }

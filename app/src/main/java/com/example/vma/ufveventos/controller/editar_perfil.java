@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +59,10 @@ public class editar_perfil extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Inicia barra de carregamento
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarCadastro);
+        progressBar.setVisibility(View.GONE);
+
         //Seta campos com os dados do usuário logado
         UsuarioSingleton usuario = UsuarioSingleton.getInstance();
         ((EditText) findViewById(R.id.nomeEditarPerfil)).setText(usuario.getNome());
@@ -76,38 +81,49 @@ public class editar_perfil extends AppCompatActivity
 
     public void alterar_cadastro(View view){
         //Valida campos
-        boolean valido = true;
-        valido = validaEditText("nomeErroEditarPerfil","nomeEditarPerfil","O campo não pode estar vazio.");
-        valido = validaEditText("emailErroEditarPerfil","emailEditarPerfil","O campo não pode estar vazio.");
-        valido = validaEditText("senhaErroEditarPerfil","senhaEditarPerfil","O campo não pode estar vazio.");
-        valido = validaRadioGroup("sexoErroCadastro","mCadastro","fCadastro","oCadastro","O campo não pode estar vazio.");
+        boolean valido1 = validaEditText("nomeErroEditarPerfil","nomeEditarPerfil","O campo não pode estar vazio.");
+        boolean valido2 = validaEditText("emailErroEditarPerfil","emailEditarPerfil","O campo não pode estar vazio.");
+        boolean valido3 = validaEditText("senhaErroEditarPerfil","senhaEditarPerfil","O campo não pode estar vazio.");
+        boolean valido4 = validaRadioGroup("sexoErroEditarPerfil","mEditarPerfil","fEditarPerfil","oEditarPerfil","O campo não pode estar vazio.");
 
-        //Se os formulários estiverem preenchidos corretamente
-        if (valido){
+        //Se os dados digitados estão corretos envia ao servidor
+        if (valido1 && valido2 && valido3 && valido4){
+            //Mostra barra de carregamento
+            final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarCadastro);
+            progressBar.setVisibility(View.VISIBLE);
+
             //Recupera dados do formulário
             String nome = ((EditText) findViewById(R.id.nomeEditarPerfil)).getText().toString();
             final String email = ((EditText) findViewById(R.id.emailEditarPerfil)).getText().toString();
             final String senha = ((EditText) findViewById(R.id.senhaEditarPerfil)).getText().toString();
             String nascimento = ((EditText) findViewById(R.id.nascimentoEditarPefil)).getText().toString();
+            if (!nascimento.isEmpty())
+                nascimento = nascimento.substring(6,10)+"-"+nascimento.substring(3,5)+"-"+nascimento.substring(0,2);
 
             //Recupera referências aos radio buttons contendo as opções de sexo
-            RadioButton masculino = ((RadioButton) findViewById(R.id.mCadastro));
-            RadioButton feminino = ((RadioButton) findViewById(R.id.fCadastro));
-            RadioButton outro = ((RadioButton) findViewById(R.id.oCadastro));
+            RadioButton masculino = ((RadioButton) findViewById(R.id.mEditarPerfil));
+            RadioButton feminino = ((RadioButton) findViewById(R.id.fEditarPerfil));
+            RadioButton outro = ((RadioButton) findViewById(R.id.oEditarPerfil));
 
             //Verifica qual o sexo selecionado
             String sexo = "";
-            if (masculino != null)
+            if (sexo.isEmpty())
                 sexo = (masculino.isChecked()) ? "m" : "";
-            else if (feminino != null)
+            if (sexo.isEmpty())
                 sexo = (feminino.isChecked()) ? "f" : "";
-            else
-                sexo = "o";
+            if (sexo.isEmpty())
+                sexo = (outro.isChecked()) ? "o" : "";
+
+            //Atualiza singleton usuario
+            usuario.setSexo(sexo);
+            usuario.setSenha(senha);
+            usuario.setNome(nome);
+            usuario.setEmail(email);
+            usuario.setNascimento(nascimento);
 
             //Cria json object
             JSONObject json = new JSONObject();
             try {
-                json.put("id",""+usuario.getId());
                 json.put("nome", nome);
                 json.put("email", email);
                 json.put("senha", senha);
@@ -120,7 +136,7 @@ public class editar_perfil extends AppCompatActivity
             Api api = retrofit.retrofit().create(Api.class);
 
             //Faz requisição ao servidor
-            Observable<Void> observable =  api.updateUsuario(json);
+            Observable<Void> observable =  api.updateUsuario(json,usuario.getId());
 
             //Intercepta a resposta da requisição
             observable.subscribeOn(Schedulers.newThread())
@@ -131,14 +147,19 @@ public class editar_perfil extends AppCompatActivity
 
                         @Override
                         public void onError(Throwable e){
+                            //Esconde barra de carregamento
+                            progressBar.setVisibility(View.GONE);
                             Log.i("Login error",e.getMessage());
-                            Toast.makeText(getBaseContext(),"Não foi possível realizar o cadastro, " +
+                            Toast.makeText(getBaseContext(),"Não foi possível atualizar o cadastro, " +
                                             "tente novamente em instantes.", Toast.LENGTH_LONG).show();
                         }
 
                         @Override
                         public void onNext(Void response){
-
+                            //Esconde barra de carregamento
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(getBaseContext(),"Dados atualizados!",Toast.LENGTH_SHORT).show();
+                            finish();
                         }
                     });
         }

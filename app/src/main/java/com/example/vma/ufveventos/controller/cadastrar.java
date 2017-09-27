@@ -2,6 +2,7 @@ package com.example.vma.ufveventos.controller;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,11 +32,13 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class cadastrar extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastrar);
+        //Inicia barra de carregamento
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarCadastro);
+        progressBar.setVisibility(View.GONE);
     }
 
     public void faca_login(View view) {
@@ -43,20 +47,25 @@ public class cadastrar extends AppCompatActivity {
 
     public void cadastrar(View view){
         //Valida campos
-        boolean valido = true;
-        valido = validaEditText("nomeErroCadastro","nomeCadastro","O campo não pode estar vazio.");
-        valido = validaEditText("emailErroCadastro","emailCadastro","O campo não pode estar vazio.");
-        valido = validaEditText("senhaErroCadastro","senhaCadastro","O campo não pode estar vazio.");
-        valido = validaRadioGroup("sexoErroEditarPerfil","mEditarPerfil","fEditarPerfil","oEditarPerfil",
+        boolean valido1 = validaEditText("nomeErroCadastro","nomeCadastro","O campo não pode estar vazio.");
+        boolean valido2 = validaEditText("emailErroCadastro","emailCadastro","O campo não pode estar vazio.");
+        boolean valido3 = validaEditText("senhaErroCadastro","senhaCadastro","O campo não pode estar vazio.");
+        boolean valido4 = validaRadioGroup("sexoErroCadastro","mCadastro","fCadastro","oCadastro",
                 "O campo não pode estar vazio.");
 
         //Se os dados digitados estão corretos envia ao servidor
-        if (valido){
+        if (valido1 && valido2 && valido3 && valido4){
+            //Mostra barra de carregamento
+            final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarCadastro);
+            progressBar.setVisibility(View.VISIBLE);
+
             //Recupera dados do formulário
             String nome = ((EditText) findViewById(R.id.nomeCadastro)).getText().toString();
             final String email = ((EditText) findViewById(R.id.emailCadastro)).getText().toString();
             final String senha = ((EditText) findViewById(R.id.senhaCadastro)).getText().toString();
             String nascimento = ((EditText) findViewById(R.id.nascimentoCadastro)).getText().toString();
+            if (!nascimento.isEmpty())
+                nascimento = nascimento.substring(6,10)+"-"+nascimento.substring(3,5)+"-"+nascimento.substring(0,2);
 
             //Recupera referências aos radio buttons contendo as opções de sexo
             RadioButton masculino = ((RadioButton) findViewById(R.id.mCadastro));
@@ -65,14 +74,13 @@ public class cadastrar extends AppCompatActivity {
 
             //Verifica qual o sexo selecionado
             String sexo = "";
-            if (masculino != null)
+            if (sexo.isEmpty())
                 sexo = (masculino.isChecked()) ? "m" : "";
-            else if (feminino != null)
+            if (sexo.isEmpty())
                 sexo = (feminino.isChecked()) ? "f" : "";
-            else
-                sexo = "o";
+            if (sexo.isEmpty())
+                sexo = (outro.isChecked()) ? "o" : "";
 
-            //Toast.makeText(getBaseContext(),nascimento,Toast.LENGTH_LONG).show();
             //Cria json object
             JSONObject json = new JSONObject();
             try {
@@ -99,6 +107,8 @@ public class cadastrar extends AppCompatActivity {
 
                         @Override
                         public void onError(Throwable e){
+                            //Esconde barra de carregamento
+                            progressBar.setVisibility(View.GONE);
                             Log.i("Login error",e.getMessage());
                             Toast.makeText(getBaseContext(),"Não foi possível realizar o cadastro, " +
                                             "tente novamente em instantes.", Toast.LENGTH_LONG).show();
@@ -129,6 +139,8 @@ public class cadastrar extends AppCompatActivity {
 
                                         @Override
                                         public void onError(Throwable e){
+                                            //Esconde barra de carregamento
+                                            progressBar.setVisibility(View.GONE);
                                             Log.i("Login error",e.getMessage());
                                             Toast.makeText(getBaseContext(),"Para entrar na sua conta, " +
                                                     "vá à tela de login.", Toast.LENGTH_LONG).show();
@@ -145,7 +157,12 @@ public class cadastrar extends AppCompatActivity {
                                             usuario.setNome(response.getNome());
                                             usuario.setSenha(response.getSenha());
 
+                                            //Esconde barra de carregamento
+                                            progressBar.setVisibility(View.GONE);
+
                                             //Dispara intent para a tela inicial
+                                            Intent it = new Intent(getBaseContext(),inicial.class);
+                                            startActivity(it);
                                         }
                                     });
                         }

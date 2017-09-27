@@ -145,6 +145,7 @@
                 android:layout_marginTop="5dp"
                 android:text="Sexo" />
             <RadioGroup
+                android:id="@+id/sexoCadastro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -174,6 +175,18 @@
                     android:layout_height="wrap_content"
                     android:text="Outro" />
             </RadioGroup>
+            <ProgressBar
+                android:id="@+id/progressBarCadastro"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-6dp"
+                android:layout_gravity="center_horizontal"
+                android:max="100"
+                android:minHeight="28dp"
+                android:minWidth="28dp"
+                android:indeterminate="true"
+                android:indeterminateDrawable="@drawable/progress_bar"/>
             <TextView
                 android:id="@+id/sexoErroCadastro"
                 android:layout_width="match_parent"
@@ -193,7 +206,6 @@
             android:orientation="vertical"
             android:weightSum="1"
             tools:ignore="UselessLeaf">
-
             <Button
                 android:id="@+id/button"
                 android:layout_width="256dp"
