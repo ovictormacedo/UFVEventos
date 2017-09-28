@@ -54,8 +54,8 @@
                 android:layout_alignParentTop="true"
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:max="100"
-                android:minHeight="50dp"
-                android:minWidth="50dp"
+                android:minHeight="28dp"
+                android:minWidth="28dp"
                 android:indeterminate="true"
                 android:indeterminateDrawable="@drawable/progress_bar"/>/>
 

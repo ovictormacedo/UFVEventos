@@ -38,8 +38,9 @@ public class RecyclerViewCategoriasAdapter extends RecyclerView.Adapter<Recycler
     public void onBindViewHolder(CustomViewHolder customViewHolder, int i) {
         final Categoria categoria = categorias.get(i);
 
-        //Seta nome da cateogira
+        //Seta nome da categoria
         customViewHolder.nome.setText(categoria.getNome());
+        customViewHolder.idCategoria.setText(String.valueOf(categoria.getId()));
 
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
@@ -58,10 +59,12 @@ public class RecyclerViewCategoriasAdapter extends RecyclerView.Adapter<Recycler
 
     class CustomViewHolder extends RecyclerView.ViewHolder {
         protected TextView nome;
+        protected TextView idCategoria;
 
         public CustomViewHolder(View view) {
             super(view);
             this.nome = (TextView) view.findViewById(R.id.nomeCategoriaRow);
+            this.idCategoria = (TextView) view.findViewById(R.id.idCategoriaRow);
         }
     }
     private OnCategoriaClickListener onCategoriaClickListener;

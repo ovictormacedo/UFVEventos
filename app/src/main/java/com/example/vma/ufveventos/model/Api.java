@@ -1,5 +1,6 @@
 package com.example.vma.ufveventos.model;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -80,4 +81,11 @@ public interface Api{
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @PUT("usuario/{idUsuario}")
     Observable<Void> updateUsuario(@Field("data") JSONObject data,@Path("idUsuario") int idUsuario);
+
+    //Atualiza preferências de categoria do usuário
+    @FormUrlEncoded
+    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @PUT("preferencias_categorias/{idUsuario}")
+    Observable<Void> updatePreferenciasCategorias(@Field("data") String data,@Path("idUsuario") int idUsuario);
+
 }
