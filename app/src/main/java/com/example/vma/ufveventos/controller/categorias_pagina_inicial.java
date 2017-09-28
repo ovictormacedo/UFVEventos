@@ -1,5 +1,6 @@
 package com.example.vma.ufveventos.controller;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -176,7 +177,7 @@ public class categorias_pagina_inicial extends AppCompatActivity
 
         //Inicia barra de carregamento
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarCategorias);
-        progressBar.setProgress(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
 
         //Cria objeto para acessar a API de dados Siseventos
         RetrofitAPI retrofit = new RetrofitAPI();
@@ -201,6 +202,8 @@ public class categorias_pagina_inicial extends AppCompatActivity
                     @Override
                     public void onNext(Void response) {
                         Toast.makeText(getBaseContext(), "Dados atualizados com sucesso!", Toast.LENGTH_SHORT).show();
+                        Intent resultIntent = new Intent();
+                        setResult(Activity.RESULT_OK,resultIntent);
                         finish();
                     }
                 });

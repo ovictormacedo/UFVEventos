@@ -44,17 +44,17 @@ public interface Api{
     @GET("usuario/{idUsuario}")
     Observable<String> getUsuario(@Header("a") String password, @Path("idUsuario") int idUsuario);
 
-    //Não testado
+    //Retorna categorias de evento que o usuário deseja receber notificacoes
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @GET("preferencias_notificacoes/{idUsuario}")
     Observable<List<Categoria>> getPreferenciasDeNotificacoes(@Path("idUsuario") int idUsuario);
 
-    //Não testado
+    //Retorna categorias de evento preferidas do usuário
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @GET("preferencias_categorias/{idUsuario}")
     Observable<List<Categoria>> getPreferenciasDeCategorias(@Path("idUsuario") int idUsuario);
 
-    //TESTADO
+    //Retorna categorias de evento
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @GET("categoria")
     Observable<List<Categoria>> getCategorias();
@@ -88,4 +88,9 @@ public interface Api{
     @PUT("preferencias_categorias/{idUsuario}")
     Observable<Void> updatePreferenciasCategorias(@Field("data") String data,@Path("idUsuario") int idUsuario);
 
+    //Atualiza preferências de categoria do usuário
+    @FormUrlEncoded
+    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @PUT("preferencias_notificacoes/{idUsuario}")
+    Observable<Void> updatePreferenciasNotificacoes(@Field("data") String data,@Path("idUsuario") int idUsuario);
 }

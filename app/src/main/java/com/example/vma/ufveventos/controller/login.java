@@ -16,9 +16,14 @@ import com.example.vma.ufveventos.model.Usuario;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
 import org.json.JSONObject;
+
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.exceptions.Exceptions;
 import rx.schedulers.Schedulers;
 
 public class login extends AppCompatActivity {
@@ -71,9 +76,39 @@ public class login extends AppCompatActivity {
                         @Override
                         public void onError(Throwable e) {
                             //Encerra barra de carregamento
-                            progressBar.setVisibility(View.GONE);
-                            Log.i("Retrofit error", "Erro:" + e.getMessage());
-                            Toast.makeText(getBaseContext(), "Erro:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            if (e instanceof HttpException) {
+                                ResponseBody aux = ((HttpException) e).response().errorBody();
+                                try {
+                                    JSONObject json = new JSONObject(aux.string());
+                                    if (json.has("usuario")) {
+                                        ((EditText) findViewById(R.id.emailmatriculaLogin))
+                                                .getBackground().mutate().setColorFilter(getResources().
+                                                getColor(R.color.red), PorterDuff.Mode.SRC_ATOP);
+                                        ((TextView) findViewById(R.id.emailmatriculaErroLogin)).setText(json.getString("usuario"));
+                                    }
+                                    else{
+                                        ((EditText) findViewById(R.id.emailmatriculaLogin))
+                                                .getBackground().mutate().setColorFilter(getResources().
+                                                getColor(R.color.EditText), PorterDuff.Mode.SRC_ATOP);
+                                        ((TextView) findViewById(R.id.emailmatriculaErroLogin)).setText("");
+                                    }
+
+                                    if (json.has("senha")) {
+                                        ((EditText) findViewById(R.id.senhaLogin))
+                                                .getBackground().mutate().setColorFilter(getResources().
+                                                getColor(R.color.red), PorterDuff.Mode.SRC_ATOP);
+                                        ((TextView) findViewById(R.id.senhaErroLogin)).setText(json.getString("senha"));
+                                    }
+                                    else{
+                                        ((EditText) findViewById(R.id.senhaLogin))
+                                                .getBackground().mutate().setColorFilter(getResources().
+                                                getColor(R.color.EditText), PorterDuff.Mode.SRC_ATOP);
+                                        ((TextView) findViewById(R.id.senhaErroLogin)).setText("");
+                                    }
+                                    Log.i("Retrofit error", "Erro:" + e.getMessage());
+                                }catch(Exception t){}
+                                progressBar.setVisibility(View.GONE);
+                            }
                         }
 
                         @Override

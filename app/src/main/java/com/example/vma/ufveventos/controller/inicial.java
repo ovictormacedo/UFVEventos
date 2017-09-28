@@ -1,4 +1,5 @@
 package com.example.vma.ufveventos.controller;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import rx.Observable;
 import rx.Observer;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -37,6 +37,9 @@ public class inicial extends AppCompatActivity
     private RecyclerViewEventosTelaInicialAdapter adapter;
     private List<Evento> eventos;
     private int offset,limit;
+    UsuarioSingleton usuario = UsuarioSingleton.getInstance();
+    private RetrofitAPI retrofit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,12 +69,12 @@ public class inicial extends AppCompatActivity
         });
 
         //Cria objeto para acessar a API de dados Siseventos
-        RetrofitAPI retrofit = new RetrofitAPI();
+        retrofit = new RetrofitAPI();
         final Api api = retrofit.retrofit().create(Api.class);
 
         //Inicia barra de carregamento
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarTelaInicial);
-        progressBar.setProgress(0);
+        progressBar.setProgress(View.VISIBLE);
 
         offset = 100;
         limit = 110;
@@ -161,8 +164,64 @@ public class inicial extends AppCompatActivity
     public void escolher_categorias(View view){
         //Dispara intent para a tela de categorias
         Intent it = new Intent(getBaseContext(),categorias_pagina_inicial.class);
-        startActivity(it);
+        startActivityForResult(it,200);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            //Limpa lista de eventos
+            eventos.clear();
+            //Cria objeto para acessar a API de dados Siseventos
+            RetrofitAPI retrofit = new RetrofitAPI();
+            final Api api = retrofit.retrofit().create(Api.class);
+
+            myRecyclerView = (RecyclerView) findViewById(R.id.lista_eventos);
+            myRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            adapter = new RecyclerViewEventosTelaInicialAdapter(getBaseContext(),eventos);
+            myRecyclerView.setAdapter(adapter);
+
+            //Inicia barra de carregamento
+            final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarTelaInicial);
+            progressBar.setVisibility(View.VISIBLE);
+
+            offset = 100;
+            limit = 110;
+            Observable<List<Evento>> observable = api.getEventosPorUsuario(usuario.getId(),offset,limit);
+            observable.subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<List<Evento>>() {
+                        @Override
+                        public void onCompleted() {
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            //Encerra barra de carregamento
+                            progressBar.setVisibility(View.GONE);
+                            Log.i("Retrofit error", "Erro:" + e.getMessage());
+                            Toast.makeText(getBaseContext(), "Não foi possível carregar os eventos.", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onNext(List<Evento> response) {
+                            //Copia resultados para a lista de eventos
+                            if (response.size() == 0)
+                                Toast.makeText(getBaseContext(),"Não existem eventos no momento.",Toast.LENGTH_SHORT).show();
+
+                            for (int i = 0; i < response.size(); i++)
+                                eventos.add(response.get(i));
+                            //Atualiza RecyclerView
+                            adapter.notifyDataSetChanged();
+                            //Encerra barra de carregamento
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    });
+        }
+    }
+
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -1,5 +1,6 @@
 package com.example.vma.ufveventos.controller;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +28,8 @@ import com.example.vma.ufveventos.model.Categoria;
 import com.example.vma.ufveventos.model.RecyclerViewCategoriasAdapter;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +45,7 @@ public class notificacoes extends AppCompatActivity
     private RecyclerView myRecyclerView;
     private RecyclerViewCategoriasAdapter adapter;
     private List<Categoria> categorias;
+    UsuarioSingleton usuario = UsuarioSingleton.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +77,7 @@ public class notificacoes extends AppCompatActivity
 
         //Inicia barra de carregamento
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarCategorias);
-        progressBar.setProgress(0);
+        progressBar.setVisibility(View.VISIBLE);
 
         //Cria objeto para acessar a API de dados Siseventos
         RetrofitAPI retrofit = new RetrofitAPI();
@@ -99,9 +104,7 @@ public class notificacoes extends AppCompatActivity
                         //Copia resultados para a lista de categorias
                         for (int i = 0; i < response.size(); i++)
                             categorias.add(response.get(i));
-                        UsuarioSingleton usuario = UsuarioSingleton.getInstance();
-                        usuario.setId(1);
-                        Observable<List<Categoria>> observable = api.getPreferenciasDeCategorias(usuario.getId());
+                        Observable<List<Categoria>> observable = api.getPreferenciasDeNotificacoes(usuario.getId());
                         observable.subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Observer<List<Categoria>>() {
@@ -114,39 +117,91 @@ public class notificacoes extends AppCompatActivity
                                         //Encerra barra de carregamento
                                         progressBar.setVisibility(View.GONE);
                                         Log.i("Retrofit error", "Erro:" + e.getMessage());
-                                        //Toast.makeText(getBaseContext(), "Não foi possível carregar as categorias personalizadas.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getBaseContext(), "Por favor, verifique a sua conexão com a internet.", Toast.LENGTH_SHORT).show();
                                     }
 
                                     @Override
-                                    public void onNext(List<Categoria> response) {
+                                    public void onNext(final List<Categoria> response) {
                                         //Atualiza RecyclerView
                                         adapter.notifyDataSetChanged();
-                                        final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) myRecyclerView
-                                                .getLayoutManager();
-                                        //Varre todas as views para setar as que já são preferências do usuário
-                                        int itemCount = linearLayoutManager.getItemCount();
-                                        TextView test = (TextView) myRecyclerView.getChildAt(0).findViewById(R.id.nomeCategoriaRow);
+                                        myRecyclerView.post(new Runnable(){
+                                            @Override
+                                            public void run(){
+                                                final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) myRecyclerView
+                                                        .getLayoutManager();
 
-                                        //String nomeCategoria = ((TextView) view.findViewById(R.id.nomeCategoriaRow))
-                                        //      .getText().toString();
-                                        //Toast.makeText(getBaseContext(),""+test.getText().toString(),Toast.LENGTH_SHORT).show();
-                                        //for (int i = 0; i < itemCount; i++) {
-                                        //    View view = linearLayoutManager.getChildAt(i);
-                                        //  String nomeCategoria = ((TextView) view.findViewById(R.id.nomeCategoriaRow))
-                                        //          .getText().toString();
-                                            /*
-                                            for (int j = 0; j < response.size(); j++) {
-                                                if (response.get(j).getNome() == nomeCategoria) {
-                                                    //Seta CheckBox como checked
-                                                    CheckBox checkBox = ((CheckBox) view.findViewById(R.id.checkBoxCategoriaRow));
-                                                    checkBox.setChecked(true);
+                                                //Varre todas as views para setar as que já são preferências do usuário
+                                                int itemCount = linearLayoutManager.getItemCount();
+                                                for (int i = 0; i < itemCount; i++) {
+                                                    View view = linearLayoutManager.getChildAt(i);
+                                                    String nomeCategoria = ((TextView) view.findViewById(R.id.nomeCategoriaRow))
+                                                            .getText().toString();
+
+                                                    for (int j = 0; j < response.size(); j++) {
+                                                        if (response.get(j).getNome().equals(nomeCategoria)) {
+                                                            //Seta CheckBox como checked
+                                                            CheckBox checkBox = ((CheckBox) view.findViewById(R.id.checkBoxCategoriaRow));
+                                                            checkBox.setChecked(true);
+                                                        }
+                                                    }
                                                 }
-                                            }*/
-                                        //}
-                                        //Encerra barra de carregamento
-                                        progressBar.setVisibility(View.GONE);
+                                                //Encerra barra de carregamento
+                                                progressBar.setVisibility(View.GONE);
+                                            }
+                                        });
                                     }
                                 });
+                    }
+                });
+    }
+
+    public void salvar_configuracoes(View view){
+        final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) myRecyclerView
+                .getLayoutManager();
+
+        //Varre todas as views para setar as que já são preferências do usuário
+        int itemCount = linearLayoutManager.getItemCount();
+        List<String> categorias = new ArrayList();
+        for (int i = 0; i < itemCount; i++) {
+            View v = linearLayoutManager.getChildAt(i);
+            CheckBox cb = (CheckBox) v.findViewById(R.id.checkBoxCategoriaRow);
+            if (cb.isChecked()){
+                String id = ((TextView) v.findViewById(R.id.idCategoriaRow)).getText().toString();
+                categorias.add(id);
+            }
+        }
+        JSONArray json = new JSONArray(categorias);
+        String aux = json.toString();
+        String data = "{\"categorias\":"+aux+"}";
+
+        //Inicia barra de carregamento
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarCategorias);
+        progressBar.setVisibility(View.VISIBLE);
+
+        //Cria objeto para acessar a API de dados Siseventos
+        RetrofitAPI retrofit = new RetrofitAPI();
+        final Api api = retrofit.retrofit().create(Api.class);
+
+        Observable<Void> observable = api.updatePreferenciasNotificacoes(data,usuario.getId());
+        observable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Void>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        //Encerra barra de carregamento
+                        progressBar.setVisibility(View.GONE);
+                        Log.i("Retrofit error", "Erro:" + e.getMessage());
+                        Toast.makeText(getBaseContext(), "Não foi possível atualizar as preferências.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(Void response) {
+                        Toast.makeText(getBaseContext(), "Dados atualizados com sucesso!", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 });
     }
