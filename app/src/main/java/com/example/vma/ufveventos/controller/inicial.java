@@ -64,7 +64,9 @@ public class inicial extends AppCompatActivity
         adapter.setOnEventoTelaInicialClickListener(new OnEventoTelaInicialClickListener() {
             @Override
             public void onItemClick(Evento item) {
-                Toast.makeText(inicial.this, item.getDenominacao(), Toast.LENGTH_LONG).show();
+                Intent it = new Intent(getBaseContext(),detalhes_evento.class);
+                it.putExtra("idEvento",String.valueOf(item.getId()));
+                startActivity(it);
             }
         });
 

@@ -18,7 +18,7 @@ import retrofit2.http.Path;
 import rx.Observable;
 
 public interface Api{
-    //Testado
+    //Retorna dados do evento
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @GET("evento/{idEvento}")
     Observable<Evento> getEvento(@Path("idEvento") int idEvento);

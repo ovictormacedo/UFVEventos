@@ -11,22 +11,22 @@ import java.util.List;
 
 public class Evento {
     private int id;
-    private String denominacao;
-    private String horainicio;
-    private String horafim;
-    private String datainicio;
-    private String datafim;
-    private int participantes;
-    private String publico;
+    private String denominacao = null;
+    private String horainicio = null;
+    private String horafim = null;
+    private String datainicio = null;
+    private String datafim = null;
+    private int participantes = 0;
+    private String publico = null;
     @SerializedName("categorias")
     @Expose
-    private List<Categoria> categorias;
+    private List<Categoria> categorias = null;
     @SerializedName("locais")
     @Expose
-    private List<Local> locais;
+    private List<Local> locais = null;
     @SerializedName("servicos")
     @Expose
-    private List<Servico> servicos;
+    private List<Servico> servicos = null;
 
     public Evento(int id, String denominacao, String horainicio,
                   String horafim, String datainicio, String datafim, int participantes, String publico,
