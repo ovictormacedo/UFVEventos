@@ -2,13 +2,18 @@ package com.example.vma.ufveventos.controller;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Point;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,9 +73,9 @@ public class detalhes_evento extends AppCompatActivity implements OnMapReadyCall
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarDetalhesEvento);
         progressBar.setProgress(View.VISIBLE);
 
-        Intent it = getIntent();
-        int idEvento = Integer.parseInt(it.getStringExtra("idEvento"));
-
+        //Intent it = getIntent();
+        //int idEvento = Integer.parseInt(it.getStringExtra("idEvento"));
+        int idEvento = 200;
         Observable<Evento> observable = api.getEvento(idEvento);
         observable.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -189,5 +194,22 @@ public class detalhes_evento extends AppCompatActivity implements OnMapReadyCall
             Toast.makeText(getBaseContext(),"Não foi possível conectar.",Toast.LENGTH_SHORT).show();
         }
         return false;
+    }
+    public void showHideFirstPart(View view){
+        //Toast.makeText(getBaseContext(),""+view.getHeight(),Toast.LENGTH_SHORT).show();
+        int height;
+        if (view.getHeight() < 300) // Verifica se está recolhido
+            height = view.getHeight()*4;
+        else
+            height = view.getHeight()/4;
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        params.height = height;
+        view.setLayoutParams(params);
+        /*
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int height = size.y;
+        Toast.makeText(getBaseContext(),""+height,Toast.LENGTH_SHORT).show();*/
     }
 }

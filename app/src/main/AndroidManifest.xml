@@ -31,7 +31,7 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBAUawV6txOXpdWnQxCU-CqX2JmS-YiQV0"/>
+            android:value="AIzaSyANEfaILGvdQ56On8HW3cxids4KwJo2gm0"/>
 
         <activity
             android:name=".controller.cadastrar"

@@ -60,7 +60,8 @@
             android:elevation="1dp"
             android:orientation="vertical"
             android:weightSum="1"
-            tools:ignore="UselessLeaf">
+            tools:ignore="UselessLeaf"
+            android:onClick="showHideFirstPart">
 
             <TextView
                 android:id="@+id/tituloEvento"
