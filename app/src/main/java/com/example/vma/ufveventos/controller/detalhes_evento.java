@@ -1,6 +1,7 @@
 package com.example.vma.ufveventos.controller;
 
 import android.app.Dialog;
+import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Point;
 import android.support.v7.app.ActionBar;
@@ -11,8 +12,10 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
 import android.view.Display;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -38,9 +41,13 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static java.lang.Math.abs;
+
 public class detalhes_evento extends AppCompatActivity implements OnMapReadyCallback {
     private RetrofitAPI retrofit;
     GoogleMap mGoogleMap;
+    boolean flag_scroll = false;
+    Float y_atual,primeiro_y,y_anterior;
 
     private void initMap(){
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapFragment);
@@ -196,20 +203,77 @@ public class detalhes_evento extends AppCompatActivity implements OnMapReadyCall
         return false;
     }
     public void showHideFirstPart(View view){
-        //Toast.makeText(getBaseContext(),""+view.getHeight(),Toast.LENGTH_SHORT).show();
-        int height;
-        if (view.getHeight() < 300) // Verifica se está recolhido
-            height = view.getHeight()*4;
-        else
-            height = view.getHeight()/4;
         ViewGroup.LayoutParams params = view.getLayoutParams();
-        params.height = height;
+        if (view.getHeight() < 300) // Verifica se está recolhido
+            params.height = view.getHeight()*4;
+        else
+            params.height = view.getHeight()/4;
         view.setLayoutParams(params);
-        /*
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int height = size.y;
-        Toast.makeText(getBaseContext(),""+height,Toast.LENGTH_SHORT).show();*/
+
+        //Recolhe retangulo vermelho
+        LinearLayout layout = (LinearLayout) findViewById(R.id.retanguloDetalhesEvento);
+        params = (FrameLayout.LayoutParams)layout.getLayoutParams();
+        if (params.height < 200) // Verifica se está recolhido
+            params.height = params.height*4;
+        else
+            params.height = params.height/4;
+        layout.setLayoutParams(params);
+
+        //Aumenta ou reduz mapa
+        View fragment = (View) findViewById(R.id.mapFragment);
+        FrameLayout.LayoutParams fParams = (FrameLayout.LayoutParams)fragment.getLayoutParams();
+        Log.i("mapa",""+fParams.height+" - "+fParams.topMargin);
+        if (fParams.height > 480) {
+            fParams.height = 480;
+            fParams.topMargin = 480;
+        }
+        else {
+            fParams.height = fParams.height + 390;
+            fParams.topMargin = 90;
+        }
+        fragment.setLayoutParams(fParams);
+    }
+    public void showHideThirdPart(View view){
+        //Sobe Descrição
+        LinearLayout layout = (LinearLayout) findViewById(R.id.thirdPartDetalhesEvento);
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)layout.getLayoutParams();
+        int top = params.topMargin;
+        if (top == 528) // Verifica se está recolhido
+            params.topMargin = 937;
+        else
+            params.topMargin = 528;
+        layout.setLayoutParams(params);
+
+        //Recolhe parte de cima
+        layout = (LinearLayout) findViewById(R.id.firstPartDetalhesEvento);
+        params = (FrameLayout.LayoutParams)layout.getLayoutParams();
+        if (params.height < 300) // Verifica se está recolhido
+            params.height = params.height*4;
+        else
+            params.height = params.height/4;
+        layout.setLayoutParams(params);
+
+        //Recolhe retangulo vermelho
+        layout = (LinearLayout) findViewById(R.id.retanguloDetalhesEvento);
+        params = (FrameLayout.LayoutParams)layout.getLayoutParams();
+        if (params.height < 200) // Verifica se está recolhido
+            params.height = params.height*4;
+        else
+            params.height = params.height/4;
+        layout.setLayoutParams(params);
+
+        //Aumenta ou reduz mapa
+        View fragment = (View) findViewById(R.id.mapFragment);
+        FrameLayout.LayoutParams fParams = (FrameLayout.LayoutParams)fragment.getLayoutParams();
+        Log.i("mapa",""+fParams.height+" - "+fParams.topMargin);
+        if (fParams.height > 480) {
+            fParams.height = 480;
+            fParams.topMargin = 480;
+        }
+        else {
+            fParams.height = fParams.height + 390;
+            fParams.topMargin = 90;
+        }
+        fragment.setLayoutParams(fParams);
     }
 }

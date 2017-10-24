@@ -44,14 +44,17 @@
             android:minHeight="43dp"
             android:minWidth="43dp" />
         <LinearLayout
+            android:id="@+id/retanguloDetalhesEvento"
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:layout_marginTop="-10dp"
-            android:background="@drawable/rectangle_appbar">
+            android:background="@drawable/rectangle_appbar"
+            android:orientation="horizontal">
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/firstPartDetalhesEvento"
             android:layout_width="305dp"
             android:layout_height="270dp"
             android:layout_gravity="center_horizontal"
@@ -212,46 +215,46 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
         </LinearLayout>
-
         <fragment
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="240dp"
             android:layout_marginTop="240dp"
             android:name="com.google.android.gms.maps.MapFragment"
             android:id="@+id/mapFragment"/>
         <LinearLayout
+            android:id="@+id/thirdPartDetalhesEvento"
             android:layout_width="match_parent"
             android:layout_height="270dp"
+            android:layout_marginTop="475dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="500dp"
             android:background="@drawable/round_outline"
-            android:elevation="1dp"
             android:orientation="vertical"
             android:weightSum="1"
-            tools:ignore="UselessLeaf">
-
-        <TextView
-            android:id="@+id/descricaoTitulo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:textColor="#000000"
-            android:text="Descrição"
-            android:textSize="24dp" />
-        <TextView
-            android:id="@+id/descricaoEvento"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="5dp"
-            android:textColor="#000000"
-            android:text="asdasdhuahsduasdu
-            asdjasjdhasjd asdjasdj asdhjahsd" />
+            tools:ignore="UselessLeaf"
+            android:onClick="showHideThirdPart">
+            <TextView
+                android:id="@+id/descricaoTitulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:textColor="#000000"
+                android:text="Descrição"
+                android:textSize="24dp" />
+            <TextView
+                android:id="@+id/descricaoEvento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:textColor="#000000"
+                android:text="asdasdhuahsduasdu
+                asdjasjdhasjd asdjasdj asdhjahsd
+                asdasdhuahsduasdu
+                asdjasjdhasjd asdjasdj asdhjahsd" />
         </LinearLayout>
-
     </FrameLayout>
 
 </RelativeLayout>
