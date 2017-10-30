@@ -2,7 +2,9 @@ package com.example.vma.ufveventos.controller;
 
 import android.app.Dialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -47,7 +50,7 @@ public class detalhes_evento extends AppCompatActivity implements OnMapReadyCall
     private RetrofitAPI retrofit;
     GoogleMap mGoogleMap;
     boolean flag_scroll = false;
-    Float y_atual,primeiro_y,y_anterior;
+    int _yDelta;
 
     private void initMap(){
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapFragment);
@@ -67,6 +70,9 @@ public class detalhes_evento extends AppCompatActivity implements OnMapReadyCall
         setSupportActionBar(myToolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        LinearLayout thirdPart = (LinearLayout) findViewById(R.id.thirdPartDetalhesEvento);
+        thirdPart.setOnTouchListener(new ScrollFunction());
 
         if (googleServicesAvailable()){
             initMap();
@@ -203,6 +209,14 @@ public class detalhes_evento extends AppCompatActivity implements OnMapReadyCall
         return false;
     }
     public void showHideFirstPart(View view){
+        //TODO - Falta adaptar de pixel para DP
+
+        /*Verifica se a terceira parte está aberta e previne que a primeira parte seja aberta*/
+        View v = findViewById(R.id.thirdPartDetalhesEvento);
+        FrameLayout.LayoutParams vParams = (FrameLayout.LayoutParams) v.getLayoutParams();
+        if (convertPixelsToDp(vParams.topMargin,getBaseContext()) < 370) //Está aberto
+            return;
+
         ViewGroup.LayoutParams params = view.getLayoutParams();
         if (view.getHeight() < 300) // Verifica se está recolhido
             params.height = view.getHeight()*4;
@@ -233,47 +247,81 @@ public class detalhes_evento extends AppCompatActivity implements OnMapReadyCall
         }
         fragment.setLayoutParams(fParams);
     }
-    public void showHideThirdPart(View view){
-        //Sobe Descrição
-        LinearLayout layout = (LinearLayout) findViewById(R.id.thirdPartDetalhesEvento);
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)layout.getLayoutParams();
-        int top = params.topMargin;
-        if (top == 528) // Verifica se está recolhido
-            params.topMargin = 937;
-        else
-            params.topMargin = 528;
-        layout.setLayoutParams(params);
 
-        //Recolhe parte de cima
-        layout = (LinearLayout) findViewById(R.id.firstPartDetalhesEvento);
-        params = (FrameLayout.LayoutParams)layout.getLayoutParams();
-        if (params.height < 300) // Verifica se está recolhido
-            params.height = params.height*4;
-        else
-            params.height = params.height/4;
-        layout.setLayoutParams(params);
+    private final class ScrollFunction implements View.OnTouchListener{
+        public boolean onTouch(View view, MotionEvent event){
+            final int x = (int) event.getRawX();
+            final int y = (int) event.getRawY();
+            ViewGroup.LayoutParams firstPartParams;
+            switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                case MotionEvent.ACTION_DOWN:
+                    FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) view.getLayoutParams();
+                    _yDelta = y-params.topMargin;
+                    break;
+                case MotionEvent.ACTION_UP:
+                    break;
+                case MotionEvent.ACTION_POINTER_DOWN:
+                    break;
+                case MotionEvent.ACTION_POINTER_UP:
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    FrameLayout.LayoutParams lParams = (FrameLayout.LayoutParams) view.getLayoutParams();
+                    //Converte px para dp
+                    float dp = convertPixelsToDp((float)y-_yDelta,getBaseContext());
+                    if (convertPixelsToDp(lParams.topMargin,getBaseContext()) == 265){ //Está no topo
+                        View r = findViewById(R.id.retanguloDetalhesEvento);
+                        View m = findViewById(R.id.mapFragment);
+                        View f = findViewById(R.id.firstPartDetalhesEvento);
+                        if (convertPixelsToDp(f.getHeight(),getBaseContext()) != 67.5) // Verifica se está aberto
+                            hideFirstPart(f,r,m,getBaseContext());
+                    }
+                    if (dp > 475) { //Atingiu a base
+                        float px = convertDpToPixel((float)475,getBaseContext());
+                        lParams.topMargin = Math.round(px);
+                    } else
+                        if(dp < 265){ //Atingiu o topo
+                            float px = convertDpToPixel((float)265,getBaseContext());
+                            lParams.topMargin = Math.round(px);
+                        }
+                        else {
+                            //Move terceira parte
+                            lParams.topMargin = y - _yDelta;
+                        }
+                    view.setLayoutParams(lParams);
+                    break;
+            }
+            return true;
+        }
+    }
+    public static float convertDpToPixel(float dp, Context context){
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float px = dp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        return px;
+    }
+
+    public static float convertPixelsToDp(float px, Context context){
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float dp = px / ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        return dp;
+    }
+     public static void hideFirstPart(View view,View retangulo, View map,Context context){
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        params.height = view.getHeight()/4;
+        view.setLayoutParams(params);
 
         //Recolhe retangulo vermelho
-        layout = (LinearLayout) findViewById(R.id.retanguloDetalhesEvento);
+        LinearLayout layout = (LinearLayout) retangulo;
         params = (FrameLayout.LayoutParams)layout.getLayoutParams();
-        if (params.height < 200) // Verifica se está recolhido
-            params.height = params.height*4;
-        else
-            params.height = params.height/4;
+        params.height = params.height/4;
         layout.setLayoutParams(params);
 
         //Aumenta ou reduz mapa
-        View fragment = (View) findViewById(R.id.mapFragment);
-        FrameLayout.LayoutParams fParams = (FrameLayout.LayoutParams)fragment.getLayoutParams();
-        Log.i("mapa",""+fParams.height+" - "+fParams.topMargin);
-        if (fParams.height > 480) {
-            fParams.height = 480;
-            fParams.topMargin = 480;
-        }
-        else {
-            fParams.height = fParams.height + 390;
-            fParams.topMargin = 90;
-        }
-        fragment.setLayoutParams(fParams);
+        FrameLayout.LayoutParams fParams = (FrameLayout.LayoutParams)map.getLayoutParams();
+        fParams.height = fParams.height + (int)convertDpToPixel((float)195,context);
+        fParams.topMargin = (int)convertDpToPixel((float)45,context);
+        map.setLayoutParams(fParams);
     }
+
 }

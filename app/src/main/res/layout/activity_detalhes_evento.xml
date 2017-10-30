@@ -230,8 +230,7 @@
             android:background="@drawable/round_outline"
             android:orientation="vertical"
             android:weightSum="1"
-            tools:ignore="UselessLeaf"
-            android:onClick="showHideThirdPart">
+            tools:ignore="UselessLeaf">
             <TextView
                 android:id="@+id/descricaoTitulo"
                 android:layout_width="match_parent"
