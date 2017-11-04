@@ -275,13 +275,13 @@ public class detalhes_evento extends AppCompatActivity implements OnMapReadyCall
                     if (dp > 475) { //Atingiu a base
                         lParams.topMargin = Math.round(convertDpToPixel((float)475,getBaseContext()));
                     } else
-                        if(dp < 265){ //Atingiu o topo
-                            fParams.height = Math.round(convertDpToPixel((float)67.5,getBaseContext()));
+                        if(dp < 265) { //Atingiu o topo
+                            fParams.height = Math.round(convertDpToPixel((float) 67.5, getBaseContext()));
                             findViewById(R.id.firstPartDetalhesEvento).setLayoutParams(fParams);
-                            mParams.height = Math.round(convertDpToPixel((float)435,getBaseContext()));
-                            mParams.topMargin = Math.round(convertDpToPixel((float)52.5,getBaseContext()));
+                            mParams.height = Math.round(convertDpToPixel((float) 435, getBaseContext()));
+                            mParams.topMargin = Math.round(convertDpToPixel((float) 52.5, getBaseContext()));
                             findViewById(R.id.mapFragment).setLayoutParams(mParams);
-                            rParams.height = Math.round(convertDpToPixel((float)62.5,getBaseContext()));
+                            rParams.height = Math.round(convertDpToPixel((float) 62.5, getBaseContext()));
                             findViewById(R.id.retanguloDetalhesEvento).setLayoutParams(rParams);
 
                             lParams.topMargin = Math.round(convertDpToPixel((float)265,getBaseContext()));
@@ -291,26 +291,24 @@ public class detalhes_evento extends AppCompatActivity implements OnMapReadyCall
                             if (lParams.topMargin > (y - _yDelta)) // O scroll é para cima
                                 if (fParams.height <= convertDpToPixel((float)67.5,getBaseContext())) { //Verifica se atingiu o limite
                                     fParams.height = Math.round(convertDpToPixel((float)67.5,getBaseContext()));
-                                    findViewById(R.id.firstPartDetalhesEvento).setLayoutParams(fParams);
                                     mParams.height = Math.round(convertDpToPixel((float)435,getBaseContext()));
                                     mParams.topMargin = Math.round(convertDpToPixel((float)52.5,getBaseContext()));
-                                    findViewById(R.id.mapFragment).setLayoutParams(mParams);
                                     rParams.height = Math.round(convertDpToPixel((float)62.5,getBaseContext()));
+                                    findViewById(R.id.firstPartDetalhesEvento).setLayoutParams(fParams);
+                                    findViewById(R.id.mapFragment).setLayoutParams(mParams);
                                     findViewById(R.id.retanguloDetalhesEvento).setLayoutParams(rParams);
                                 }else {
-                                    int offsetScroll = 4;
-                                    for (int i = 0; i < 7; i++) { // Torna o efeito smooth
-                                        //Move a primeira parte
-                                        fParams.height = fParams.height - offsetScroll;
-                                        findViewById(R.id.firstPartDetalhesEvento).setLayoutParams(fParams);
-                                        //Move retângulo
-                                        rParams.height = rParams.height - offsetScroll;
-                                        findViewById(R.id.retanguloDetalhesEvento).setLayoutParams(rParams);
-                                        //Move Mapa
-                                        mParams.height = mParams.height + offsetScroll;
-                                        mParams.topMargin = mParams.topMargin - offsetScroll;
-                                        findViewById(R.id.mapFragment).setLayoutParams(mParams);
-                                    }
+                                    int offsetScroll = 22;
+                                    //Move a primeira parte
+                                    fParams.height = fParams.height - offsetScroll;
+                                    findViewById(R.id.firstPartDetalhesEvento).setLayoutParams(fParams);
+                                    //Move retângulo
+                                    rParams.height = rParams.height - offsetScroll;
+                                    findViewById(R.id.retanguloDetalhesEvento).setLayoutParams(rParams);
+                                    //Move Mapa
+                                    mParams.height = mParams.height + offsetScroll;
+                                    mParams.topMargin = mParams.topMargin - offsetScroll;
+                                    findViewById(R.id.mapFragment).setLayoutParams(mParams);
                                 }
                             //Move terceira parte
                             lParams.topMargin = y - _yDelta;

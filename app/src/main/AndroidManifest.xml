@@ -24,7 +24,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        android:theme="@style/NoAction">
 
         <meta-data android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version"/>
@@ -64,7 +64,7 @@
         </activity>
         <activity android:name=".controller.detalhes_evento"
             android:label="Evento"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/NoAction"
             android:parentActivityName="com.example.vma.ufveventos.controller.inicial">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

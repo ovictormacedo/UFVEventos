@@ -41,7 +41,7 @@
                 android:textAllCaps="false"
                 android:textSize="16dp"
                 android:onClick="escolher_categorias"
-                android:text="Escolha as categorias"/>
+                android:text="Filtrar categorias"/>
         </LinearLayout>
         <android.support.v7.widget.RecyclerView
             android:id="@+id/lista_eventos"

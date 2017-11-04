@@ -84,7 +84,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/button_cadastrar"
-                android:text="Salvar Configurações"
+                android:text="Aplicar filtro"
                 android:onClick="escolher_categorias"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF" />
