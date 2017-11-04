@@ -38,6 +38,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Observer;
@@ -49,7 +50,6 @@ import static java.lang.Math.abs;
 public class detalhes_evento extends AppCompatActivity implements OnMapReadyCallback {
     private RetrofitAPI retrofit;
     GoogleMap mGoogleMap;
-    boolean flag_scroll = false;
     int _yDelta;
 
     private void initMap(){
@@ -218,21 +218,21 @@ public class detalhes_evento extends AppCompatActivity implements OnMapReadyCall
 
         ViewGroup.LayoutParams params = view.getLayoutParams();
         if (view.getHeight() < convertDpToPixel((float) 270, getBaseContext())){ // Verifica se está recolhido
-            params.height = view.getHeight() * 4; // Abre
+            params.height = Math.round(convertDpToPixel((float)270, getBaseContext())); //Abre
             if (terceiraParteEstaAberta)
                 vParams.topMargin = Math.round(convertDpToPixel((float) 475, getBaseContext()));
         }
         else
-            params.height = view.getHeight()/4; //Fecha
+            params.height = Math.round(convertDpToPixel((float)67.5, getBaseContext())); //Fecha
         view.setLayoutParams(params);
 
         //Recolhe retangulo vermelho
         LinearLayout layout = (LinearLayout) findViewById(R.id.retanguloDetalhesEvento);
         params = (FrameLayout.LayoutParams)layout.getLayoutParams();
         if (params.height < convertDpToPixel((float)250, getBaseContext())) // Verifica se está recolhido
-            params.height = params.height*4;
+            params.height = Math.round(convertDpToPixel((float)250, getBaseContext()));
         else
-            params.height = params.height/4;
+            params.height = Math.round(convertDpToPixel((float)62.5, getBaseContext()));
         layout.setLayoutParams(params);
 
         //Aumenta ou reduz mapa
@@ -252,7 +252,6 @@ public class detalhes_evento extends AppCompatActivity implements OnMapReadyCall
 
     private final class ScrollFunction implements View.OnTouchListener{
         public boolean onTouch(View view, MotionEvent event){
-            final int x = (int) event.getRawX();
             final int y = (int) event.getRawY();
             ViewGroup.LayoutParams firstPartParams;
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
@@ -267,25 +266,52 @@ public class detalhes_evento extends AppCompatActivity implements OnMapReadyCall
                 case MotionEvent.ACTION_POINTER_UP:
                     break;
                 case MotionEvent.ACTION_MOVE:
+                    ViewGroup.LayoutParams fParams = findViewById(R.id.firstPartDetalhesEvento).getLayoutParams();
+                    FrameLayout.LayoutParams rParams = (FrameLayout.LayoutParams)findViewById(R.id.retanguloDetalhesEvento).getLayoutParams();
+                    FrameLayout.LayoutParams mParams = (FrameLayout.LayoutParams)findViewById(R.id.mapFragment).getLayoutParams();
                     FrameLayout.LayoutParams lParams = (FrameLayout.LayoutParams) view.getLayoutParams();
                     //Converte px para dp
                     float dp = convertPixelsToDp((float)y-_yDelta,getBaseContext());
-                    if (convertPixelsToDp(lParams.topMargin,getBaseContext()) == 265){ //Está no topo
-                        View r = findViewById(R.id.retanguloDetalhesEvento);
-                        View m = findViewById(R.id.mapFragment);
-                        View f = findViewById(R.id.firstPartDetalhesEvento);
-                        if (convertPixelsToDp(f.getHeight(),getBaseContext()) != 67.5) // Verifica se está aberto
-                            hideFirstPart(f,r,m,getBaseContext());
-                    }
                     if (dp > 475) { //Atingiu a base
-                        float px = convertDpToPixel((float)475,getBaseContext());
-                        lParams.topMargin = Math.round(px);
+                        lParams.topMargin = Math.round(convertDpToPixel((float)475,getBaseContext()));
                     } else
                         if(dp < 265){ //Atingiu o topo
-                            float px = convertDpToPixel((float)265,getBaseContext());
-                            lParams.topMargin = Math.round(px);
+                            fParams.height = Math.round(convertDpToPixel((float)67.5,getBaseContext()));
+                            findViewById(R.id.firstPartDetalhesEvento).setLayoutParams(fParams);
+                            mParams.height = Math.round(convertDpToPixel((float)435,getBaseContext()));
+                            mParams.topMargin = Math.round(convertDpToPixel((float)52.5,getBaseContext()));
+                            findViewById(R.id.mapFragment).setLayoutParams(mParams);
+                            rParams.height = Math.round(convertDpToPixel((float)62.5,getBaseContext()));
+                            findViewById(R.id.retanguloDetalhesEvento).setLayoutParams(rParams);
+
+                            lParams.topMargin = Math.round(convertDpToPixel((float)265,getBaseContext()));
                         }
                         else {
+                            //Detecta direção do scroll
+                            if (lParams.topMargin > (y - _yDelta)) // O scroll é para cima
+                                if (fParams.height <= convertDpToPixel((float)67.5,getBaseContext())) { //Verifica se atingiu o limite
+                                    fParams.height = Math.round(convertDpToPixel((float)67.5,getBaseContext()));
+                                    findViewById(R.id.firstPartDetalhesEvento).setLayoutParams(fParams);
+                                    mParams.height = Math.round(convertDpToPixel((float)435,getBaseContext()));
+                                    mParams.topMargin = Math.round(convertDpToPixel((float)52.5,getBaseContext()));
+                                    findViewById(R.id.mapFragment).setLayoutParams(mParams);
+                                    rParams.height = Math.round(convertDpToPixel((float)62.5,getBaseContext()));
+                                    findViewById(R.id.retanguloDetalhesEvento).setLayoutParams(rParams);
+                                }else {
+                                    int offsetScroll = 4;
+                                    for (int i = 0; i < 7; i++) { // Torna o efeito smooth
+                                        //Move a primeira parte
+                                        fParams.height = fParams.height - offsetScroll;
+                                        findViewById(R.id.firstPartDetalhesEvento).setLayoutParams(fParams);
+                                        //Move retângulo
+                                        rParams.height = rParams.height - offsetScroll;
+                                        findViewById(R.id.retanguloDetalhesEvento).setLayoutParams(rParams);
+                                        //Move Mapa
+                                        mParams.height = mParams.height + offsetScroll;
+                                        mParams.topMargin = mParams.topMargin - offsetScroll;
+                                        findViewById(R.id.mapFragment).setLayoutParams(mParams);
+                                    }
+                                }
                             //Move terceira parte
                             lParams.topMargin = y - _yDelta;
                         }
@@ -310,13 +336,13 @@ public class detalhes_evento extends AppCompatActivity implements OnMapReadyCall
     }
      public static void hideFirstPart(View view,View retangulo, View map,Context context){
         ViewGroup.LayoutParams params = view.getLayoutParams();
-        params.height = view.getHeight()/4;
+        params.height = Math.round(convertDpToPixel((float)67.5, context));
         view.setLayoutParams(params);
 
         //Recolhe retangulo vermelho
         LinearLayout layout = (LinearLayout) retangulo;
         params = (FrameLayout.LayoutParams)layout.getLayoutParams();
-        params.height = params.height/4;
+        params.height = Math.round(convertDpToPixel((float)62.5, context));
         layout.setLayoutParams(params);
 
         //Aumenta ou reduz mapa
@@ -325,5 +351,4 @@ public class detalhes_evento extends AppCompatActivity implements OnMapReadyCall
         fParams.topMargin = (int)convertDpToPixel((float)45,context);
         map.setLayoutParams(fParams);
     }
-
 }
