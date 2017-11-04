@@ -209,25 +209,27 @@ public class detalhes_evento extends AppCompatActivity implements OnMapReadyCall
         return false;
     }
     public void showHideFirstPart(View view){
-        //TODO - Falta adaptar de pixel para DP
-
-        /*Verifica se a terceira parte está aberta e previne que a primeira parte seja aberta*/
+        /*Verifica se a terceira parte está aberta*/
         View v = findViewById(R.id.thirdPartDetalhesEvento);
         FrameLayout.LayoutParams vParams = (FrameLayout.LayoutParams) v.getLayoutParams();
+        boolean terceiraParteEstaAberta = false;
         if (convertPixelsToDp(vParams.topMargin,getBaseContext()) < 370) //Está aberto
-            return;
+            terceiraParteEstaAberta = true;
 
         ViewGroup.LayoutParams params = view.getLayoutParams();
-        if (view.getHeight() < 300) // Verifica se está recolhido
-            params.height = view.getHeight()*4;
+        if (view.getHeight() < convertDpToPixel((float) 270, getBaseContext())){ // Verifica se está recolhido
+            params.height = view.getHeight() * 4; // Abre
+            if (terceiraParteEstaAberta)
+                vParams.topMargin = Math.round(convertDpToPixel((float) 475, getBaseContext()));
+        }
         else
-            params.height = view.getHeight()/4;
+            params.height = view.getHeight()/4; //Fecha
         view.setLayoutParams(params);
 
         //Recolhe retangulo vermelho
         LinearLayout layout = (LinearLayout) findViewById(R.id.retanguloDetalhesEvento);
         params = (FrameLayout.LayoutParams)layout.getLayoutParams();
-        if (params.height < 200) // Verifica se está recolhido
+        if (params.height < convertDpToPixel((float)250, getBaseContext())) // Verifica se está recolhido
             params.height = params.height*4;
         else
             params.height = params.height/4;
@@ -237,13 +239,13 @@ public class detalhes_evento extends AppCompatActivity implements OnMapReadyCall
         View fragment = (View) findViewById(R.id.mapFragment);
         FrameLayout.LayoutParams fParams = (FrameLayout.LayoutParams)fragment.getLayoutParams();
         Log.i("mapa",""+fParams.height+" - "+fParams.topMargin);
-        if (fParams.height > 480) {
-            fParams.height = 480;
-            fParams.topMargin = 480;
+        if (fParams.height > convertDpToPixel((float)240, getBaseContext())) {
+            fParams.height = Math.round(convertDpToPixel((float)240, getBaseContext()));
+            fParams.topMargin = Math.round(convertDpToPixel((float)240, getBaseContext()));
         }
         else {
-            fParams.height = fParams.height + 390;
-            fParams.topMargin = 90;
+            fParams.height = fParams.height + Math.round(convertDpToPixel((float)195, getBaseContext()));
+            fParams.topMargin = Math.round(convertDpToPixel((float)45, getBaseContext()));
         }
         fragment.setLayoutParams(fParams);
     }
