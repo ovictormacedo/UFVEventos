@@ -16,6 +16,8 @@ public class Evento {
     private String horafim = null;
     private String datainicio = null;
     private String datafim = null;
+    private String descricao_evento = null;
+    private String programacao_evento = null;
     private int participantes = 0;
     private String publico = null;
     @SerializedName("categorias")
@@ -28,20 +30,38 @@ public class Evento {
     @Expose
     private List<Servico> servicos = null;
 
-    public Evento(int id, String denominacao, String horainicio,
-                  String horafim, String datainicio, String datafim, int participantes, String publico,
-                  List<Categoria> categorias, List<Local> locais, List<Servico> servicos) {
+    public Evento(int id, String denominacao, String horainicio, String horafim, String datainicio,
+                  String datafim, String descricao_evento, String programacao_evento, int participantes,
+                  String publico, List<Categoria> categorias, List<Local> locais, List<Servico> servicos) {
         this.id = id;
-        this.participantes = participantes;
         this.denominacao = denominacao;
         this.horainicio = horainicio;
         this.horafim = horafim;
         this.datainicio = datainicio;
         this.datafim = datafim;
+        this.descricao_evento = descricao_evento;
+        this.programacao_evento = programacao_evento;
+        this.participantes = participantes;
         this.publico = publico;
-        this.servicos = servicos;
         this.categorias = categorias;
         this.locais = locais;
+        this.servicos = servicos;
+    }
+
+    public String getDescricao_evento() {
+        return descricao_evento;
+    }
+
+    public void setDescricao_evento(String descricao_evento) {
+        this.descricao_evento = descricao_evento;
+    }
+
+    public String getProgramacao_evento() {
+        return programacao_evento;
+    }
+
+    public void setProgramacao_evento(String programacao_evento) {
+        this.programacao_evento = programacao_evento;
     }
 
     public int getId() {

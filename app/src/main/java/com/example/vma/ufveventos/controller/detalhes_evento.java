@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -182,6 +183,18 @@ public class detalhes_evento extends AppCompatActivity implements OnMapReadyCall
                                     setText(categoria);
                         }
 
+                        //Seta descrição do evento
+                        if (response.getDescricao_evento() != null){
+                            ((TextView) findViewById(R.id.descricaoEvento)).
+                                    setText(response.getDescricao_evento());
+                        }
+
+                        //Seta programação do evento
+                        if (response.getProgramacao_evento() != null){
+                            ((TextView) findViewById(R.id.programacaoEvento)).
+                                    setText(response.getProgramacao_evento());
+                        }
+
                         //Encerra barra de carregamento
                         progressBar.setVisibility(View.GONE);
                     }
@@ -209,14 +222,18 @@ public class detalhes_evento extends AppCompatActivity implements OnMapReadyCall
         if (convertPixelsToDp(vParams.topMargin,getBaseContext()) < 370) //Está aberto
             terceiraParteEstaAberta = true;
 
+        //Aumenta ou reduz quadro com informações gerais
         ViewGroup.LayoutParams params = view.getLayoutParams();
         if (view.getHeight() < convertDpToPixel((float) 270, getBaseContext())){ // Verifica se está recolhido
             params.height = Math.round(convertDpToPixel((float)270, getBaseContext())); //Abre
             if (terceiraParteEstaAberta)
                 vParams.topMargin = Math.round(convertDpToPixel((float) 475, getBaseContext()));
+            ((ImageView) findViewById(R.id.abreFechaFirstPart)).setImageResource(R.drawable.fechar); //Seta imagem "fechar"
         }
-        else
-            params.height = Math.round(convertDpToPixel((float)67.5, getBaseContext())); //Fecha
+        else {
+            ((ImageView) findViewById(R.id.abreFechaFirstPart)).setImageResource(R.drawable.abrir); //Seta imagem "abrir"
+            params.height = Math.round(convertDpToPixel((float) 67.5, getBaseContext())); //Fecha
+        }
         view.setLayoutParams(params);
 
         //Recolhe retangulo vermelho
@@ -276,8 +293,9 @@ public class detalhes_evento extends AppCompatActivity implements OnMapReadyCall
                             findViewById(R.id.mapFragment).setLayoutParams(mParams);
                             rParams.height = Math.round(convertDpToPixel((float) 62.5, getBaseContext()));
                             findViewById(R.id.retanguloDetalhesEvento).setLayoutParams(rParams);
-
                             lParams.topMargin = Math.round(convertDpToPixel((float)265,getBaseContext()));
+                            //Seta imagem "abrir"
+                            ((ImageView) findViewById(R.id.abreFechaFirstPart)).setImageResource(R.drawable.abrir);
                         }
                         else {
                             //Detecta direção do scroll
@@ -290,6 +308,8 @@ public class detalhes_evento extends AppCompatActivity implements OnMapReadyCall
                                     findViewById(R.id.firstPartDetalhesEvento).setLayoutParams(fParams);
                                     findViewById(R.id.mapFragment).setLayoutParams(mParams);
                                     findViewById(R.id.retanguloDetalhesEvento).setLayoutParams(rParams);
+                                    //Seta imagem "abrir"
+                                    ((ImageView) findViewById(R.id.abreFechaFirstPart)).setImageResource(R.drawable.abrir);
                                 }else {
                                     int offsetScroll = 22;
                                     //Move a primeira parte
