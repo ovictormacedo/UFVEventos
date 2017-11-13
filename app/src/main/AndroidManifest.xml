@@ -35,42 +35,53 @@
 
         <activity
             android:name=".controller.cadastrar"
-            android:label="Cadastro">
+            android:label="Cadastro"
+            android:theme="@style/NoAction">
 
         </activity>
         <activity
             android:name=".controller.login"
-            android:label="@string/title_activity_login">
-        </activity>
-        <activity
-            android:name=".controller.editar_perfil"
-            android:label="@string/title_activity_editar_perfil"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
-        <activity
-            android:name=".controller.notificacoes"
-            android:label="@string/title_activity_notificacoes"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
-        <activity
-            android:name=".controller.inicial"
-            android:label="@string/title_activity_inicial"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-
-        </activity>
-        <activity
-            android:name=".controller.categorias_pagina_inicial"
-            android:label="@string/title_activity_categorias_pagina_inicial"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-
-        </activity>
-        <activity android:name=".controller.detalhes_evento"
-            android:label="Evento"
-            android:theme="@style/NoAction"
-            android:parentActivityName="com.example.vma.ufveventos.controller.inicial">
+            android:label="@string/title_activity_login"
+            android:theme="@style/NoAction">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".controller.editar_perfil"
+            android:label="@string/title_activity_editar_perfil"
+            android:theme="@style/NoAction"></activity>
+        <activity
+            android:name=".controller.notificacoes"
+            android:label="@string/title_activity_notificacoes"
+            android:theme="@style/NoAction"></activity>
+        <activity
+            android:name=".controller.inicial"
+            android:label="@string/title_activity_inicial"
+            android:theme="@style/NoAction">
+        </activity>
+        <activity
+            android:name=".controller.categorias_pagina_inicial"
+            android:label="@string/title_activity_categorias_pagina_inicial"
+            android:theme="@style/NoAction">
+
+        </activity>
+        <activity android:name=".controller.detalhes_evento_com_descricao"
+            android:label="Evento"
+            android:theme="@style/NoAction"
+            android:parentActivityName="com.example.vma.ufveventos.controller.inicial">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.vma.ufveventos.controller.inicial" />
+        </activity>
+        <activity android:name=".controller.detalhes_evento_sem_descricao"
+            android:label="Evento"
+            android:theme="@style/NoAction"
+            android:parentActivityName="com.example.vma.ufveventos.controller.inicial">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data

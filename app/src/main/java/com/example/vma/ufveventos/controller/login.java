@@ -1,5 +1,7 @@
 package com.example.vma.ufveventos.controller;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,12 +29,33 @@ import rx.exceptions.Exceptions;
 import rx.schedulers.Schedulers;
 
 public class login extends AppCompatActivity {
+    SharedPreferences sharedPref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarLogin);
         progressBar.setVisibility(View.GONE);
+
+        sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0",Context.MODE_PRIVATE);
+        Log.i("SHARED PREFERENCE: ", ""+sharedPref.getBoolean("logado",false));
+        //Verifica se o usuário está logado
+        if (sharedPref.getBoolean("logado",false)) {
+            //Popula o singleton do usuário logado com os dados
+            UsuarioSingleton usuario = UsuarioSingleton.getInstance();
+            usuario.setId(sharedPref.getInt("id",1));
+            usuario.setEmail(sharedPref.getString("email","default"));
+            usuario.setMatricula(sharedPref.getString("matricula","default"));
+            usuario.setNascimento(sharedPref.getString("nascimento","default"));
+            usuario.setNome(sharedPref.getString("nome","default"));
+            usuario.setSenha(sharedPref.getString("senha","default"));
+            usuario.setSexo(sharedPref.getString("sexo","default"));
+
+            //Dispara intent para a tela inicial
+            Intent it = new Intent(getBaseContext(),inicial.class);
+            startActivity(it);
+        }
     }
 
     public void cadastrar(View view){
@@ -115,6 +138,18 @@ public class login extends AppCompatActivity {
                         public void onNext(Usuario response) {
                             //Encerra barra de carregamento
                             progressBar.setVisibility(View.GONE);
+
+                            //Registra login do usuário
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putBoolean("logado",true);
+                            editor.putInt("id",response.getId());
+                            editor.putString("email",response.getEmail());
+                            editor.putString("matricula",response.getMatricula());
+                            editor.putString("nascimento",response.getNascimento());
+                            editor.putString("nome",response.getNome());
+                            editor.putString("senha",response.getSenha());
+                            editor.putString("sexo",response.getSexo());
+                            editor.commit();
 
                             //Popula o singleton do usuário logado com os dados
                             UsuarioSingleton usuario = UsuarioSingleton.getInstance();

@@ -1,6 +1,8 @@
 package com.example.vma.ufveventos.controller;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,7 +24,7 @@ import com.example.vma.ufveventos.model.Evento;
 import com.example.vma.ufveventos.model.RecyclerViewEventosTelaInicialAdapter;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
-
+import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 import rx.Observable;
@@ -64,8 +66,16 @@ public class inicial extends AppCompatActivity
         adapter.setOnEventoTelaInicialClickListener(new OnEventoTelaInicialClickListener() {
             @Override
             public void onItemClick(Evento item) {
-                Intent it = new Intent(getBaseContext(),detalhes_evento.class);
-                it.putExtra("idEvento",String.valueOf(item.getId()));
+                Intent it;
+                //Verifica se o evento possui descrição ou programação
+                if (item.getDescricao_evento() == "" && item.getProgramacao_evento() == "")
+                    it = new Intent(getBaseContext(),detalhes_evento_sem_descricao.class);
+                else
+                    it = new Intent(getBaseContext(),detalhes_evento_com_descricao.class);
+
+                Gson gson = new Gson();
+                String json = gson.toJson(item);
+                it.putExtra("evento", json);
                 startActivity(it);
             }
         });
@@ -272,6 +282,14 @@ public class inicial extends AppCompatActivity
             Intent it = new Intent(getBaseContext(),notificacoes.class);
             startActivity(it);
         } else if (id == R.id.nav_sair) {
+            //Registra que o usuário saiu
+            SharedPreferences sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0",Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.clear();
+            editor.apply();
+            editor.putBoolean("logado",false);
+            editor.commit();
+
             Intent it = new Intent(getBaseContext(),login.class);
             startActivity(it);
         }
