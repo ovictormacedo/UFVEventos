@@ -15,6 +15,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 public interface Api{
@@ -93,4 +94,14 @@ public interface Api{
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @PUT("preferencias_notificacoes/{idUsuario}")
     Observable<Void> updatePreferenciasNotificacoes(@Field("data") String data,@Path("idUsuario") int idUsuario);
+
+    @GET("maps/api/directions/json")
+    Call<Object> getRota(
+            @Query("origin") String srcParam,
+            @Query("destination") String destParam,
+            @Query("sensor") String sensor,
+            @Query("units") String units,
+            @Query("driving") String mode,
+            @Query("key") String key
+    );
 }
