@@ -26,42 +26,35 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.vma.ufveventos.R;
-import com.example.vma.ufveventos.model.Api;
 import com.example.vma.ufveventos.model.Categoria;
 import com.example.vma.ufveventos.model.Evento;
 import com.example.vma.ufveventos.model.Local;
 import com.example.vma.ufveventos.model.Servico;
-import com.example.vma.ufveventos.util.RetrofitAPI;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
+import okhttp3.internal.framed.Header;
 
 public class detalhes_evento_com_descricao extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
     GoogleMap mGoogleMap;
@@ -90,8 +83,6 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
             locateCurrentPosition();
         }
 
-        //Traça rota
-        mDestinationLatLng = new LatLng(-20.763637, -42.867933);
         traceMe(mSourceLatLng,mDestinationLatLng);
     }
     private void locateCurrentPosition() {
@@ -146,7 +137,7 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
             addBoundaryToCurrentPosition(lat, lng);
 
             CameraPosition camPosition = new CameraPosition.Builder()
-                    .target(new LatLng(lat, lng)).zoom(11f).build();
+                    .target(new LatLng(lat, lng)).zoom(14f).build();
 
             if (mGoogleMap != null)
                 mGoogleMap.animateCamera(CameraUpdateFactory
@@ -156,19 +147,18 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
         }
     }
     private void addBoundaryToCurrentPosition(double lat, double lang) {
-
         MarkerOptions mMarkerOptions = new MarkerOptions();
         mMarkerOptions.position(new LatLng(lat, lang));
         //mMarkerOptions.icon(BitmapDescriptorFactory
           //      .fromResource(R.drawable.marker_current));
         mMarkerOptions.anchor(0.5f, 0.5f);
 
-        CircleOptions mOptions = new CircleOptions()
-                .center(new LatLng(lat, lang)).radius(10000)
+        /*CircleOptions mOptions = new CircleOptions()
+            .center(new LatLng(lat, lang)).radius(10000)
                 .strokeColor(0x110000FF).strokeWidth(1).fillColor(0x110000FF);
         mGoogleMap.addCircle(mOptions);
         if (mCurrentPosition != null)
-            mCurrentPosition.remove();
+            mCurrentPosition.remove();*/
         mCurrentPosition = mGoogleMap.addMarker(mMarkerOptions);
     }
 
@@ -203,57 +193,47 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
     private void traceMe(LatLng srcLatLng, LatLng destLatLng) {
         String srcParam = srcLatLng.latitude + "," + srcLatLng.longitude;
         String destParam = destLatLng.latitude + "," + destLatLng.longitude;
-        Toast.makeText(getBaseContext(),srcParam+" --- "+destParam,Toast.LENGTH_LONG).show();
+        String url = "https://maps.googleapis.com/maps/api/directions/json?origin="+srcParam+"&destination="
+                + destParam + "&sensor=false&units=metric&mode=driving&key=AIzaSyCYMR04JVUMSJMs0BtLxl6rsAVY-xwTLqk";
+        Log.i("URL",url);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        MapDirectionsParser parser = new MapDirectionsParser();
+                        List<List<HashMap<String, String>>> routes = parser.parse(response);
+                        ArrayList<LatLng> points = null;
 
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
-        Retrofit retrofit = new retrofit2.Retrofit.Builder()
-                .baseUrl("https://maps.googleapis.com/")
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-        Api api = retrofit.create(Api.class);
-        Call<Object> rota = api.getRota(srcParam,destParam,"false","metric","google.maps.TravelMode.DRIVING","AIzaSyB386VeCEsqNAVBFd__hOvim657_ASvHnM");
-        rota.enqueue(new Callback<Object>() {
-            @Override
-            public void onResponse(Call<Object> call, Response<Object> response) {
-                Toast.makeText(getBaseContext(),response.message(),Toast.LENGTH_LONG).show();
-                Log.i("RESPONSE DIRECTIONS: ",""+response.body());
-                Toast.makeText(getBaseContext(),""+response.errorBody(),Toast.LENGTH_LONG).show();
-                MapDirectionsParser parser = new MapDirectionsParser();
-                JSONObject json = null;
-                try {
-                    json = new JSONObject();
-                    response.body().toString();
-                }catch(Exception e){Log.e("Erro directions:",e.getMessage());}
+                        for (int i = 0; i < routes.size(); i++) {
+                            points = new ArrayList<LatLng>();
+                            // lineOptions = new PolylineOptions();
 
-                List<List<HashMap<String, String>>> routes = parser.parse(json);
-                ArrayList<LatLng> points = null;
+                            // Fetching i-th route
+                            List<HashMap<String, String>> path = routes.get(i);
 
-                for (int i = 0; i < routes.size(); i++) {
-                    points = new ArrayList<LatLng>();
+                            // Fetching all the points in i-th route
+                            for (int j = 0; j < path.size(); j++) {
+                                HashMap<String, String> point = path.get(j);
 
-                    // Fetching i-th route
-                    List<HashMap<String, String>> path = routes.get(i);
+                                double lat = Double.parseDouble(point.get("lat"));
+                                double lng = Double.parseDouble(point.get("lng"));
+                                LatLng position = new LatLng(lat, lng);
 
-                    // Fetching all the points in i-th route
-                    for (int j = 0; j < path.size(); j++) {
-                        HashMap<String, String> point = path.get(j);
-
-                        double lat = Double.parseDouble(point.get("lat"));
-                        double lng = Double.parseDouble(point.get("lng"));
-                        LatLng position = new LatLng(lat, lng);
-
-                        points.add(position);
+                                points.add(position);
+                            }
+                        }
+                        drawPoints(points, mGoogleMap);
                     }
-                }
-                drawPoints(points, mGoogleMap);
-            }
-            @Override
-            public void onFailure(Call<Object> call, Throwable t) {
-                Toast.makeText(getBaseContext(),""+t.getMessage()+t.getCause(),Toast.LENGTH_LONG).show();
-            }
-        });
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("ERRO",error.getMessage());
+                    }
+                });
+
+        MyApplication.getInstance().addToReqQueue(jsonObjectRequest);
+        addBoundaryToCurrentPosition(destLatLng.latitude,destLatLng.longitude);
     }
 
 
@@ -310,6 +290,8 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarDetalhesEvento);
         progressBar.setVisibility(View.GONE);
 
+        //Traça rota
+        mDestinationLatLng = new LatLng(-20.763757, -42.881494);
         if (googleServicesAvailable()){
             initMap();
         }
