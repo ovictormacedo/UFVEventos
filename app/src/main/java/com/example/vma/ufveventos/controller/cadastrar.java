@@ -52,9 +52,11 @@ public class cadastrar extends AppCompatActivity {
         boolean valido3 = validaEditText("senhaErroCadastro","senhaCadastro","O campo não pode estar vazio.");
         boolean valido4 = validaRadioGroup("sexoErroCadastro","mCadastro","fCadastro","oCadastro",
                 "O campo não pode estar vazio.");
+        boolean valido5 = validaSenha("confirmaSenhaErroCadastro","confirmaSenhaCadastro",
+                "SenhaErroCadastro","SenhaCadastro","Este campo precisa ser igual à senha.");
 
         //Se os dados digitados estão corretos envia ao servidor
-        if (valido1 && valido2 && valido3 && valido4){
+        if (valido1 && valido2 && valido3 && valido4 && valido5){
             //Mostra barra de carregamento
             final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarCadastro);
             progressBar.setVisibility(View.VISIBLE);
@@ -167,6 +169,44 @@ public class cadastrar extends AppCompatActivity {
                                     });
                         }
                     });
+        }
+    }
+
+    public boolean validaSenha(String idErroConfirma, String idCampoConfirma, String idErro, String idCampo, String msg){
+        //Busca referência do campo
+        int texto1 = getResources().getIdentifier(idCampo, "id",
+                this.getBaseContext().getPackageName());
+
+        int texto2 = getResources().getIdentifier(idCampoConfirma, "id",
+                this.getBaseContext().getPackageName());
+
+        //Escrever texto embaixo do campo
+        String aux1 = ((EditText) findViewById(texto1)).getText().toString();
+        String aux2 = ((EditText) findViewById(texto2)).getText().toString();
+        if (!aux1.equals(aux2)) {
+            //Muda a cor do campo para vermelho
+            ((EditText) findViewById(texto2))
+                    .getBackground().mutate().setColorFilter(getResources().getColor(R.color.red), PorterDuff.Mode.SRC_ATOP);
+
+            //Busca referência do campo
+            texto2 = getResources().getIdentifier(idErroConfirma, "id",
+                    this.getBaseContext().getPackageName());
+            //Escrever texto embaixo do campo
+            TextView senhaErro = ((TextView) findViewById(texto2));
+            senhaErro.setText(msg);
+
+            return false;
+        }else{
+            //Volta ao normal a cor do campo
+            ((EditText) findViewById(texto2))
+                    .getBackground().mutate().setColorFilter(getResources().getColor(R.color.EditText), PorterDuff.Mode.SRC_ATOP);
+            //Busca referência do campo
+            texto2 = getResources().getIdentifier(idErroConfirma, "id",
+                    this.getBaseContext().getPackageName());
+            //Remove texto de erro
+            TextView emailmatriculaErro = ((TextView) findViewById(texto2));
+            emailmatriculaErro.setText("");
+            return true;
         }
     }
     public boolean validaEditText(String idErro, String idCampo, String msg){

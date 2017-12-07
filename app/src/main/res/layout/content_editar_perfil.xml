@@ -26,7 +26,7 @@
 
             <LinearLayout
                 android:layout_width="305dp"
-                android:layout_height="430dp"
+                android:layout_height="504dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/round_outline"
@@ -107,6 +107,32 @@
 
                 <TextView
                     android:id="@+id/senhaErroEditarPerfil"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginBottom="2dp"
+                    android:text=""
+                    android:textColor="@color/red"/>
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="5dp"
+                    android:text="Confirmaçao de senha" />
+
+                <EditText
+                    android:id="@+id/confirmaSenhaEditarPerfil"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="18dp"
+                    android:layout_marginTop="-8dp"
+                    android:ems="10"
+                    android:inputType="textPassword" />
+
+                <TextView
+                    android:id="@+id/confirmaSenhaErroEditarPerfil"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -196,7 +222,7 @@
                 android:layout_width="305dp"
                 android:layout_height="80dp"
                 android:layout_marginLeft="5dp"
-                android:layout_marginTop="390dp"
+                android:layout_marginTop="464dp"
                 android:layout_gravity="center_horizontal"
                 android:elevation="1dp"
                 android:orientation="vertical"
