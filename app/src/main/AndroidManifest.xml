@@ -89,6 +89,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.vma.ufveventos.controller.inicial" />
         </activity>
+        <service android:name=".controller.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <service android:name=".controller.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

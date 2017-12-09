@@ -24,6 +24,7 @@ import com.example.vma.ufveventos.model.Evento;
 import com.example.vma.ufveventos.model.RecyclerViewEventosTelaInicialAdapter;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;

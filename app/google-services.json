@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "224128381554",
+    "firebase_url": "https://siseventos-1496000137667.firebaseio.com",
+    "project_id": "siseventos-1496000137667",
+    "storage_bucket": "siseventos-1496000137667.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:224128381554:android:33ff791c6240b597",
+        "android_client_info": {
+          "package_name": "com.example.vma.ufveventos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "224128381554-g15qnhlokg544p5746fv9q5tg1b0c1aa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTJepqmDFTeUlLEYXuAsIERQF6MVQmqmc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
