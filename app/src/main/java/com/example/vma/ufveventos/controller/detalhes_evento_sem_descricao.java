@@ -132,8 +132,6 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
 
             mSourceLatLng = new LatLng(lat, lng);
 
-            addBoundaryToCurrentPosition(lat, lng);
-
             CameraPosition camPosition = new CameraPosition.Builder()
                     .target(new LatLng(lat, lng)).zoom(14f).build();
 
@@ -155,11 +153,17 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
             .center(new LatLng(lat, lang)).radius(10000)
                 .strokeColor(0x110000FF).strokeWidth(1).fillColor(0x110000FF);
         mGoogleMap.addCircle(mOptions);
+        */
         if (mCurrentPosition != null)
-            mCurrentPosition.remove();*/
+            mCurrentPosition.remove();
         mCurrentPosition = mGoogleMap.addMarker(mMarkerOptions);
     }
-
+    private void addMarker(double lat, double lng, String text) {
+        mGoogleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(lat,lng))
+                .title(text)
+                .flat(true));
+    }
     @Override
     public void onLocationChanged(Location location) {
         updateWithNewLocation(location);
@@ -204,10 +208,24 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
 
                         for (int i = 0; i < routes.size(); i++) {
                             points = new ArrayList<LatLng>();
-                            // lineOptions = new PolylineOptions();
 
                             // Fetching i-th route
                             List<HashMap<String, String>> path = routes.get(i);
+
+                            //Limpa mapa
+                            mGoogleMap.clear();
+
+                            //Adiciona marcador à posição inicial
+                            HashMap<String, String> pointAux = path.get(0);
+                            double latAux = Double.parseDouble(pointAux.get("lat"));
+                            double lngAux = Double.parseDouble(pointAux.get("lng"));
+                            addMarker(latAux,lngAux,"Origem");
+
+                            //Adiciona marcador à posição final
+                            pointAux = path.get(path.size()-1);
+                            latAux = Double.parseDouble(pointAux.get("lat"));
+                            lngAux = Double.parseDouble(pointAux.get("lng"));
+                            addMarker(latAux,lngAux,"Destino");
 
                             // Fetching all the points in i-th route
                             for (int j = 0; j < path.size(); j++) {

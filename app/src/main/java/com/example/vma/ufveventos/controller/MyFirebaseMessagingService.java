@@ -17,12 +17,9 @@ import com.google.firebase.messaging.RemoteMessage;
  */
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage){
-        //Verifica se a mensagem contém algo
-        if (remoteMessage.getData().size() > 0){
-
-        }
         //Verifica se a mensagem contém notificação
         if (remoteMessage.getNotification() != null){
             sendNotification(remoteMessage.getNotification().getBody());
@@ -38,7 +35,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder notifiBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("UFV Eventos")
-                .setContentText(body)
+                .setContentText("Chegaram novos eventos!")
                 .setAutoCancel(true)
                 .setSound(notificationSound)
                 .setContentIntent(pit);
