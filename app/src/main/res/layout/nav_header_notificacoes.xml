@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
-            android:id="@+id/imageView1"
+            android:id="@+id/imagemUsuario"
             android:layout_width="100dp"
             android:layout_height="70dp"
             android:layout_gravity="left"

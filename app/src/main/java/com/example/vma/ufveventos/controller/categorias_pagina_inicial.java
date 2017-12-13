@@ -30,6 +30,7 @@ import com.example.vma.ufveventos.model.Evento;
 import com.example.vma.ufveventos.model.RecyclerViewCategoriasAdapter;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
+import com.example.vma.ufveventos.util.UsuarioNavigationDrawer;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -63,6 +64,11 @@ public class categorias_pagina_inicial extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //Seta dados do usuário no navigation drawer
+        UsuarioNavigationDrawer und = new UsuarioNavigationDrawer();
+        und.setNomeUsuario(navigationView,usuario.getNome());
+        und.setUsuarioImagem(navigationView,"");
 
         categorias = new ArrayList<>();
         myRecyclerView = (RecyclerView) findViewById(R.id.lista_categorias);

@@ -28,6 +28,7 @@ import com.example.vma.ufveventos.model.Categoria;
 import com.example.vma.ufveventos.model.RecyclerViewCategoriasAdapter;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
+import com.example.vma.ufveventos.util.UsuarioNavigationDrawer;
 
 import org.json.JSONArray;
 
@@ -62,6 +63,11 @@ public class notificacoes extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //Seta dados do usuário no navigation drawer
+        UsuarioNavigationDrawer und = new UsuarioNavigationDrawer();
+        und.setNomeUsuario(navigationView,usuario.getNome());
+        und.setUsuarioImagem(navigationView,"");
 
         categorias = new ArrayList<>();
         myRecyclerView = (RecyclerView) findViewById(R.id.lista_categorias);

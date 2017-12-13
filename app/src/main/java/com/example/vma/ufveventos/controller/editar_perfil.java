@@ -28,6 +28,7 @@ import com.example.vma.ufveventos.model.Api;
 import com.example.vma.ufveventos.model.Usuario;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
+import com.example.vma.ufveventos.util.UsuarioNavigationDrawer;
 
 import org.json.JSONObject;
 
@@ -58,6 +59,11 @@ public class editar_perfil extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //Seta dados do usuário no navigation drawer
+        UsuarioNavigationDrawer und = new UsuarioNavigationDrawer();
+        und.setNomeUsuario(navigationView,usuario.getNome());
+        und.setUsuarioImagem(navigationView,"");
 
         //Inicia barra de carregamento
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarEditarPerfil);

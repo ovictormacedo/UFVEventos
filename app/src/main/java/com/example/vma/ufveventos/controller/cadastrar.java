@@ -2,7 +2,9 @@ package com.example.vma.ufveventos.controller;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +23,7 @@ import com.example.vma.ufveventos.model.Api;
 import com.example.vma.ufveventos.model.Usuario;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONObject;
 
@@ -95,11 +98,10 @@ public class cadastrar extends AppCompatActivity {
 
             //Cria objeto para acessar a API de dados Siseventos
             RetrofitAPI retrofit = new RetrofitAPI();
-            Api api = retrofit.retrofit().create(Api.class);
+            final Api api = retrofit.retrofit().create(Api.class);
 
             //Faz requisição ao servidor
             Observable<Void> observable =  api.setUsuario(json);
-
             //Intercepta a resposta da requisição
             observable.subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -127,7 +129,7 @@ public class cadastrar extends AppCompatActivity {
 
                             //Cria objeto para acessar a API de dados Siseventos
                             RetrofitAPI retrofit = new RetrofitAPI();
-                            Api api = retrofit.retrofit().create(Api.class);
+                            final Api api = retrofit.retrofit().create(Api.class);
 
                             //Faz requisição ao servidor para buscar id do usuário
                             Observable<Usuario> observable2 =  api.authUsuario(json);
@@ -159,12 +161,51 @@ public class cadastrar extends AppCompatActivity {
                                             usuario.setNome(response.getNome());
                                             usuario.setSenha(response.getSenha());
 
-                                            //Esconde barra de carregamento
-                                            progressBar.setVisibility(View.GONE);
+                                            //Requisita um novo token para o dispositivo e grava num shared preference
+                                            String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+                                            usuario.setToken(refreshedToken);
+                                            SharedPreferences sharedPref = getBaseContext().
+                                                    getSharedPreferences("UFVEVENTOS"+response.getEmail(), Context.MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = sharedPref.edit();
+                                            editor.putString("token",refreshedToken);
+                                            editor.commit();
 
-                                            //Dispara intent para a tela inicial
-                                            Intent it = new Intent(getBaseContext(),inicial.class);
-                                            startActivity(it);
+                                            //Cadastra novo dispositivo do usuário
+                                            JSONObject json = new JSONObject();
+                                            try {
+                                                json.put("usuario", response.getId());
+                                                json.put("token", usuario.getToken());
+                                            }catch(Exception e){Log.e("Erro json:",e.getMessage());}
+
+                                            //Envia ao servidor
+                                            Observable<Void> observable = api.setDispositivo(json);
+                                            observable.subscribeOn(Schedulers.newThread())
+                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                    .subscribe(new Observer<Void>() {
+                                                        @Override
+                                                        public void onCompleted() {
+                                                        }
+
+                                                        @Override
+                                                        public void onError(Throwable e) {
+                                                            //Encerra barra de carregamento
+                                                            progressBar.setVisibility(View.GONE);
+
+                                                            //Dispara intent para a tela inicial
+                                                            Intent it = new Intent(getBaseContext(),inicial.class);
+                                                            startActivity(it);
+                                                        }
+
+                                                        @Override
+                                                        public void onNext(Void response) {
+                                                            //Encerra barra de carregamento
+                                                            progressBar.setVisibility(View.GONE);
+
+                                                            //Dispara intent para a tela inicial
+                                                            Intent it = new Intent(getBaseContext(),inicial.class);
+                                                            startActivity(it);
+                                                        }
+                                                    });
                                         }
                                     });
                         }

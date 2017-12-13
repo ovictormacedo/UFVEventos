@@ -24,6 +24,7 @@ import com.example.vma.ufveventos.model.Evento;
 import com.example.vma.ufveventos.model.RecyclerViewEventosTelaInicialAdapter;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
+import com.example.vma.ufveventos.util.UsuarioNavigationDrawer;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import java.util.ArrayList;
@@ -58,6 +59,11 @@ public class inicial extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //Seta dados do usuário no navigation drawer
+        UsuarioNavigationDrawer und = new UsuarioNavigationDrawer();
+        und.setNomeUsuario(navigationView,usuario.getNome());
+        und.setUsuarioImagem(navigationView,"");
 
         eventos = new ArrayList<>();
         myRecyclerView = (RecyclerView) findViewById(R.id.lista_eventos);

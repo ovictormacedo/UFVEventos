@@ -17,6 +17,8 @@ import com.example.vma.ufveventos.model.Api;
 import com.example.vma.ufveventos.model.Usuario;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import org.json.JSONObject;
 
 import okhttp3.Response;
@@ -72,7 +74,7 @@ public class login extends AppCompatActivity {
         if (valido) {
             //Cria objeto para acessar a API de dados Siseventos
             RetrofitAPI retrofit = new RetrofitAPI();
-            Api api = retrofit.retrofit().create(Api.class);
+            final Api api = retrofit.retrofit().create(Api.class);
 
             //Inicia barra de carregamento
             final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarLogin);
@@ -136,19 +138,16 @@ public class login extends AppCompatActivity {
 
                         @Override
                         public void onNext(Usuario response) {
-                            //Encerra barra de carregamento
-                            progressBar.setVisibility(View.GONE);
-
                             //Registra login do usuário
                             SharedPreferences.Editor editor = sharedPref.edit();
-                            editor.putBoolean("logado",true);
-                            editor.putInt("id",response.getId());
-                            editor.putString("email",response.getEmail());
-                            editor.putString("matricula",response.getMatricula());
-                            editor.putString("nascimento",response.getNascimento());
-                            editor.putString("nome",response.getNome());
-                            editor.putString("senha",response.getSenha());
-                            editor.putString("sexo",response.getSexo());
+                            editor.putBoolean("logado", true);
+                            editor.putInt("id", response.getId());
+                            editor.putString("email", response.getEmail());
+                            editor.putString("matricula", response.getMatricula());
+                            editor.putString("nascimento", response.getNascimento());
+                            editor.putString("nome", response.getNome());
+                            editor.putString("senha", response.getSenha());
+                            editor.putString("sexo", response.getSexo());
                             editor.commit();
 
                             //Popula o singleton do usuário logado com os dados
@@ -161,9 +160,65 @@ public class login extends AppCompatActivity {
                             usuario.setSenha(response.getSenha());
                             usuario.setSexo(response.getSexo());
 
-                            //Dispara intent para a tela inicial
-                            Intent it = new Intent(getBaseContext(),inicial.class);
-                            startActivity(it);
+                            //Verifica se o usuário possui um token para este dispositivo
+                            sharedPref = getBaseContext().
+                                    getSharedPreferences("UFVEVENTOS" + response.getEmail(), Context.MODE_PRIVATE);
+                            String token = sharedPref.getString("token", "falso");
+                            if (token.equals("falso")){
+                                //Requisita token FCM
+                                String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+                                usuario.setToken(refreshedToken);
+                                editor = sharedPref.edit();
+                                editor.putString("token",refreshedToken);
+                                editor.commit();
+                                Log.i("TOKEN 1:",refreshedToken);
+                                //Cadastra novo dispositivo do usuário
+                                JSONObject json = new JSONObject();
+                                try {
+                                    json.put("usuario", response.getId());
+                                    json.put("token", usuario.getToken());
+                                }catch(Exception e){Log.e("Erro json:",e.getMessage());}
+
+                                //Envia ao servidor
+                                Observable<Void> observable = api.setDispositivo(json);
+                                observable.subscribeOn(Schedulers.newThread())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new Observer<Void>() {
+                                            @Override
+                                            public void onCompleted() {
+                                            }
+
+                                            @Override
+                                            public void onError(Throwable e) {
+                                                Log.e("Erro cadastro:",e.getMessage());
+                                                //Encerra barra de carregamento
+                                                progressBar.setVisibility(View.GONE);
+
+                                                //Dispara intent para a tela inicial
+                                                Intent it = new Intent(getBaseContext(),inicial.class);
+                                                startActivity(it);
+                                            }
+
+                                            @Override
+                                            public void onNext(Void response) {
+                                                //Encerra barra de carregamento
+                                                progressBar.setVisibility(View.GONE);
+
+                                                //Dispara intent para a tela inicial
+                                                Intent it = new Intent(getBaseContext(),inicial.class);
+                                                startActivity(it);
+                                            }
+                                        });
+                            }else{
+                                Log.i("TOKEN 2:",token);
+                                usuario.setToken(token);
+                                //Encerra barra de carregamento
+                                progressBar.setVisibility(View.GONE);
+
+                                //Dispara intent para a tela inicial
+                                Intent it = new Intent(getBaseContext(),inicial.class);
+                                startActivity(it);
+                            }
                         }
                     });
         }

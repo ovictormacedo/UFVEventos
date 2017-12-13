@@ -8,7 +8,7 @@ public class UsuarioSingleton {
     private static final UsuarioSingleton ourInstance = new UsuarioSingleton();
 
     private int id;
-    private String nome, email, senha, nascimento="", sexo, matricula;
+    private String nome, email, senha, nascimento="", sexo, matricula, token;
 
     public static UsuarioSingleton getInstance() {
         return ourInstance;
@@ -70,5 +70,13 @@ public class UsuarioSingleton {
 
     public void setMatricula(String matricula) {
         this.matricula = matricula;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
