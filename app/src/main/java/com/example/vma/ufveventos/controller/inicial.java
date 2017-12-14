@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.vma.ufveventos.R;
 import com.example.vma.ufveventos.model.Api;
 import com.example.vma.ufveventos.model.Evento;
+import com.example.vma.ufveventos.model.EventosSingleton;
 import com.example.vma.ufveventos.model.RecyclerViewEventosTelaInicialAdapter;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
@@ -43,6 +44,7 @@ public class inicial extends AppCompatActivity
     private int offset,limit;
     UsuarioSingleton usuario = UsuarioSingleton.getInstance();
     private RetrofitAPI retrofit;
+    EventosSingleton eventosSing = EventosSingleton.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,35 +97,50 @@ public class inicial extends AppCompatActivity
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarTelaInicial);
         progressBar.setProgress(View.VISIBLE);
 
-        offset = 100;
-        limit = 110;
-        Observable<List<Evento>> observable = api.getEventos(offset,limit);
-        observable.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Evento>>() {
-                    @Override
-                    public void onCompleted() {
-                    }
+        //Verifica se a lista possui algum evento
+        if (eventosSing.tamanho() == 0) {
+            offset = 100;
+            limit = 110;
+            Observable<List<Evento>> observable = api.getEventos(offset, limit);
+            observable.subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<List<Evento>>() {
+                        @Override
+                        public void onCompleted() {
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        //Encerra barra de carregamento
-                        progressBar.setVisibility(View.GONE);
-                        Log.i("Retrofit error", "Erro:" + e.getMessage());
-                        Toast.makeText(getBaseContext(), "Não foi possível carregar os eventos.", Toast.LENGTH_SHORT).show();
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                            //Encerra barra de carregamento
+                            progressBar.setVisibility(View.GONE);
+                            Log.i("Retrofit error", "Erro:" + e.getMessage());
+                            Toast.makeText(getBaseContext(), "Não foi possível carregar os eventos.", Toast.LENGTH_SHORT).show();
+                        }
 
-                    @Override
-                    public void onNext(List<Evento> response) {
-                        //Copia resultados para a lista de eventos
-                        for (int i = 0; i < response.size(); i++)
-                            eventos.add(response.get(i));
-                        //Atualiza RecyclerView
-                        adapter.notifyDataSetChanged();
-                        //Encerra barra de carregamento
-                        progressBar.setVisibility(View.GONE);
-                    }
-                });
+                        @Override
+                        public void onNext(List<Evento> response) {
+                            //Copia resultados para a lista de eventos
+                            for (int i = 0; i < response.size(); i++) {
+                                eventos.add(response.get(i));
+                                eventosSing.addEvento(response.get(i));
+                            }
+                            //Atualiza RecyclerView
+                            adapter.notifyDataSetChanged();
+                            //Encerra barra de carregamento
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    });
+            }else{
+                //Copia singleton para a lista de eventos
+                for (int i = 0; i < eventosSing.tamanho(); i++)
+                    eventos.add(eventosSing.getEvento(i));
+
+                //Atualiza RecyclerView
+                adapter.notifyDataSetChanged();
+
+                //Encerra barra de carregamento
+                progressBar.setVisibility(View.GONE);
+            }
 
             final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) myRecyclerView
                     .getLayoutManager();
@@ -166,8 +183,10 @@ public class inicial extends AppCompatActivity
                                         @Override
                                         public void onNext(List<Evento> response) {
                                             //Copia resultados para a lista de eventos
-                                            for (int i = 0; i < response.size(); i++)
+                                            for (int i = 0; i < response.size(); i++) {
                                                 eventos.add(response.get(i));
+                                                eventosSing.addEvento(response.get(i));
+                                            }
                                             //Atualiza RecyclerView
                                             adapter.notifyDataSetChanged();
                                             //Encerra barra de carregamento
@@ -237,6 +256,62 @@ public class inicial extends AppCompatActivity
                             progressBar.setVisibility(View.GONE);
                         }
                     });
+
+            final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) myRecyclerView
+                    .getLayoutManager();
+
+            myRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView,
+                                       int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+
+                    if (dy > 0){ //Verifica se o scroll foi pra baixo
+                        int visibleItemCount = linearLayoutManager.getChildCount();
+                        int totalItemCount = linearLayoutManager.getItemCount();
+                        int pastVisiblesItems = linearLayoutManager.findFirstVisibleItemPosition();
+
+                        if (progressBar.getVisibility() != View.VISIBLE &&
+                                (visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            //Carrega mais 5 itens
+                            //Mostra barra de carregamento
+                            progressBar.setVisibility(View.VISIBLE);
+                            //Atualiza offset e limit, ou seja, busca mais 10 eventos
+                            offset = limit+1;
+                            limit += 10;
+                            Observable<List<Evento>> observable = api.getEventosPorUsuario(usuario.getId(),offset,limit);
+                            observable.subscribeOn(Schedulers.newThread())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Observer<List<Evento>>() {
+                                        @Override
+                                        public void onCompleted() {
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable e) {
+                                            //Encerra barra de carregamento
+                                            progressBar.setVisibility(View.GONE);
+                                            Log.i("Retrofit error", "Erro:" + e.getMessage());
+                                            Toast.makeText(getBaseContext(), "Não foi possível carregar os eventos.", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                        @Override
+                                        public void onNext(List<Evento> response) {
+                                            //Copia resultados para a lista de eventos
+                                            for (int i = 0; i < response.size(); i++) {
+                                                eventos.add(response.get(i));
+                                                eventosSing.addEvento(response.get(i));
+                                            }
+                                            //Atualiza RecyclerView
+                                            adapter.notifyDataSetChanged();
+                                            //Encerra barra de carregamento
+                                            progressBar.setVisibility(View.GONE);
+                                        }
+                                    });
+                        }
+                    }
+                }
+            });
         }
     }
 
