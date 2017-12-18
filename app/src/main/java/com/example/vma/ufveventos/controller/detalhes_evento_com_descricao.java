@@ -45,7 +45,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -225,15 +228,18 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
                             HashMap<String, String> pointAux = path.get(0);
                             double latAux = Double.parseDouble(pointAux.get("lat"));
                             double lngAux = Double.parseDouble(pointAux.get("lng"));
-                            addMarker(latAux,lngAux,"Origem");
+                            addMarker(latAux,lngAux,"Seu local");
+
+                            CircleOptions mOptions = new CircleOptions()
+                                    .center(new LatLng(latAux, lngAux)).radius(200)
+                                    .strokeColor(0x110000FF).strokeWidth(5).fillColor(0x110000FF);
+                            mGoogleMap.addCircle(mOptions);
 
                             //Adiciona marcador à posição final
                             pointAux = path.get(path.size()-1);
                             latAux = Double.parseDouble(pointAux.get("lat"));
                             lngAux = Double.parseDouble(pointAux.get("lng"));
                             addMarker(latAux,lngAux,"Destino");
-
-
 
                             // Fetching all the points in i-th route
                             for (int j = 0; j < path.size(); j++) {
@@ -314,13 +320,12 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarDetalhesEvento);
         progressBar.setVisibility(View.GONE);
 
-
-
         //Traça rota
         mDestinationLatLng = new LatLng(-20.763757, -42.881494);
         if (googleServicesAvailable()){
             initMap();
         }
+
         //Seta denominação do evento
         if (evento.getDenominacao() != null){
             ((TextView) findViewById(R.id.tituloEvento)).

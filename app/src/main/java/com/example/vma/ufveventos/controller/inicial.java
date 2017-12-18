@@ -47,6 +47,16 @@ public class inicial extends AppCompatActivity
     EventosSingleton eventosSing = EventosSingleton.getInstance();
 
     @Override
+    protected void onResume(){
+        super.onResume();
+        //Seta dados do usuário no navigation drawer
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        UsuarioNavigationDrawer und = new UsuarioNavigationDrawer();
+        und.setNomeUsuario(navigationView,usuario.getNome());
+        und.setUsuarioImagem(navigationView,"");
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicial);

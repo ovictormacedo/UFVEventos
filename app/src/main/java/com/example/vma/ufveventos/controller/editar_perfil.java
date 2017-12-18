@@ -2,7 +2,9 @@ package com.example.vma.ufveventos.controller;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -43,6 +45,7 @@ public class editar_perfil extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     UsuarioSingleton usuario = UsuarioSingleton.getInstance();
+    SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +131,21 @@ public class editar_perfil extends AppCompatActivity
             usuario.setNome(nome);
             usuario.setEmail(email);
             usuario.setNascimento(nascimento);
+
+            //Atualiza shared preferences
+            sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.remove("email");
+            editor.putString("email", email);
+            editor.remove("nascimento");
+            editor.putString("nascimento", nascimento);
+            editor.remove("nome");
+            editor.putString("nome", nome);
+            editor.remove("senha");
+            editor.putString("senha", senha);
+            editor.remove("sexo");
+            editor.putString("sexo", sexo);
+            editor.commit();
 
             //Cria json object
             JSONObject json = new JSONObject();

@@ -42,6 +42,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -220,6 +221,11 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
                             double latAux = Double.parseDouble(pointAux.get("lat"));
                             double lngAux = Double.parseDouble(pointAux.get("lng"));
                             addMarker(latAux,lngAux,"Origem");
+
+                            CircleOptions mOptions = new CircleOptions()
+                                    .center(new LatLng(latAux, lngAux)).radius(200)
+                                    .strokeColor(0x110000FF).strokeWidth(5).fillColor(0x110000FF);
+                            mGoogleMap.addCircle(mOptions);
 
                             //Adiciona marcador à posição final
                             pointAux = path.get(path.size()-1);

@@ -77,7 +77,7 @@ public class notificacoes extends AppCompatActivity
         adapter.setCategoriaClickListener(new OnCategoriaClickListener() {
             @Override
             public void onItemClick(Categoria item) {
-                Toast.makeText(notificacoes.this, item.getNome(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(notificacoes.this, item.getNome(), Toast.LENGTH_LONG).show();
             }
         });
 

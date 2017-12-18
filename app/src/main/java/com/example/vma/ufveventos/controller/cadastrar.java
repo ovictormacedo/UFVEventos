@@ -29,12 +29,16 @@ import org.json.JSONObject;
 
 import java.util.Calendar;
 
+import retrofit2.adapter.rxjava.HttpException;
+import retrofit2.http.HTTP;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class cadastrar extends AppCompatActivity {
+    SharedPreferences sharedPref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +60,7 @@ public class cadastrar extends AppCompatActivity {
         boolean valido4 = validaRadioGroup("sexoErroCadastro","mCadastro","fCadastro","oCadastro",
                 "O campo não pode estar vazio.");
         boolean valido5 = validaSenha("confirmaSenhaErroCadastro","confirmaSenhaCadastro",
-                "SenhaErroCadastro","SenhaCadastro","Este campo precisa ser igual à senha.");
+                "senhaErroCadastro","senhaCadastro","Este campo precisa ser igual à senha.");
 
         //Se os dados digitados estão corretos envia ao servidor
         if (valido1 && valido2 && valido3 && valido4 && valido5){
@@ -111,11 +115,15 @@ public class cadastrar extends AppCompatActivity {
 
                         @Override
                         public void onError(Throwable e){
+                            if (e instanceof HttpException)
+                                Toast.makeText(getBaseContext(),"Já existe uma conta com este e-mail cadastrado",Toast.LENGTH_LONG).show();
+                            else {
+                                Toast.makeText(getBaseContext(), "Não foi possível realizar o cadastro, " +
+                                        "tente novamente em instantes.", Toast.LENGTH_LONG).show();
+                            }
                             //Esconde barra de carregamento
                             progressBar.setVisibility(View.GONE);
                             Log.i("Login error",e.getMessage());
-                            Toast.makeText(getBaseContext(),"Não foi possível realizar o cadastro, " +
-                                            "tente novamente em instantes.", Toast.LENGTH_LONG).show();
                         }
 
                         @Override
@@ -161,12 +169,32 @@ public class cadastrar extends AppCompatActivity {
                                             usuario.setNome(response.getNome());
                                             usuario.setSenha(response.getSenha());
 
+                                            //Atualiza shared preferences
+                                            sharedPref = getBaseContext().
+                                                    getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = sharedPref.edit();
+                                            editor.remove("logado");
+                                            editor.putBoolean("logado", true);
+                                            editor.remove("id");
+                                            editor.putInt("id",response.getId());
+                                            editor.remove("email");
+                                            editor.putString("email", response.getEmail());
+                                            editor.remove("nascimento");
+                                            editor.putString("nascimento", response.getNascimento());
+                                            editor.remove("nome");
+                                            editor.putString("nome", response.getNome());
+                                            editor.remove("senha");
+                                            editor.putString("senha", response.getSenha());
+                                            editor.remove("sexo");
+                                            editor.putString("sexo", response.getSexo());
+                                            editor.commit();
+
                                             //Requisita um novo token para o dispositivo e grava num shared preference
                                             String refreshedToken = FirebaseInstanceId.getInstance().getToken();
                                             usuario.setToken(refreshedToken);
                                             SharedPreferences sharedPref = getBaseContext().
                                                     getSharedPreferences("UFVEVENTOS"+response.getEmail(), Context.MODE_PRIVATE);
-                                            SharedPreferences.Editor editor = sharedPref.edit();
+                                            editor = sharedPref.edit();
                                             editor.putString("token",refreshedToken);
                                             editor.commit();
 
