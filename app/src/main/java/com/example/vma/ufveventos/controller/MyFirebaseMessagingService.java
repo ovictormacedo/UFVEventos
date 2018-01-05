@@ -56,24 +56,4 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
         }
     }
-    /*
-    private void sendNotification(String body){
-        Intent it = new Intent(this, inicial.class);
-        it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        Bitmap image = getBitmapfromUrl("http://www.meettest.esy.es/Icone.png");
-        PendingIntent pit = PendingIntent.getActivity(this,0, it, PendingIntent.FLAG_CANCEL_CURRENT);
-        //Envia som de notificação
-        Uri notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notifiBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.logo_ufv1)
-                .setLargeIcon(image)
-                .setContentTitle("UFV Eventos")
-                .setContentText("Chegaram novos eventos!")
-                .setAutoCancel(true)
-                .setSound(notificationSound)
-                .setContentIntent(pit);
-
-        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0, notifiBuilder.build());
-    }*/
 }

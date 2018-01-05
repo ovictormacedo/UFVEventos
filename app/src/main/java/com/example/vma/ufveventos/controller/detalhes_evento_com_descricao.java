@@ -35,7 +35,6 @@ import com.example.vma.ufveventos.R;
 import com.example.vma.ufveventos.model.Categoria;
 import com.example.vma.ufveventos.model.Evento;
 import com.example.vma.ufveventos.model.Local;
-import com.example.vma.ufveventos.model.Servico;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -390,19 +389,6 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
                     setText(evento.getPublicoAlvo());
         }
 
-        //Seta serviços do evento
-        if (evento.getServicos().size() > 0) {
-            List<Servico> servicos = evento.getServicos();
-            String servico = "";
-            for (int i = 0; i < servicos.size(); i++) {
-                servico = servico + servicos.get(i).getNome();
-                if (i != servicos.size() - 1)
-                    servico = servico + ", ";
-            }
-            findViewById(R.id.servicosLabelEvento).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.servicosEvento)).
-                    setText(servico);
-        }
         //Seta categorias do evento
         if (evento.getCategorias().size() > 0) {
             List<Categoria> categorias = evento.getCategorias();
