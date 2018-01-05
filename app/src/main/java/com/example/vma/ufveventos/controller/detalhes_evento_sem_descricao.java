@@ -220,12 +220,18 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
                             HashMap<String, String> pointAux = path.get(0);
                             double latAux = Double.parseDouble(pointAux.get("lat"));
                             double lngAux = Double.parseDouble(pointAux.get("lng"));
-                            addMarker(latAux,lngAux,"Origem");
 
                             CircleOptions mOptions = new CircleOptions()
                                     .center(new LatLng(latAux, lngAux)).radius(200)
                                     .strokeColor(0x110000FF).strokeWidth(5).fillColor(0x110000FF);
                             mGoogleMap.addCircle(mOptions);
+
+                            CircleOptions circleOptions = new CircleOptions()
+                                    .center(new LatLng(latAux, lngAux))
+                                    .strokeWidth(1)
+                                    .fillColor(Color.BLUE)
+                                    .radius(60); // In meters
+                            mGoogleMap.addCircle(circleOptions);
 
                             //Adiciona marcador à posição final
                             pointAux = path.get(path.size()-1);
@@ -310,7 +316,11 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
         progressBar.setVisibility(View.GONE);
 
         //Traça rota
-        mDestinationLatLng = new LatLng(-20.763757, -42.881494);
+        List<Local> locaisAux = evento.getLocais();
+        double latDest = Double.parseDouble(locaisAux.get(0).getLatitude());
+        double lngDest = Double.parseDouble(locaisAux.get(0).getLongitude());
+        //mDestinationLatLng = new LatLng(-20.763757, -42.881494);
+        mDestinationLatLng = new LatLng(latDest, lngDest);
         if (googleServicesAvailable()){
             initMap();
         }
