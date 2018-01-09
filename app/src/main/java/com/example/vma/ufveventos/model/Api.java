@@ -32,28 +32,28 @@ public interface Api{
     //Não testado
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @GET("evento/categoria/{idCategoria}/indexinicial/{offset}/indexfinal/{limit}")
-    Observable<List<Evento>> getEventosPorCategoria(@Path("idCategoria") int idCategoria,
+    Observable<List<Evento>> getEventosPorCategoria(@Path("idCategoria") String idCategoria,
                                                     @Path("offset") int offset, @Path("limit") int limit);
     //Não testado
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @GET("evento/categoria/personalizado/idusuario/{idUsuario}/indexinicial/{offset}/indexfinal/{limit}")
-    Observable<List<Evento>> getEventosPorUsuario(@Path("idUsuario") int idUsuario,
+    Observable<List<Evento>> getEventosPorUsuario(@Path("idUsuario") String idUsuario,
                                                   @Path("offset") int offset, @Path("limit") int limit);
     //Não testado
     //A senha deve ser passada utilizando MD5
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @GET("usuario/{idUsuario}")
-    Observable<String> getUsuario(@Header("a") String password, @Path("idUsuario") int idUsuario);
+    Observable<String> getUsuario(@Header("a") String password, @Path("idUsuario") String idUsuario);
 
     //Retorna categorias de evento que o usuário deseja receber notificacoes
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @GET("preferencias_notificacoes/{idUsuario}")
-    Observable<List<Categoria>> getPreferenciasDeNotificacoes(@Path("idUsuario") int idUsuario);
+    Observable<List<Categoria>> getPreferenciasDeNotificacoes(@Path("idUsuario") String idUsuario);
 
     //Retorna categorias de evento preferidas do usuário
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @GET("preferencias_categorias/{idUsuario}")
-    Observable<List<Categoria>> getPreferenciasDeCategorias(@Path("idUsuario") int idUsuario);
+    Observable<List<Categoria>> getPreferenciasDeCategorias(@Path("idUsuario") String idUsuario);
 
     //Retorna categorias de evento
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
@@ -63,7 +63,7 @@ public interface Api{
     //Não testado
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @GET("dispositivos/{idUsuario}")
-    Observable<Usuario> getDispositivos(@Path("idUsuario") int idUsuario);
+    Observable<Usuario> getDispositivos(@Path("idUsuario") String idUsuario);
 
     //Autentica usuário
     @FormUrlEncoded
@@ -87,19 +87,19 @@ public interface Api{
     @FormUrlEncoded
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @PUT("usuario/{idUsuario}")
-    Observable<Void> updateUsuario(@Field("data") JSONObject data,@Path("idUsuario") int idUsuario);
+    Observable<Void> updateUsuario(@Field("data") JSONObject data,@Path("idUsuario") String idUsuario);
 
     //Atualiza preferências de categoria do usuário
     @FormUrlEncoded
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @PUT("preferencias_categorias/{idUsuario}")
-    Observable<Void> updatePreferenciasCategorias(@Field("data") String data,@Path("idUsuario") int idUsuario);
+    Observable<Void> updatePreferenciasCategorias(@Field("data") String data,@Path("idUsuario") String idUsuario);
 
     //Atualiza preferências de categoria do usuário
     @FormUrlEncoded
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @PUT("preferencias_notificacoes/{idUsuario}")
-    Observable<Void> updatePreferenciasNotificacoes(@Field("data") String data,@Path("idUsuario") int idUsuario);
+    Observable<Void> updatePreferenciasNotificacoes(@Field("data") String data,@Path("idUsuario") String idUsuario);
 
     @GET("maps/api/directions/json")
     Call<Object> getRota(

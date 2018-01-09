@@ -168,6 +168,7 @@ public class cadastrar extends AppCompatActivity {
                                             usuario.setNascimento(response.getNascimento());
                                             usuario.setNome(response.getNome());
                                             usuario.setSenha(response.getSenha());
+                                            usuario.setFoto(response.getFoto());
 
                                             //Atualiza shared preferences
                                             sharedPref = getBaseContext().
@@ -176,7 +177,7 @@ public class cadastrar extends AppCompatActivity {
                                             editor.remove("logado");
                                             editor.putBoolean("logado", true);
                                             editor.remove("id");
-                                            editor.putInt("id",response.getId());
+                                            editor.putString("id",response.getId());
                                             editor.remove("email");
                                             editor.putString("email", response.getEmail());
                                             editor.remove("nascimento");
@@ -187,6 +188,8 @@ public class cadastrar extends AppCompatActivity {
                                             editor.putString("senha", response.getSenha());
                                             editor.remove("sexo");
                                             editor.putString("sexo", response.getSexo());
+                                            editor.remove("foto");
+                                            editor.putString("foto", response.getFoto());
                                             editor.commit();
 
                                             //Requisita um novo token para o dispositivo e grava num shared preference

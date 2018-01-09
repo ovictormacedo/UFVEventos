@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:layout_width="fill_parent"
+<ScrollView
+    android:id="@+id/login_activity"
+    android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -105,7 +107,7 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="305dp"
-            android:layout_height="166dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="310dp"
             android:layout_gravity="center_horizontal"
             android:elevation="1dp"
@@ -125,7 +127,7 @@
                 android:onClick="entrar"/>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
@@ -155,6 +157,17 @@
                     android:textSize="14dp"
                     android:onClick="cadastrar"/>
             </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="420dp"
+            android:layout_marginLeft="130dp">
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/sign_in_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"/>
         </LinearLayout>
     </FrameLayout>
 </ScrollView>

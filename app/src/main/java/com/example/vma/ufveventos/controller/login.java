@@ -3,6 +3,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +19,18 @@ import com.example.vma.ufveventos.model.Api;
 import com.example.vma.ufveventos.model.Usuario;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.iid.FirebaseInstanceId;
 import org.json.JSONObject;
 import okhttp3.ResponseBody;
@@ -27,40 +40,183 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class login extends AppCompatActivity {
+public class login extends AppCompatActivity implements View.OnClickListener {
     SharedPreferences sharedPref;
     GoogleSignInOptions gso;
-
+    private FirebaseAuth mAuth;
+    private GoogleSignInClient mGoogleSignInClient;
+    private static final String TAG = "GoogleActivity";
+    private static final int RC_SIGN_IN = 9001;
+    ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarLogin);
+        progressBar = (ProgressBar) findViewById(R.id.progressBarLogin);
         progressBar.setVisibility(View.GONE);
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken("224128381554-g15qnhlokg544p5746fv9q5tg1b0c1aa.apps.googleusercontent.com")
+                .requestProfile()
                 .requestEmail()
                 .build();
 
-        sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0",Context.MODE_PRIVATE);
-        Log.i("SHARED PREFERENCE: ", ""+sharedPref.getBoolean("logado",false));
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        //Start initialize_auth]
+        mAuth = FirebaseAuth.getInstance();
+
+        findViewById(R.id.sign_in_button).setOnClickListener(this);
+
+        sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
         //Verifica se o usuário está logado
         if (sharedPref.getBoolean("logado",false)) {
             //Popula o singleton do usuário logado com os dados
             UsuarioSingleton usuario = UsuarioSingleton.getInstance();
-            usuario.setId(sharedPref.getInt("id",1));
+            usuario.setId(String.valueOf(sharedPref.getString("id","default")));
             usuario.setEmail(sharedPref.getString("email","default"));
             usuario.setMatricula(sharedPref.getString("matricula","default"));
             usuario.setNascimento(sharedPref.getString("nascimento","default"));
             usuario.setNome(sharedPref.getString("nome","default"));
             usuario.setSenha(sharedPref.getString("senha","default"));
             usuario.setSexo(sharedPref.getString("sexo","default"));
+            usuario.setFoto(null);
 
             //Dispara intent para a tela inicial
             Intent it = new Intent(getBaseContext(),inicial.class);
             startActivity(it);
+        }
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        //Atualiza singleton do usuário
+        updateUsuario(currentUser);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                firebaseAuthWithGoogle(account);
+            } catch (ApiException e) {
+                // Google Sign In failed, update UI appropriately
+                Log.w(TAG, "Google sign in failed", e);
+
+                //Atualiza usuario singleton
+                updateUsuario(null);
+            }
+        }
+    }
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+        //Mostra barra de carregamento
+        progressBar = (ProgressBar) findViewById(R.id.progressBarLogin);
+        progressBar.setVisibility(View.VISIBLE);
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+
+                            updateUsuario(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Snackbar.make(findViewById(R.id.login_activity), "Autenticação falhou.", Snackbar.LENGTH_SHORT).show();
+                        }
+
+                        //Esconde barra de carregamento
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
+    }
+
+    private void updateUsuario(FirebaseUser currentUser){
+        if (currentUser != null) {
+            sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean("logado", true);
+            editor.putString("id", currentUser.getUid());
+            editor.putString("email", currentUser.getEmail());
+            editor.putString("matricula", "default");
+            editor.putString("nascimento", "default");
+            editor.putString("nome", currentUser.getDisplayName());
+            editor.putString("senha", "default");
+            editor.putString("sexo", "default");
+            editor.putString("foto", currentUser.getPhotoUrl().toString());
+            editor.commit();
+            Log.i("SHARED PREFERENCE: ","Atualizando usuário singleton");
+            Log.i("SHARED PREFERENCE: ",currentUser.getDisplayName());
+            Log.i("SHARED PREFERENCE: ",currentUser.getUid());
+
+            UsuarioSingleton usuario = UsuarioSingleton.getInstance();
+            usuario.setId(sharedPref.getString("id", currentUser.getUid()));
+            usuario.setEmail(sharedPref.getString("email", currentUser.getEmail()));
+            usuario.setMatricula(sharedPref.getString("matricula", "default"));
+            usuario.setNascimento(sharedPref.getString("nascimento", "default"));
+            usuario.setNome(sharedPref.getString("nome", currentUser.getDisplayName()));
+            usuario.setSenha(sharedPref.getString("senha", "default"));
+            usuario.setSexo(sharedPref.getString("sexo", "default"));
+            usuario.setFoto(sharedPref.getString("foto", currentUser.getPhotoUrl().toString()));
+        }
+    }
+
+    private void signIn(View view) {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    private void signOut() {
+        // Firebase sign out
+        mAuth.signOut();
+
+        // Google sign out
+        mGoogleSignInClient.signOut().addOnCompleteListener(this,
+                new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                    }
+                });
+    }
+
+    private void revokeAccess() {
+        // Firebase sign out
+        mAuth.signOut();
+
+        // Google revoke access
+        mGoogleSignInClient.revokeAccess().addOnCompleteListener(this,
+                new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                    }
+                });
+    }
+
+    @Override
+    public void onClick(View view){
+        int i = view.getId();
+        if (i == R.id.sign_in_button) {
+            signIn(view);
         }
     }
 
@@ -145,13 +301,14 @@ public class login extends AppCompatActivity {
                             //Registra login do usuário
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putBoolean("logado", true);
-                            editor.putInt("id", response.getId());
+                            editor.putString("id", response.getId());
                             editor.putString("email", response.getEmail());
                             editor.putString("matricula", response.getMatricula());
                             editor.putString("nascimento", response.getNascimento());
                             editor.putString("nome", response.getNome());
                             editor.putString("senha", response.getSenha());
                             editor.putString("sexo", response.getSexo());
+                            editor.putString("foto", response.getFoto());
                             editor.commit();
 
                             //Popula o singleton do usuário logado com os dados
@@ -163,6 +320,7 @@ public class login extends AppCompatActivity {
                             usuario.setNome(response.getNome());
                             usuario.setSenha(response.getSenha());
                             usuario.setSexo(response.getSexo());
+                            usuario.setFoto(response.getFoto());
 
                             //Verifica se o usuário possui um token para este dispositivo
                             sharedPref = getBaseContext().
@@ -259,46 +417,5 @@ public class login extends AppCompatActivity {
             emailmatriculaErro.setText("");
             return true;
         }
-    }
-    public boolean validaRadioGroup(String idErro,String id1,String id2,String id3,String msg){
-        //Busca referência do campo
-        int erro = getResources().getIdentifier(idErro, "id",
-                this.getBaseContext().getPackageName());
-
-        int r1 = getResources().getIdentifier(id1, "id",
-                this.getBaseContext().getPackageName());
-
-        int r2 = getResources().getIdentifier(id2, "id",
-                this.getBaseContext().getPackageName());
-
-        int r3 = getResources().getIdentifier(id3, "id",
-                this.getBaseContext().getPackageName());
-
-        RadioButton rb1 = ((RadioButton) findViewById(r1));
-        RadioButton rb2 = ((RadioButton) findViewById(r2));
-        RadioButton rb3 = ((RadioButton) findViewById(r3));
-        TextView er = ((TextView) findViewById(erro));
-
-        boolean valida = false;
-        if (rb1 != null)
-            if(rb1.isChecked())
-                valida = true;
-
-        if (rb2 != null)
-            if(rb2.isChecked())
-                valida = true;
-
-        if (rb3 != null)
-            if(rb3.isChecked())
-                valida = true;
-
-        //Caso nenhum sexo tenha sido selecionado informado msg de erro
-        if (!valida){
-            er.setText(msg);
-        }else{
-            er.setText("");
-        }
-
-        return valida;
     }
 }
