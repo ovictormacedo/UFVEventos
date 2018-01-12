@@ -5,9 +5,10 @@ package com.example.vma.ufveventos.model;
  */
 
 public class Usuario {
-    private String id, nome, email, senha, nascimento, sexo, matricula, token, foto;
+    private String id, nome, email, senha, nascimento, sexo, matricula, foto, googleId;
 
-    public Usuario(String id, String nome, String email, String senha, String nascimento, String sexo, String matricula, String token) {
+    public Usuario(String id, String nome, String email, String senha, String nascimento, String sexo, String matricula,
+                   String googleId) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -15,7 +16,7 @@ public class Usuario {
         this.nascimento = nascimento;
         this.sexo = sexo;
         this.matricula = matricula;
-        this.token = token;
+        this.googleId = googleId;
     }
 
     public String getId() {
@@ -74,19 +75,19 @@ public class Usuario {
         this.matricula = matricula;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     public String getFoto() {
         return foto;
     }
 
     public void setFoto(String foto) {
         this.foto = foto;
+    }
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
     }
 }

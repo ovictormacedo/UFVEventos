@@ -7,7 +7,7 @@ package com.example.vma.ufveventos.model;
 public class UsuarioSingleton {
     private static final UsuarioSingleton ourInstance = new UsuarioSingleton();
 
-    private String id, nome, email, senha, nascimento="", sexo, matricula, token, foto;
+    private String id, nome, email, senha, nascimento="", sexo, matricula, token, foto, googleId;
 
     public static UsuarioSingleton getInstance() {
         return ourInstance;
@@ -85,5 +85,13 @@ public class UsuarioSingleton {
 
     public void setFoto(String foto) {
         this.foto = foto;
+    }
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
     }
 }

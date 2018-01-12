@@ -77,6 +77,12 @@ public interface Api{
     @POST("usuario")
     Observable<Void> setUsuario(@Field("data") JSONObject data);
 
+    //Cria novo usuário google
+    @FormUrlEncoded
+    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @POST("usuario_google")
+    Observable<Void> setUsuarioGoogle(@Field("data") JSONObject data);
+
     //Cadastra novo dispositivo do usuário
     @FormUrlEncoded
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")

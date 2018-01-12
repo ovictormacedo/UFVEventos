@@ -196,7 +196,7 @@ public class cadastrar extends AppCompatActivity {
                                             String refreshedToken = FirebaseInstanceId.getInstance().getToken();
                                             usuario.setToken(refreshedToken);
                                             SharedPreferences sharedPref = getBaseContext().
-                                                    getSharedPreferences("UFVEVENTOS"+response.getEmail(), Context.MODE_PRIVATE);
+                                                    getSharedPreferences("UFVEVENTOS"+response.getId(), Context.MODE_PRIVATE);
                                             editor = sharedPref.edit();
                                             editor.putString("token",refreshedToken);
                                             editor.commit();

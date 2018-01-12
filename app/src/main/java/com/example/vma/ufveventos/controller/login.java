@@ -76,14 +76,18 @@ public class login extends AppCompatActivity implements View.OnClickListener {
         if (sharedPref.getBoolean("logado",false)) {
             //Popula o singleton do usuário logado com os dados
             UsuarioSingleton usuario = UsuarioSingleton.getInstance();
-            usuario.setId(String.valueOf(sharedPref.getString("id","default")));
+            usuario.setId(sharedPref.getString("id","default"));
+            usuario.setGoogleId(sharedPref.getString("googleId","default"));
             usuario.setEmail(sharedPref.getString("email","default"));
             usuario.setMatricula(sharedPref.getString("matricula","default"));
             usuario.setNascimento(sharedPref.getString("nascimento","default"));
             usuario.setNome(sharedPref.getString("nome","default"));
             usuario.setSenha(sharedPref.getString("senha","default"));
             usuario.setSexo(sharedPref.getString("sexo","default"));
-            usuario.setFoto(null);
+            usuario.setFoto(sharedPref.getString("foto","default"));
+            SharedPreferences sharedPref2 = getBaseContext().
+                    getSharedPreferences("UFVEVENTOS"+usuario.getId(), Context.MODE_PRIVATE);
+            usuario.setToken(sharedPref2.getString("token","default"));
 
             //Dispara intent para a tela inicial
             Intent it = new Intent(getBaseContext(),inicial.class);
@@ -98,7 +102,8 @@ public class login extends AppCompatActivity implements View.OnClickListener {
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         //Atualiza singleton do usuário
-        updateUsuario(currentUser);
+        UsuarioSingleton usuario = UsuarioSingleton.getInstance();
+        updateUsuario(currentUser,usuario.getId());
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -114,9 +119,6 @@ public class login extends AppCompatActivity implements View.OnClickListener {
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
-
-                //Atualiza usuario singleton
-                updateUsuario(null);
             }
         }
     }
@@ -134,33 +136,101 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            final FirebaseUser user = mAuth.getCurrentUser();
 
-                            updateUsuario(user);
+                            UsuarioSingleton usuario = UsuarioSingleton.getInstance();
+
+                            /*Cadastra novo usuário. O servidor apenas realiza novo cadastro
+                            se não houver nenhum cadastro atribuído ao presente googleId*/
+
+                            //Cria objeto para acessar a API de dados Siseventos
+                            RetrofitAPI retrofit = new RetrofitAPI();
+                            final Api api = retrofit.retrofit().create(Api.class);
+
+                            //Cria json object
+                            JSONObject json = new JSONObject();
+                            try {
+                                json.put("nome", user.getDisplayName());
+                                json.put("email", user.getEmail());
+                                json.put("googleId", user.getUid());
+                            }catch(Exception e){Toast.makeText(getBaseContext(),e.getMessage(), Toast.LENGTH_SHORT).show();};
+
+                            //Faz requisição ao servidor
+                            Observable<Void> observable =  api.setUsuarioGoogle(json);
+                            //Intercepta a resposta da requisição
+                            observable.subscribeOn(Schedulers.newThread())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Observer<Void>(){
+                                        @Override
+                                        public void onCompleted(){}
+
+                                        @Override
+                                        public void onError(Throwable e){
+                                            ResponseBody aux = ((HttpException) e).response().errorBody();
+                                            try {
+                                                Log.i("Login error", aux.string());
+                                            }catch (Exception ex){}
+                                        }
+
+                                        @Override
+                                        public void onNext(Void response){
+                                            //Cria json com os dados de login
+                                            JSONObject json = new JSONObject();
+                                            try {
+                                                json.put("googleId", user.getUid());
+                                            }catch (Exception e){Toast.makeText(getBaseContext(),e.getMessage(),Toast.LENGTH_SHORT).show();}
+
+                                            //Cria objeto para acessar a API de dados Siseventos
+                                            RetrofitAPI retrofit = new RetrofitAPI();
+                                            final Api api = retrofit.retrofit().create(Api.class);
+
+                                            //Faz requisição ao servidor para buscar id do usuário
+                                            Observable<Usuario> observable2 =  api.authUsuario(json);
+                                            //Intercepta a resposta da requisição
+                                            observable2.subscribeOn(Schedulers.newThread())
+                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                    .subscribe(new Observer<Usuario>(){
+                                                        @Override
+                                                        public void onCompleted(){}
+
+                                                        @Override
+                                                        public void onError(Throwable e){
+                                                            //Esconde barra de carregamento
+                                                            progressBar.setVisibility(View.GONE);
+                                                            Log.i("Login error",e.getMessage()+e.getCause());
+                                                            Toast.makeText(getBaseContext(),"Não foi possível logar em sua conta.",
+                                                                    Toast.LENGTH_LONG).show();
+                                                        }
+
+                                                        @Override
+                                                        public void onNext(Usuario response){
+                                                            updateUsuario(user,response.getId());
+                                                            //Cadastra token para o dispositivo receber notificações
+                                                            cadastraToken(response);
+                                                        }
+                                                    });
+                                        }
+                                    });
                         } else {
+                            //Esconde barra de carregamento
+                            progressBar.setVisibility(View.GONE);
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Snackbar.make(findViewById(R.id.login_activity), "Autenticação falhou.", Snackbar.LENGTH_SHORT).show();
                         }
-
-                        //Esconde barra de carregamento
-                        progressBar.setVisibility(View.GONE);
                     }
                 });
     }
 
-    private void updateUsuario(FirebaseUser currentUser){
+    private void updateUsuario(FirebaseUser currentUser, String id){
         if (currentUser != null) {
             sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean("logado", true);
-            editor.putString("id", currentUser.getUid());
+            editor.putString("id", id);
+            editor.putString("googleId", currentUser.getUid());
             editor.putString("email", currentUser.getEmail());
-            editor.putString("matricula", "default");
-            editor.putString("nascimento", "default");
             editor.putString("nome", currentUser.getDisplayName());
-            editor.putString("senha", "default");
-            editor.putString("sexo", "default");
             editor.putString("foto", currentUser.getPhotoUrl().toString());
             editor.commit();
             Log.i("SHARED PREFERENCE: ","Atualizando usuário singleton");
@@ -168,13 +238,10 @@ public class login extends AppCompatActivity implements View.OnClickListener {
             Log.i("SHARED PREFERENCE: ",currentUser.getUid());
 
             UsuarioSingleton usuario = UsuarioSingleton.getInstance();
-            usuario.setId(sharedPref.getString("id", currentUser.getUid()));
+            usuario.setId(sharedPref.getString("id", id));
+            usuario.setGoogleId(sharedPref.getString("googleId", currentUser.getUid()));
             usuario.setEmail(sharedPref.getString("email", currentUser.getEmail()));
-            usuario.setMatricula(sharedPref.getString("matricula", "default"));
-            usuario.setNascimento(sharedPref.getString("nascimento", "default"));
             usuario.setNome(sharedPref.getString("nome", currentUser.getDisplayName()));
-            usuario.setSenha(sharedPref.getString("senha", "default"));
-            usuario.setSexo(sharedPref.getString("sexo", "default"));
             usuario.setFoto(sharedPref.getString("foto", currentUser.getPhotoUrl().toString()));
         }
     }
@@ -230,8 +297,9 @@ public class login extends AppCompatActivity implements View.OnClickListener {
         boolean valido = true;
         valido = validaEditText("emailmatriculaErroLogin","emailmatriculaLogin","O campo não pode ficar vazio.");
         valido = validaEditText("senhaErroLogin","senhaLogin","O campo não pode ficar vazio.");
-
+        Log.i("Login","Botão de login clicado");
         if (valido) {
+            Log.i("Login","Botão de login clicado - campos válidos");
             //Cria objeto para acessar a API de dados Siseventos
             RetrofitAPI retrofit = new RetrofitAPI();
             final Api api = retrofit.retrofit().create(Api.class);
@@ -249,7 +317,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
             } catch (Exception e) {
                 Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             }
-
+            Log.i("Login","Iniciando autenticação de "+usuario+" - "+senha);
             Observable<Usuario> observable = api.authUsuario(json);
             observable.subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -260,7 +328,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
 
                         @Override
                         public void onError(Throwable e) {
-                            //Encerra barra de carregamento
+                            Log.i("Login",e.getMessage());
                             if (e instanceof HttpException) {
                                 ResponseBody aux = ((HttpException) e).response().errorBody();
                                 try {
@@ -292,12 +360,13 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                                     }
                                     Log.i("Retrofit error", "Erro:" + e.getMessage());
                                 }catch(Exception t){}
-                                progressBar.setVisibility(View.GONE);
                             }
+                            progressBar.setVisibility(View.GONE);
                         }
 
                         @Override
                         public void onNext(Usuario response) {
+                            Log.i("Login","Usuário autenticado");
                             //Registra login do usuário
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putBoolean("logado", true);
@@ -322,65 +391,8 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                             usuario.setSexo(response.getSexo());
                             usuario.setFoto(response.getFoto());
 
-                            //Verifica se o usuário possui um token para este dispositivo
-                            sharedPref = getBaseContext().
-                                    getSharedPreferences("UFVEVENTOS" + response.getEmail(), Context.MODE_PRIVATE);
-                            String token = sharedPref.getString("token", "falso");
-                            if (token.equals("falso")){
-                                //Requisita token FCM
-                                String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-                                usuario.setToken(refreshedToken);
-                                editor = sharedPref.edit();
-                                editor.putString("token",refreshedToken);
-                                editor.commit();
-                                Log.i("TOKEN 1:",refreshedToken);
-                                //Cadastra novo dispositivo do usuário
-                                JSONObject json = new JSONObject();
-                                try {
-                                    json.put("usuario", response.getId());
-                                    json.put("token", usuario.getToken());
-                                }catch(Exception e){Log.e("Erro json:",e.getMessage());}
-
-                                //Envia ao servidor
-                                Observable<Void> observable = api.setDispositivo(json);
-                                observable.subscribeOn(Schedulers.newThread())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new Observer<Void>() {
-                                            @Override
-                                            public void onCompleted() {
-                                            }
-
-                                            @Override
-                                            public void onError(Throwable e) {
-                                                Log.e("Erro cadastro:",e.getMessage());
-                                                //Encerra barra de carregamento
-                                                progressBar.setVisibility(View.GONE);
-
-                                                //Dispara intent para a tela inicial
-                                                Intent it = new Intent(getBaseContext(),inicial.class);
-                                                startActivity(it);
-                                            }
-
-                                            @Override
-                                            public void onNext(Void response) {
-                                                //Encerra barra de carregamento
-                                                progressBar.setVisibility(View.GONE);
-
-                                                //Dispara intent para a tela inicial
-                                                Intent it = new Intent(getBaseContext(),inicial.class);
-                                                startActivity(it);
-                                            }
-                                        });
-                            }else{
-                                Log.i("TOKEN 2:",token);
-                                usuario.setToken(token);
-                                //Encerra barra de carregamento
-                                progressBar.setVisibility(View.GONE);
-
-                                //Dispara intent para a tela inicial
-                                Intent it = new Intent(getBaseContext(),inicial.class);
-                                startActivity(it);
-                            }
+                            //Cadastra token do dispositivo para receber notificações
+                            cadastraToken(response);
                         }
                     });
         }
@@ -416,6 +428,72 @@ public class login extends AppCompatActivity implements View.OnClickListener {
             TextView emailmatriculaErro = ((TextView) findViewById(texto));
             emailmatriculaErro.setText("");
             return true;
+        }
+    }
+    private void cadastraToken(Usuario response){
+        //Cria objeto para acessar a API de dados Siseventos
+        RetrofitAPI retrofit = new RetrofitAPI();
+        final Api api = retrofit.retrofit().create(Api.class);
+
+        UsuarioSingleton usuario = UsuarioSingleton.getInstance();
+
+        //Verifica se o usuário possui um token para este dispositivo
+        sharedPref = getBaseContext().
+                getSharedPreferences("UFVEVENTOS" + response.getId(), Context.MODE_PRIVATE);
+        String token = sharedPref.getString("token", "falso");
+        if (token.equals("falso")){
+            //Requisita token FCM
+            String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+            usuario.setToken(refreshedToken);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("token",refreshedToken);
+            editor.commit();
+
+            //Cadastra novo dispositivo do usuário
+            JSONObject json = new JSONObject();
+            try {
+                json.put("usuario", response.getId());
+                json.put("token", usuario.getToken());
+            }catch(Exception e){Log.e("Erro json:",e.getMessage());}
+
+            //Envia ao servidor
+            Observable<Void> observable = api.setDispositivo(json);
+            observable.subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<Void>() {
+                        @Override
+                        public void onCompleted() {
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.e("Erro cadastro:",e.getMessage());
+                            //Encerra barra de carregamento
+                            progressBar.setVisibility(View.GONE);
+
+                            //Dispara intent para a tela inicial
+                            Intent it = new Intent(getBaseContext(),inicial.class);
+                            startActivity(it);
+                        }
+
+                        @Override
+                        public void onNext(Void response) {
+                            //Encerra barra de carregamento
+                            progressBar.setVisibility(View.GONE);
+
+                            //Dispara intent para a tela inicial
+                            Intent it = new Intent(getBaseContext(),inicial.class);
+                            startActivity(it);
+                        }
+                    });
+        }else{
+            usuario.setToken(token);
+            //Encerra barra de carregamento
+            progressBar.setVisibility(View.GONE);
+
+            //Dispara intent para a tela inicial
+            Intent it = new Intent(getBaseContext(),inicial.class);
+            startActivity(it);
         }
     }
 }
