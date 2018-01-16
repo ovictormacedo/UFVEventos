@@ -220,6 +220,9 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                                                             updateUsuario(user,response.getId());
                                                             //Cadastra token para o dispositivo receber notificações
                                                             cadastraToken(response);
+
+                                                            //TODO Cadastra agenda do dispositivo (se necessário) para adicionar eventos a ela
+                                                            //cadastraAgenda()
                                                         }
                                                     });
                                         }
@@ -403,9 +406,13 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                             usuario.setSenha(response.getSenha());
                             usuario.setSexo(response.getSexo());
                             usuario.setFoto(response.getFoto());
+                            //TODO Necessário Setar usuario.setAgenda()
 
-                            //Cadastra token do dispositivo para receber notificações
+                            //Cadastra token do dispositivo (se necessário) para receber notificações
                             cadastraToken(response);
+
+                            //TODO Cadastra agenda do dispositivo (se necessário) para adicionar eventos a ela
+                            //cadastraAgenda()
                         }
                     });
         }
