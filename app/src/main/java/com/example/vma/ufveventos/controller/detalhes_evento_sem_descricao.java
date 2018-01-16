@@ -34,6 +34,8 @@ import com.example.vma.ufveventos.R;
 import com.example.vma.ufveventos.model.Categoria;
 import com.example.vma.ufveventos.model.Evento;
 import com.example.vma.ufveventos.model.Local;
+import com.example.vma.ufveventos.util.Calendar;
+import com.example.vma.ufveventos.util.Permission;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -55,7 +57,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class detalhes_evento_sem_descricao extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
+public class detalhes_evento_sem_descricao extends AppCompatActivity implements OnMapReadyCallback, LocationListener,
+    View.OnClickListener{
     GoogleMap mGoogleMap;
     private LocationManager mLocationManager = null;
     private String provider = null;
@@ -64,10 +67,22 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
     private Polyline mPolyline = null;
     private LatLng mSourceLatLng = null;
     private LatLng mDestinationLatLng;
+    public Evento evento;
 
     private void initMap(){
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public void onClick(View view){
+        int i = view.getId();
+        //Clicou no botão de adicionar à agenda
+        if (i == R.id.addAgenda) {
+            Calendar calendar = new Calendar();
+            calendar.addEvent(evento,getBaseContext(),getContentResolver(), getParent());
+            Toast.makeText(getBaseContext(),"Evento adicionado à agenda.",Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -300,7 +315,7 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
         //Captura evento solicitado
         String eventoJson = getIntent().getStringExtra("evento");
         Gson gson = new Gson();
-        Evento evento = gson.fromJson(eventoJson, Evento.class);
+        evento = gson.fromJson(eventoJson, Evento.class);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalhes_evento_sem_descricao);
@@ -310,9 +325,15 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        findViewById(R.id.addAgenda).setOnClickListener(this);
+
         //Encerra barra de carregamento
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarDetalhesEvento);
         progressBar.setVisibility(View.GONE);
+
+        //Requisita permissões para localização
+        Permission permission = new Permission();
+        permission.requestPermissionMaps(getParent(),getBaseContext());
 
         //Traça rota
         List<Local> locaisAux = evento.getLocais();

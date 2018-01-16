@@ -16,6 +16,7 @@
         tools:layout_editor_absoluteY="0dp"
         tools:layout_editor_absoluteX="0dp" />
     <ImageView
+        android:id="@+id/addAgenda"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:src="@drawable/calendar"

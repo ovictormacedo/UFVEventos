@@ -64,36 +64,6 @@ public class login extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        addEvent();
-
-        /*
-        long calID = 3;
-        long startMillis = 0;
-        long endMillis = 0;
-        Calendar beginTime = Calendar.getInstance();
-        beginTime.set(2018, 2, 15, 7, 30);
-        startMillis = beginTime.getTimeInMillis();
-        Calendar endTime = Calendar.getInstance();
-        endTime.set(2018, 2, 15, 8, 45);
-        endMillis = endTime.getTimeInMillis();
-
-        ContentResolver cr = getContentResolver();
-        ContentValues values = new ContentValues();
-        values.put(CalendarContract.Events.DTSTART, startMillis);
-        values.put(CalendarContract.Events.DTEND, endMillis);
-        values.put(CalendarContract.Events.TITLE, "Jazzercise");
-        values.put(CalendarContract.Events.DESCRIPTION, "Group workout");
-        values.put(CalendarContract.Events.CALENDAR_ID, calID);
-        values.put(CalendarContract.Events.EVENT_TIMEZONE, "America/Sao_Paulo");
-        Uri uri = null;
-        try {
-            uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
-        }catch (SecurityException e){Log.i("ERRO EVENTO:",e.getMessage());}
-
-        // get the event ID that is the last element in the Uri
-        long eventID = Long.parseLong(uri.getLastPathSegment());
-        Log.i("ID DO EVENTO:",""+eventID);
-
         progressBar = (ProgressBar) findViewById(R.id.progressBarLogin);
         progressBar.setVisibility(View.GONE);
 
@@ -130,26 +100,23 @@ public class login extends AppCompatActivity implements View.OnClickListener {
             SharedPreferences sharedPref2 = getBaseContext().
                     getSharedPreferences("UFVEVENTOS"+usuario.getId(), Context.MODE_PRIVATE);
             usuario.setToken(sharedPref2.getString("token","default"));
+            usuario.setAgenda(sharedPref2.getString("agenda","default"));
 
             //Dispara intent para a tela inicial
             Intent it = new Intent(getBaseContext(),inicial.class);
             startActivity(it);
         }
-        */
     }
 
     @Override
     public void onStart(){
-
         super.onStart();
-        /*
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         //Atualiza singleton do usuário
         UsuarioSingleton usuario = UsuarioSingleton.getInstance();
         updateUsuario(currentUser,usuario.getId());
-        */
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -541,68 +508,5 @@ public class login extends AppCompatActivity implements View.OnClickListener {
             Intent it = new Intent(getBaseContext(),inicial.class);
             startActivity(it);
         }
-    }
-
-    public void addCalendar() {
-        ContentValues contentValues = new ContentValues();
-        long startMillis = 0;
-        long endMillis = 0;
-        Calendar beginTime = Calendar.getInstance();
-        beginTime.set(2018, 2, 15, 7, 30);
-        startMillis = beginTime.getTimeInMillis();
-        Calendar endTime = Calendar.getInstance();
-        endTime.set(2018, 2, 15, 8, 45);
-        endMillis = endTime.getTimeInMillis();
-        contentValues.put(CalendarContract.Calendars.ACCOUNT_NAME, "cal@zoftino.com");
-        contentValues.put(CalendarContract.Calendars.ACCOUNT_TYPE, "cal.zoftino.com");
-        contentValues.put(CalendarContract.Calendars.NAME, "zoftino calendar");
-        contentValues.put(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, "Zoftino.com Calendar");
-        contentValues.put(CalendarContract.Calendars.CALENDAR_COLOR, "232323");
-        contentValues.put(CalendarContract.Calendars.CALENDAR_ACCESS_LEVEL, CalendarContract.Calendars.CAL_ACCESS_OWNER);
-        contentValues.put(CalendarContract.Calendars.OWNER_ACCOUNT, "cal@zoftino.com");
-        contentValues.put(CalendarContract.Calendars.ALLOWED_REMINDERS, "METHOD_ALERT, METHOD_EMAIL, METHOD_ALARM");
-        contentValues.put(CalendarContract.Calendars.ALLOWED_ATTENDEE_TYPES, "TYPE_OPTIONAL, TYPE_REQUIRED, TYPE_RESOURCE");
-        contentValues.put(CalendarContract.Calendars.ALLOWED_AVAILABILITY, "AVAILABILITY_BUSY, AVAILABILITY_FREE, AVAILABILITY_TENTATIVE");
-
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_CALENDAR}, 1);
-        }
-
-        Uri uri = CalendarContract.Calendars.CONTENT_URI;
-        uri = uri.buildUpon().appendQueryParameter(android.provider.CalendarContract.CALLER_IS_SYNCADAPTER,"true")
-                .appendQueryParameter(CalendarContract.Calendars.ACCOUNT_NAME, "cal@zoftino.com")
-                .appendQueryParameter(CalendarContract.Calendars.ACCOUNT_TYPE, "cal.zoftino.com").build();
-        getContentResolver().insert(uri, contentValues);
-    }
-
-    public void addEvent() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_CALENDAR}, 1);
-        }
-
-        ContentResolver cr = getContentResolver();
-        ContentValues contentValues = new ContentValues();
-
-        Calendar beginTime = Calendar.getInstance();
-        beginTime.set(2018,00, 04, 6, 30);
-
-        Calendar endTime = Calendar.getInstance();
-        endTime.set(2018,00, 04, 10, 35);
-
-        ContentValues values = new ContentValues();
-        TimeZone timeZone = TimeZone.getDefault();
-        values.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone.getID());
-        values.put(CalendarContract.Events.DTSTART, beginTime.getTimeInMillis());
-        values.put(CalendarContract.Events.DTEND, endTime.getTimeInMillis());
-        values.put(CalendarContract.Events.TITLE, "Tech Stores");
-        values.put(CalendarContract.Events.DESCRIPTION, "Successful Startups");
-        values.put(CalendarContract.Events.CALENDAR_ID, 1);
-        values.put(CalendarContract.Events.EVENT_TIMEZONE, "Europe/London");
-        values.put(CalendarContract.Events.EVENT_LOCATION, "London");
-        values.put(CalendarContract.Events.GUESTS_CAN_INVITE_OTHERS, "1");
-        values.put(CalendarContract.Events.GUESTS_CAN_SEE_GUESTS, "1");
-
-        cr.insert(CalendarContract.Events.CONTENT_URI, values);
     }
 }

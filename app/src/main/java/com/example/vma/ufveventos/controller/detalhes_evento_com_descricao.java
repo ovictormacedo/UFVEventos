@@ -2,6 +2,7 @@ package com.example.vma.ufveventos.controller;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -35,6 +36,8 @@ import com.example.vma.ufveventos.R;
 import com.example.vma.ufveventos.model.Categoria;
 import com.example.vma.ufveventos.model.Evento;
 import com.example.vma.ufveventos.model.Local;
+import com.example.vma.ufveventos.util.Calendar;
+import com.example.vma.ufveventos.util.Permission;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -62,7 +65,8 @@ import java.util.HashMap;
 import java.util.List;
 import okhttp3.internal.framed.Header;
 
-public class detalhes_evento_com_descricao extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
+public class detalhes_evento_com_descricao extends AppCompatActivity implements OnMapReadyCallback, LocationListener,
+        View.OnClickListener {
     GoogleMap mGoogleMap;
     private LocationManager mLocationManager = null;
     private String provider = null;
@@ -71,7 +75,8 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
     private Polyline mPolyline = null;
     private LatLng mSourceLatLng = null;
     private LatLng mDestinationLatLng;
-    int _yDelta;
+    public Evento evento;
+    public int _yDelta;
 
     private void initMap(){
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapFragment);
@@ -79,11 +84,20 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
     }
 
     @Override
+    public void onClick(View view){
+        int i = view.getId();
+        //Clicou no botão de adicionar à agenda
+        if (i == R.id.addAgenda) {
+            Calendar calendar = new Calendar();
+            calendar.addEvent(evento,getBaseContext(),getContentResolver(), getParent());
+            Toast.makeText(getBaseContext(),"Evento adicionado à agenda.",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
-        //mGoogleMap.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener) this);
 
         if (isProviderAvailable() && (provider != null)) {
             locateCurrentPosition();
@@ -98,7 +112,6 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
         if (status == PackageManager.PERMISSION_GRANTED) {
             Location location = mLocationManager.getLastKnownLocation(provider);
             updateWithNewLocation(location);
-            //mLocationManager.addGpsStatusListener(this);
             long minTime = 5000;// ms
             float minDist = 5.0f;// meter
             mLocationManager.requestLocationUpdates(provider, minTime, minDist, this);
@@ -153,16 +166,7 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
     private void addBoundaryToCurrentPosition(double lat, double lang) {
         MarkerOptions mMarkerOptions = new MarkerOptions();
         mMarkerOptions.position(new LatLng(lat, lang));
-        //mMarkerOptions.icon(BitmapDescriptorFactory
-          //      .fromResource(R.drawable.marker_current));
         mMarkerOptions.anchor(0.5f, 0.5f);
-
-        /*CircleOptions mOptions = new CircleOptions()
-            .center(new LatLng(lat, lang)).radius(10000)
-                .strokeColor(0x110000FF).strokeWidth(1).fillColor(0x110000FF);
-        mGoogleMap.addCircle(mOptions);
-        if (mCurrentPosition != null)
-            mCurrentPosition.remove();*/
         mCurrentPosition = mGoogleMap.addMarker(mMarkerOptions);
     }
     private void addMarker(double lat, double lng, String text) {
@@ -308,7 +312,7 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
         //Captura evento solicitado
         String eventoJson = getIntent().getStringExtra("evento");
         Gson gson = new Gson();
-        Evento evento = gson.fromJson(eventoJson, Evento.class);
+        evento = gson.fromJson(eventoJson, Evento.class);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalhes_evento_com_descricao);
@@ -321,9 +325,15 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
         LinearLayout thirdPart = (LinearLayout) findViewById(R.id.thirdPartDetalhesEvento);
         thirdPart.setOnTouchListener(new ScrollFunction());
 
+        findViewById(R.id.addAgenda).setOnClickListener(this);
+
         //Encerra barra de carregamento
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarDetalhesEvento);
         progressBar.setVisibility(View.GONE);
+
+        //Requisita permissões para localização
+        Permission permission = new Permission();
+        permission.requestPermissionMaps(getParent(),getBaseContext());
 
         //Traça rota
         List<Local> locaisAux = evento.getLocais();

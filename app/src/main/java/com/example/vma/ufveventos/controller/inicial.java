@@ -24,6 +24,8 @@ import com.example.vma.ufveventos.model.Evento;
 import com.example.vma.ufveventos.model.EventosSingleton;
 import com.example.vma.ufveventos.model.RecyclerViewEventosTelaInicialAdapter;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
+import com.example.vma.ufveventos.util.Calendar;
+import com.example.vma.ufveventos.util.Permission;
 import com.example.vma.ufveventos.util.RetrofitAPI;
 import com.example.vma.ufveventos.util.UsuarioNavigationDrawer;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -207,6 +209,9 @@ public class inicial extends AppCompatActivity
                     }
                 }
             });
+        //Requsita permissão para utilizar a agenda
+        Permission permission = new Permission();
+        permission.requestPermissionCalendar(getParent(),getBaseContext());
     }
 
     public void escolher_categorias(View view){

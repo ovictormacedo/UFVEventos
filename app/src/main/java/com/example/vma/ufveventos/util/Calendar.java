@@ -1,61 +1,100 @@
 package com.example.vma.ufveventos.util;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.ContentResolver;
-import android.database.Cursor;
-import android.net.Uri;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.provider.CalendarContract;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-
-import java.util.Arrays;
+import com.example.vma.ufveventos.model.Evento;
+import java.util.TimeZone;
 
 /**
  * Created by vma on 15/01/2018.
  */
 
-public class Calendar extends AppCompatActivity{
-    // Projection array. Creating indices for this array instead of doing
-// dynamic lookups improves performance.
-    public static final String[] EVENT_PROJECTION = new String[] {
-            CalendarContract.Calendars._ID,                           // 0
-            CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
-            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
-            CalendarContract.Calendars.OWNER_ACCOUNT                  // 3
-    };
+public class Calendar{
+    public void addEvent(Evento evento, Context context, ContentResolver cr, Activity activity) {
+        //Requisita permissão para escrita no calendar
+        Permission permission = new Permission();
+        permission.requestPermissionCalendar(activity,context);
 
-    // The indices for the projection array above.
-    private static final int PROJECTION_ID_INDEX = 0;
-    private static final int PROJECTION_ACCOUNT_NAME_INDEX = 1;
-    private static final int PROJECTION_DISPLAY_NAME_INDEX = 2;
-    private static final int PROJECTION_OWNER_ACCOUNT_INDEX = 3;
+        int diaInicio = Integer.parseInt(evento.getDataInicio().substring(8,10));
+        int mesInicio = Integer.parseInt(evento.getDataInicio().substring(5,7));
+        int anoInicio = Integer.parseInt(evento.getDataInicio().substring(0,4));
 
-    public void printAgenda(){
-        // Run query
-        Cursor cur = null;
-        ContentResolver cr = getContentResolver();
-        Uri uri = CalendarContract.Calendars.CONTENT_URI;
-        String selection = "((" + CalendarContract.Calendars.ACCOUNT_NAME + " = ?) AND ("
-                + CalendarContract.Calendars.ACCOUNT_TYPE + " = ?) AND ("
-                + CalendarContract.Calendars.OWNER_ACCOUNT + " = ?))";
-        String[] selectionArgs = new String[] {"sampleuser@gmail.com", "com.google",
-                "sampleuser@gmail.com"};
-        // Submit the query and get a Cursor object back.
-        try{
-            cur = cr.query(uri, EVENT_PROJECTION, selection, selectionArgs, null);
-        }catch (Exception e){}
-        while (cur.moveToNext()) {
-            long calID = 0;
-            String displayName = null;
-            String accountName = null;
-            String ownerName = null;
+        int horaInicio = Integer.parseInt(evento.getHoraInicio().substring(0,2));
+        int minutoInicio = Integer.parseInt(evento.getHoraInicio().substring(3,5));
 
-            // Get the field values
-            calID = cur.getLong(PROJECTION_ID_INDEX);
-            displayName = cur.getString(PROJECTION_DISPLAY_NAME_INDEX);
-            accountName = cur.getString(PROJECTION_ACCOUNT_NAME_INDEX);
-            ownerName = cur.getString(PROJECTION_OWNER_ACCOUNT_INDEX);
+        java.util.Calendar beginTime = java.util.Calendar.getInstance();
+        beginTime.set(anoInicio,mesInicio-1,diaInicio,horaInicio,minutoInicio);
 
-            Log.i("Resultado:",displayName+" - "+ownerName);
-        }
+        int diaFim = Integer.parseInt(evento.getDataFim().substring(8,10));
+        int mesFim = Integer.parseInt(evento.getDataFim().substring(5,7));
+        int anoFim = Integer.parseInt(evento.getDataFim().substring(0,4));
+
+        int horaFim = Integer.parseInt(evento.getHoraFim().substring(0,2));
+        int minutoFim = Integer.parseInt(evento.getHoraFim().substring(3,5));
+
+        java.util.Calendar endTime = java.util.Calendar.getInstance();
+        endTime.set(anoFim,mesFim-1,diaFim,horaFim,minutoFim);
+
+        ContentValues values = new ContentValues();
+        TimeZone timeZone = TimeZone.getDefault();
+        values.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone.getID());
+        values.put(CalendarContract.Events.DTSTART, beginTime.getTimeInMillis());
+        values.put(CalendarContract.Events.DTEND, endTime.getTimeInMillis());
+        values.put(CalendarContract.Events.TITLE, evento.getDenominacao());
+        values.put(CalendarContract.Events.DESCRIPTION, evento.getDescricao_evento());
+        values.put(CalendarContract.Events.CALENDAR_ID, 1);
+        String local = evento.getLocais().get(0).getDescricao()+","+
+                evento.getLocais().get(0).getLatitude()+","+evento.getLocais().get(0).getLongitude();
+        values.put(CalendarContract.Events.EVENT_LOCATION, local);
+        values.put(CalendarContract.Events.GUESTS_CAN_INVITE_OTHERS, "1");
+        values.put(CalendarContract.Events.GUESTS_CAN_SEE_GUESTS, "1");
+
+        try {
+            cr.insert(CalendarContract.Events.CONTENT_URI, values);
+        }catch (SecurityException e){}
+    }
+    public void addEventNotification(Evento evento, String local,Context context, ContentResolver cr) {
+        int diaInicio = Integer.parseInt(evento.getDataInicio().substring(8,10));
+        int mesInicio = Integer.parseInt(evento.getDataInicio().substring(5,7));
+        int anoInicio = Integer.parseInt(evento.getDataInicio().substring(0,4));
+
+        int horaInicio = Integer.parseInt(evento.getHoraInicio().substring(0,2));
+        int minutoInicio = Integer.parseInt(evento.getHoraInicio().substring(3,5));
+
+        java.util.Calendar beginTime = java.util.Calendar.getInstance();
+        beginTime.set(anoInicio,mesInicio-1,diaInicio,horaInicio,minutoInicio);
+
+        int diaFim = Integer.parseInt(evento.getDataFim().substring(8,10));
+        int mesFim = Integer.parseInt(evento.getDataFim().substring(5,7));
+        int anoFim = Integer.parseInt(evento.getDataFim().substring(0,4));
+
+        int horaFim = Integer.parseInt(evento.getHoraFim().substring(0,2));
+        int minutoFim = Integer.parseInt(evento.getHoraFim().substring(3,5));
+
+        java.util.Calendar endTime = java.util.Calendar.getInstance();
+        endTime.set(anoFim,mesFim-1,diaFim,horaFim,minutoFim);
+
+        ContentValues values = new ContentValues();
+        TimeZone timeZone = TimeZone.getDefault();
+        values.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone.getID());
+        values.put(CalendarContract.Events.DTSTART, beginTime.getTimeInMillis());
+        values.put(CalendarContract.Events.DTEND, endTime.getTimeInMillis());
+        values.put(CalendarContract.Events.TITLE, evento.getDenominacao());
+        values.put(CalendarContract.Events.DESCRIPTION, evento.getDescricao_evento());
+        values.put(CalendarContract.Events.CALENDAR_ID, 1);
+        values.put(CalendarContract.Events.EVENT_LOCATION, local);
+        values.put(CalendarContract.Events.GUESTS_CAN_INVITE_OTHERS, "1");
+        values.put(CalendarContract.Events.GUESTS_CAN_SEE_GUESTS, "1");
+
+        try {
+            cr.insert(CalendarContract.Events.CONTENT_URI, values);
+        }catch (SecurityException e){}
     }
 }

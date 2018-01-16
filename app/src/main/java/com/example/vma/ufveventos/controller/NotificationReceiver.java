@@ -39,8 +39,8 @@ public class NotificationReceiver extends BroadcastReceiver{
         Notification notification = builder.setContentTitle("UFV Eventos")
                 .setContentText("Chegaram novos eventos!")
                 .setTicker("Chegaram novos eventos!")
-                .setSmallIcon(R.drawable.logo_ufv1)
                 .setLargeIcon(image)
+                .setSmallIcon(R.drawable.logo_ufv1)
                 .setSound(notificationSound)
                 .setContentIntent(pendingIntent).build();
 
