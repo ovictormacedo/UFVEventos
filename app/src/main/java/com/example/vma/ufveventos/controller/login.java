@@ -57,7 +57,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
     private GoogleSignInClient mGoogleSignInClient;
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
-    ProgressBar progressBar;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,10 +97,11 @@ public class login extends AppCompatActivity implements View.OnClickListener {
             usuario.setSenha(sharedPref.getString("senha","default"));
             usuario.setSexo(sharedPref.getString("sexo","default"));
             usuario.setFoto(sharedPref.getString("foto","default"));
+            usuario.setAgenda(sharedPref.getString("agenda","false"));
+            usuario.setNotificacoes(sharedPref.getString("notificacoes","true"));
             SharedPreferences sharedPref2 = getBaseContext().
                     getSharedPreferences("UFVEVENTOS"+usuario.getId(), Context.MODE_PRIVATE);
-            usuario.setToken(sharedPref2.getString("token","default"));
-            usuario.setAgenda(sharedPref2.getString("agenda","default"));
+            usuario.setToken(sharedPref2.getString("firebasetoken","default"));
 
             //Dispara intent para a tela inicial
             Intent it = new Intent(getBaseContext(),inicial.class);
@@ -151,7 +152,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                             Log.d(TAG, "signInWithCredential:success");
                             final FirebaseUser user = mAuth.getCurrentUser();
 
-                            UsuarioSingleton usuario = UsuarioSingleton.getInstance();
+                            final UsuarioSingleton usuario = UsuarioSingleton.getInstance();
 
                             /*Cadastra novo usuário. O servidor apenas realiza novo cadastro
                             se não houver nenhum cadastro atribuído ao presente googleId*/
@@ -218,11 +219,11 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                                                         @Override
                                                         public void onNext(Usuario response){
                                                             updateUsuario(user,response.getId());
-                                                            //Cadastra token para o dispositivo receber notificações
+                                                            cadastraAgendaENotificacoes(response);
                                                             cadastraToken(response);
-
-                                                            //TODO Cadastra agenda do dispositivo (se necessário) para adicionar eventos a ela
-                                                            //cadastraAgenda()
+                                                            //Dispara intent para a tela inicial
+                                                            Intent it = new Intent(getBaseContext(),inicial.class);
+                                                            startActivity(it);
                                                         }
                                                     });
                                         }
@@ -249,9 +250,6 @@ public class login extends AppCompatActivity implements View.OnClickListener {
             editor.putString("nome", currentUser.getDisplayName());
             editor.putString("foto", currentUser.getPhotoUrl().toString());
             editor.commit();
-            Log.i("SHARED PREFERENCE: ","Atualizando usuário singleton");
-            Log.i("SHARED PREFERENCE: ",currentUser.getDisplayName());
-            Log.i("SHARED PREFERENCE: ",currentUser.getUid());
 
             UsuarioSingleton usuario = UsuarioSingleton.getInstance();
             usuario.setId(sharedPref.getString("id", id));
@@ -309,6 +307,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
     }
 
     public void entrar(View view){
+        sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
         //Valida dados de login
         boolean valido = true;
         valido = validaEditText("emailmatriculaErroLogin","emailmatriculaLogin","O campo não pode ficar vazio.");
@@ -394,6 +393,8 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                             editor.putString("senha", response.getSenha());
                             editor.putString("sexo", response.getSexo());
                             editor.putString("foto", response.getFoto());
+                            editor.putString("notificacoes",response.getNotificacoes());
+                            editor.putString("agenda",response.getAgenda());
                             editor.commit();
 
                             //Popula o singleton do usuário logado com os dados
@@ -406,13 +407,15 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                             usuario.setSenha(response.getSenha());
                             usuario.setSexo(response.getSexo());
                             usuario.setFoto(response.getFoto());
-                            //TODO Necessário Setar usuario.setAgenda()
+                            usuario.setAgenda(response.getAgenda());
+                            usuario.setNotificacoes(response.getNotificacoes());
 
                             //Cadastra token do dispositivo (se necessário) para receber notificações
                             cadastraToken(response);
 
-                            //TODO Cadastra agenda do dispositivo (se necessário) para adicionar eventos a ela
-                            //cadastraAgenda()
+                            //Dispara intent para a tela inicial
+                            Intent it = new Intent(getBaseContext(),inicial.class);
+                            startActivity(it);
                         }
                     });
         }
@@ -450,23 +453,31 @@ public class login extends AppCompatActivity implements View.OnClickListener {
             return true;
         }
     }
-    private void cadastraToken(Usuario response){
-        //Cria objeto para acessar a API de dados Siseventos
-        RetrofitAPI retrofit = new RetrofitAPI();
-        final Api api = retrofit.retrofit().create(Api.class);
 
+    public void cadastraAgendaENotificacoes(Usuario response){
+        sharedPref = getBaseContext().
+                getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
         UsuarioSingleton usuario = UsuarioSingleton.getInstance();
+        usuario.setAgenda(response.getAgenda());
+        usuario.setNotificacoes(response.getNotificacoes());
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("agenda",usuario.getAgenda());
+        editor.putString("notificacoes",usuario.getNotificacoes());
+        editor.commit();
+    }
 
+    private void cadastraToken(Usuario response){
+        UsuarioSingleton usuario = UsuarioSingleton.getInstance();
         //Verifica se o usuário possui um token para este dispositivo
         sharedPref = getBaseContext().
                 getSharedPreferences("UFVEVENTOS" + response.getId(), Context.MODE_PRIVATE);
-        String token = sharedPref.getString("token", "falso");
+        String token = sharedPref.getString("firebasetoken", "falso");
         if (token.equals("falso")){
             //Requisita token FCM
             String refreshedToken = FirebaseInstanceId.getInstance().getToken();
             usuario.setToken(refreshedToken);
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("token",refreshedToken);
+            editor.putString("firebasetoken",refreshedToken);
             editor.commit();
 
             //Cadastra novo dispositivo do usuário
@@ -477,6 +488,9 @@ public class login extends AppCompatActivity implements View.OnClickListener {
             }catch(Exception e){Log.e("Erro json:",e.getMessage());}
 
             //Envia ao servidor
+            //Cria objeto para acessar a API de dados Siseventos
+            RetrofitAPI retrofit = new RetrofitAPI();
+            final Api api = retrofit.retrofit().create(Api.class);
             Observable<Void> observable = api.setDispositivo(json);
             observable.subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -500,20 +514,12 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                         public void onNext(Void response) {
                             //Encerra barra de carregamento
                             progressBar.setVisibility(View.GONE);
-
-                            //Dispara intent para a tela inicial
-                            Intent it = new Intent(getBaseContext(),inicial.class);
-                            startActivity(it);
                         }
                     });
         }else{
             usuario.setToken(token);
             //Encerra barra de carregamento
             progressBar.setVisibility(View.GONE);
-
-            //Dispara intent para a tela inicial
-            Intent it = new Intent(getBaseContext(),inicial.class);
-            startActivity(it);
         }
     }
 }

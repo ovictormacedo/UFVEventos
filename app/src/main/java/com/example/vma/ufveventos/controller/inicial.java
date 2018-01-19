@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -28,6 +29,12 @@ import com.example.vma.ufveventos.util.Calendar;
 import com.example.vma.ufveventos.util.Permission;
 import com.example.vma.ufveventos.util.RetrofitAPI;
 import com.example.vma.ufveventos.util.UsuarioNavigationDrawer;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import java.util.ArrayList;
@@ -47,6 +54,9 @@ public class inicial extends AppCompatActivity
     UsuarioSingleton usuario = UsuarioSingleton.getInstance();
     private RetrofitAPI retrofit;
     EventosSingleton eventosSing = EventosSingleton.getInstance();
+    GoogleSignInOptions gso;
+    private FirebaseAuth mAuth;
+    private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onResume(){
@@ -100,6 +110,20 @@ public class inicial extends AppCompatActivity
                 startActivity(it);
             }
         });
+
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken("224128381554-g15qnhlokg544p5746fv9q5tg1b0c1aa.apps.googleusercontent.com")
+                .requestProfile()
+                .requestEmail()
+                .build();
+
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        //Start initialize_auth]
+        mAuth = FirebaseAuth.getInstance();
 
         //Cria objeto para acessar a API de dados Siseventos
         retrofit = new RetrofitAPI();
@@ -386,6 +410,18 @@ public class inicial extends AppCompatActivity
             editor.apply();
             editor.putBoolean("logado",false);
             editor.commit();
+
+            // Firebase sign out
+            mAuth.signOut();
+
+            // Google sign out
+            mGoogleSignInClient.signOut().addOnCompleteListener(this,
+                    new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+
+                        }
+                    });
 
             Intent it = new Intent(getBaseContext(),login.class);
             startActivity(it);

@@ -95,6 +95,18 @@ public interface Api{
     @PUT("usuario/{idUsuario}")
     Observable<Void> updateUsuario(@Field("data") JSONObject data,@Path("idUsuario") String idUsuario);
 
+    //Atualiza a opção do usuário receber notificções
+    @FormUrlEncoded
+    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @PUT("notificacoes/{idUsuario}/dispositivo/{token}")
+    Observable<Void> updateNotificacoes(@Field("data") JSONObject data,@Path("idUsuario") String idUsuario,@Path("token") String token);
+
+    //Atualiza a opção do usuário adicionar eventos que chegam via notificação automaticamente à agenda
+    @FormUrlEncoded
+    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @PUT("agenda/{idUsuario}/dispositivo/{token}")
+    Observable<Void> updateAgenda(@Field("data") JSONObject data,@Path("idUsuario") String idUsuario,@Path("token") String token);
+
     //Atualiza preferências de categoria do usuário
     @FormUrlEncoded
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")

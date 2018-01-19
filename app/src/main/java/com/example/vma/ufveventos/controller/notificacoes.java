@@ -1,7 +1,9 @@
 package com.example.vma.ufveventos.controller;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,7 +20,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +35,7 @@ import com.example.vma.ufveventos.util.RetrofitAPI;
 import com.example.vma.ufveventos.util.UsuarioNavigationDrawer;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +46,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class notificacoes extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     private RecyclerView myRecyclerView;
     private RecyclerViewCategoriasAdapter adapter;
@@ -68,6 +73,134 @@ public class notificacoes extends AppCompatActivity
         UsuarioNavigationDrawer und = new UsuarioNavigationDrawer();
         und.setNomeUsuario(navigationView,usuario.getNome());
         und.setUsuarioImagem(navigationView,"");
+
+        //Adiciona listener ao switcher de adicionar eventos à agenda
+        Switch switch_button = (Switch) findViewById(R.id.addAgenda);
+        switch_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferences sharedPref = getBaseContext().
+                        getSharedPreferences("UFVEVENTOS"+usuario.getId(), Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                if(isChecked)
+                    editor.putBoolean("agenda",true);
+                else
+                    editor.putBoolean("agenda",false);
+                editor.commit();
+
+                //Envia alteração ao servidor
+                //Cria objeto para acessar a API de dados Siseventos
+                RetrofitAPI retrofit = new RetrofitAPI();
+                Api api = retrofit.retrofit().create(Api.class);
+
+                boolean valor = sharedPref.getBoolean("agenda",false);
+
+                //Recupera o firebase token do dispositivo
+                sharedPref = getBaseContext().
+                        getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
+                String token = sharedPref.getString("token","default");
+
+                //Cria json object
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("agenda",valor);
+                }catch(Exception e){Toast.makeText(getBaseContext(),e.getMessage(),Toast.LENGTH_SHORT).show();};
+
+                //Inicia barra de carregamento
+                final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarCategorias);
+                progressBar.setVisibility(View.VISIBLE);
+
+                //Faz requisição ao servidor
+                Observable<Void> observable =  api.updateAgenda(json,usuario.getId(),token);
+                //Intercepta a resposta da requisição
+                observable.subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<Void>(){
+                            @Override
+                            public void onCompleted(){}
+
+                            @Override
+                            public void onError(Throwable e){
+                                //Esconde barra de carregamento
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(getBaseContext(),"Não foi possível atualizar o configurações, " +
+                                        "tente novamente em instantes.", Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onNext(Void response){
+                                //Esconde barra de carregamento
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(getBaseContext(),"Dado atualizado!",Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        });
+            }
+        });
+
+        //Adiciona listener ao switcher de ativar notificações
+        switch_button = (Switch) findViewById(R.id.habilitarNotificacoes);
+        switch_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferences sharedPref = getBaseContext().
+                        getSharedPreferences("UFVEVENTOS"+usuario.getId(), Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                if(isChecked)
+                    editor.putBoolean("notificacoes",true);
+                else
+                    editor.putBoolean("notificacoes",false);
+                editor.commit();
+
+                //Envia alteração ao servidor
+                //Cria objeto para acessar a API de dados Siseventos
+                RetrofitAPI retrofit = new RetrofitAPI();
+                Api api = retrofit.retrofit().create(Api.class);
+
+                boolean valor = sharedPref.getBoolean("notificacoes",false);
+
+                //Recupera o firebase token do dispositivo
+                sharedPref = getBaseContext().
+                        getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
+                String token = sharedPref.getString("token","default");
+
+                //Cria json object
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("notifcacoes",valor);
+                }catch(Exception e){Toast.makeText(getBaseContext(),e.getMessage(),Toast.LENGTH_SHORT).show();};
+
+                //Inicia barra de carregamento
+                final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarCategorias);
+                progressBar.setVisibility(View.VISIBLE);
+
+                //Faz requisição ao servidor
+                Observable<Void> observable =  api.updateNotificacoes(json,usuario.getId(),token);
+                //Intercepta a resposta da requisição
+                observable.subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<Void>(){
+                            @Override
+                            public void onCompleted(){}
+
+                            @Override
+                            public void onError(Throwable e){
+                                //Esconde barra de carregamento
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(getBaseContext(),"Não foi possível atualizar o configurações, " +
+                                        "tente novamente em instantes.", Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onNext(Void response){
+                                //Esconde barra de carregamento
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(getBaseContext(),"Dado atualizado!",Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        });
+            }
+        });
 
         categorias = new ArrayList<>();
         myRecyclerView = (RecyclerView) findViewById(R.id.lista_categorias);

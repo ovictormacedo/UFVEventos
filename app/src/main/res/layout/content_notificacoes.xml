@@ -48,6 +48,29 @@
                     android:textSize="18dp"
                     android:text="Habilitar Notificações" />
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:elevation="1dp"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            tools:ignore="UselessLeaf">
+
+            <Switch
+                android:id="@+id/addAgenda"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textSize="18dp"
+                android:text="Adicionar eventos à agenda" />
+        </LinearLayout>
         <ProgressBar
             android:id="@+id/progressBarCategorias"
             style="?android:attr/progressBarStyleSmall"

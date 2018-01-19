@@ -5,10 +5,10 @@ package com.example.vma.ufveventos.model;
  */
 
 public class Usuario {
-    private String id, nome, email, senha, nascimento, sexo, matricula, foto, googleId;
+    private String id, nome, email, senha, nascimento, sexo, matricula, foto, googleId, notificacoes, agenda;
 
     public Usuario(String id, String nome, String email, String senha, String nascimento, String sexo, String matricula,
-                   String googleId) {
+                   String googleId, String notificacoes, String agenda) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -17,6 +17,8 @@ public class Usuario {
         this.sexo = sexo;
         this.matricula = matricula;
         this.googleId = googleId;
+        this.notificacoes = notificacoes;
+        this.agenda = agenda;
     }
 
     public String getId() {
@@ -25,6 +27,22 @@ public class Usuario {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getNotificacoes() {
+        return notificacoes;
+    }
+
+    public void setNotificacoes(String notificacoes) {
+        this.notificacoes = notificacoes;
+    }
+
+    public String getAgenda() {
+        return agenda;
+    }
+
+    public void setAgenda(String agenda) {
+        this.agenda = agenda;
     }
 
     public String getNome() {
