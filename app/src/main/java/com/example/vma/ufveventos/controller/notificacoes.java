@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,6 +34,12 @@ import com.example.vma.ufveventos.model.RecyclerViewCategoriasAdapter;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
 import com.example.vma.ufveventos.util.UsuarioNavigationDrawer;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -52,6 +59,9 @@ public class notificacoes extends AppCompatActivity
     private RecyclerViewCategoriasAdapter adapter;
     private List<Categoria> categorias;
     UsuarioSingleton usuario = UsuarioSingleton.getInstance();
+    GoogleSignInOptions gso;
+    private FirebaseAuth mAuth;
+    private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,13 +76,37 @@ public class notificacoes extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        usuario = UsuarioSingleton.getInstance();
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken("224128381554-g15qnhlokg544p5746fv9q5tg1b0c1aa.apps.googleusercontent.com")
+                .requestProfile()
+                .requestEmail()
+                .build();
+
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        //Start initialize_auth]
+        mAuth = FirebaseAuth.getInstance();
 
         //Seta dados do usuário no navigation drawer
         UsuarioNavigationDrawer und = new UsuarioNavigationDrawer();
         und.setNomeUsuario(navigationView,usuario.getNome());
         und.setUsuarioImagem(navigationView,"");
+
+        //Ajusta switchers
+        Log.e("GET AGENDA",usuario.getAgenda());
+        Log.e("GET NOTIFICACOES",usuario.getNotificacoes());
+        boolean checkAgenda = (usuario.getAgenda().equals("1"))? true:false;
+        boolean checkNotificacoes = (usuario.getNotificacoes().equals("0"))? false:true;
+        ((Switch) findViewById(R.id.addAgenda)).setChecked(checkAgenda);
+        ((Switch) findViewById(R.id.habilitarNotificacoes)).setChecked(checkNotificacoes);
 
         //Adiciona listener ao switcher de adicionar eventos à agenda
         Switch switch_button = (Switch) findViewById(R.id.addAgenda);
@@ -80,25 +114,30 @@ public class notificacoes extends AppCompatActivity
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SharedPreferences sharedPref = getBaseContext().
-                        getSharedPreferences("UFVEVENTOS"+usuario.getId(), Context.MODE_PRIVATE);
+                        getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                if(isChecked)
-                    editor.putBoolean("agenda",true);
-                else
-                    editor.putBoolean("agenda",false);
+                if(isChecked) {
+                    editor.putString("agenda", "1");
+                    usuario.setAgenda("1");
+                }
+                else {
+                    editor.putString("agenda", "0");
+                    usuario.setAgenda("0");
+                }
                 editor.commit();
+
 
                 //Envia alteração ao servidor
                 //Cria objeto para acessar a API de dados Siseventos
                 RetrofitAPI retrofit = new RetrofitAPI();
                 Api api = retrofit.retrofit().create(Api.class);
 
-                boolean valor = sharedPref.getBoolean("agenda",false);
+                String valor = sharedPref.getString("agenda","0");
 
                 //Recupera o firebase token do dispositivo
                 sharedPref = getBaseContext().
-                        getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
-                String token = sharedPref.getString("token","default");
+                        getSharedPreferences("UFVEVENTOS"+usuario.getId(), Context.MODE_PRIVATE);
+                String token = sharedPref.getString("firebasetoken","default");
 
                 //Cria json object
                 JSONObject json = new JSONObject();
@@ -144,12 +183,16 @@ public class notificacoes extends AppCompatActivity
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SharedPreferences sharedPref = getBaseContext().
-                        getSharedPreferences("UFVEVENTOS"+usuario.getId(), Context.MODE_PRIVATE);
+                        getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                if(isChecked)
-                    editor.putBoolean("notificacoes",true);
-                else
-                    editor.putBoolean("notificacoes",false);
+                if(isChecked) {
+                    editor.putString("notificacoes", "1");
+                    usuario.setNotificacoes("1");
+                }
+                else {
+                    editor.putString("notificacoes", "0");
+                    usuario.setNotificacoes("0");
+                }
                 editor.commit();
 
                 //Envia alteração ao servidor
@@ -157,12 +200,12 @@ public class notificacoes extends AppCompatActivity
                 RetrofitAPI retrofit = new RetrofitAPI();
                 Api api = retrofit.retrofit().create(Api.class);
 
-                boolean valor = sharedPref.getBoolean("notificacoes",false);
+                String valor = sharedPref.getString("notificacoes","1");
 
                 //Recupera o firebase token do dispositivo
                 sharedPref = getBaseContext().
-                        getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
-                String token = sharedPref.getString("token","default");
+                        getSharedPreferences("UFVEVENTOS"+usuario.getId(), Context.MODE_PRIVATE);
+                String token = sharedPref.getString("firebasetoken","default");
 
                 //Cria json object
                 JSONObject json = new JSONObject();
@@ -387,12 +430,40 @@ public class notificacoes extends AppCompatActivity
             Intent it = new Intent(getBaseContext(),inicial.class);
             startActivity(it);
         } else if (id == R.id.nav_editar_perfil) {
-            Intent it = new Intent(getBaseContext(),editar_perfil.class);
-            startActivity(it);
+            Intent it;
+            //Se não é um usuário logado com a conta Google pode editar o perfil
+            if (usuario.getGoogleId().equals("")){
+                it = new Intent(getBaseContext(), editar_perfil.class);
+                startActivity(it);
+            }
+            else{
+                Toast.makeText(getBaseContext(),"Funcionalidade indisponível para usuários logado com conta Google.",Toast.LENGTH_LONG)
+                        .show();
+            }
         } else if (id == R.id.nav_notificacoes) {
             Intent it = new Intent(getBaseContext(),notificacoes.class);
             startActivity(it);
         } else if (id == R.id.nav_sair) {
+            //Registra que o usuário saiu
+            SharedPreferences sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0",Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.clear();
+            editor.apply();
+            editor.putBoolean("logado",false);
+            editor.commit();
+
+            // Firebase sign out
+            mAuth.signOut();
+
+            // Google sign out
+            mGoogleSignInClient.signOut().addOnCompleteListener(this,
+                    new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+
+                        }
+                    });
+
             Intent it = new Intent(getBaseContext(),login.class);
             startActivity(it);
         }

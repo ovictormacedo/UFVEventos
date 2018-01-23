@@ -84,6 +84,10 @@ public class inicial extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        Log.i("dados do usuario",""+usuario.getId()+" - - "+usuario.getAgenda()+" - - "+usuario.getEmail()+" - - "+usuario.getMatricula()
+                +" - - "+usuario.getGoogleId()+" - - "+usuario.getNascimento()+" - - "+usuario.getNotificacoes()
+                +" - - "+usuario.getSenha()+" - - "+usuario.getSexo()+" - - "+usuario.getToken());
+
         //Seta dados do usuário no navigation drawer
         UsuarioNavigationDrawer und = new UsuarioNavigationDrawer();
         und.setNomeUsuario(navigationView,usuario.getNome());
@@ -397,8 +401,16 @@ public class inicial extends AppCompatActivity
             Intent it = new Intent(getBaseContext(),inicial.class);
             startActivity(it);
         } else if (id == R.id.nav_editar_perfil) {
-            Intent it = new Intent(getBaseContext(),editar_perfil.class);
-            startActivity(it);
+            Intent it;
+            //Se não é um usuário logado com a conta Google pode editar o perfil
+            if (usuario.getGoogleId().equals("")){
+                it = new Intent(getBaseContext(), editar_perfil.class);
+                startActivity(it);
+            }
+            else{
+                Toast.makeText(getBaseContext(),"Funcionalidade indisponível para usuários logado com conta Google.",Toast.LENGTH_LONG)
+                        .show();
+            }
         } else if (id == R.id.nav_notificacoes) {
             Intent it = new Intent(getBaseContext(),notificacoes.class);
             startActivity(it);

@@ -75,19 +75,34 @@ public interface Api{
     @FormUrlEncoded
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @POST("usuario")
-    Observable<Void> setUsuario(@Field("data") JSONObject data);
+    Observable<Integer> setUsuario(@Field("data") JSONObject data);
 
     //Cria novo usuário google
     @FormUrlEncoded
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @POST("usuario_google")
-    Observable<Void> setUsuarioGoogle(@Field("data") JSONObject data);
+    Observable<Integer> setUsuarioGoogle(@Field("data") JSONObject data);
 
     //Cadastra novo dispositivo do usuário
     @FormUrlEncoded
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @POST("dispositivos")
     Observable<Void> setDispositivo(@Field("data") JSONObject data);
+
+    @FormUrlEncoded
+    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @POST("agenda_notificacoes")
+    Observable<Dispositivo> getAgendaNotificacoes(@Field("data") JSONObject data);
+
+    @FormUrlEncoded
+    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @POST("agenda")
+    Observable<Void> setAgenda(@Field("data") JSONObject data);
+
+    @FormUrlEncoded
+    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @POST("notificacoes")
+    Observable<Void> setNotificacoes(@Field("data") JSONObject data);
 
     //Atualiza dados do cadastro do usuário
     @FormUrlEncoded

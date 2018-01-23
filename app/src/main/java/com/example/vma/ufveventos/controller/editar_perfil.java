@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +32,8 @@ import com.example.vma.ufveventos.model.Usuario;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
 import com.example.vma.ufveventos.util.UsuarioNavigationDrawer;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import org.json.JSONObject;
 
@@ -78,6 +81,7 @@ public class editar_perfil extends AppCompatActivity
         ((EditText) findViewById(R.id.emailEditarPerfil)).setText(usuario.getEmail());
         ((EditText) findViewById(R.id.senhaEditarPerfil)).setText(usuario.getSenha());
         if (!usuario.getNascimento().isEmpty()) {
+            Log.i("NASCIMENTO",usuario.getNascimento());
             String data = usuario.getNascimento().substring(8, 10) + "/" + usuario.getNascimento().substring(5,7)
                     +"/"+usuario.getNascimento().substring(0,4);
             ((EditText) findViewById(R.id.nascimentoEditarPefil)).setText(data);
@@ -233,15 +237,32 @@ public class editar_perfil extends AppCompatActivity
             Intent it = new Intent(getBaseContext(),inicial.class);
             startActivity(it);
         } else if (id == R.id.nav_editar_perfil) {
-            Intent it = new Intent(getBaseContext(),editar_perfil.class);
-            startActivity(it);
+            Intent it;
+            //Se não é um usuário logado com a conta Google pode editar o perfil
+            if (usuario.getGoogleId().equals("")){
+                it = new Intent(getBaseContext(), editar_perfil.class);
+                startActivity(it);
+            }
+            else{
+                Toast.makeText(getBaseContext(),"Funcionalidade indisponível para usuários logado com conta Google.",Toast.LENGTH_LONG)
+                        .show();
+            }
         } else if (id == R.id.nav_notificacoes) {
             Intent it = new Intent(getBaseContext(),notificacoes.class);
             startActivity(it);
         } else if (id == R.id.nav_sair) {
+            //Registra que o usuário saiu
+            SharedPreferences sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0",Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.clear();
+            editor.apply();
+            editor.putBoolean("logado",false);
+            editor.commit();
+
             Intent it = new Intent(getBaseContext(),login.class);
             startActivity(it);
         }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

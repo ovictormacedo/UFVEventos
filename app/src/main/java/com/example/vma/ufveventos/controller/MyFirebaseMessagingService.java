@@ -48,13 +48,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             //Verifica se o usuário deseja que a notificação seja adicionada à agenda
             SharedPreferences sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
             String idUsuario = sharedPref.getString("id","default");
+            Log.i("ADD EVENTO","PREPARANDO PRA ADD");
             //Se o usuário está logado
             if (!idUsuario.equals("default")) {
-                sharedPref = getBaseContext().
-                        getSharedPreferences("UFVEVENTOS" + idUsuario, Context.MODE_PRIVATE);
+                Log.i("ADD EVENTO","LOGADO");
                 String agenda = sharedPref.getString("agenda","default");
                 //O usuário deseja gravar a notificação na agenda
-                if (agenda.equals("true")){
+                if (agenda.equals("1")){
                     //Recupera dados da notificação
                     Map<String,String> dados = remoteMessage.getData();
                     JSONObject dadosJson = null;
@@ -81,6 +81,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                 dadosJson.getString("descricao"), "",Integer.parseInt(dadosJson.getString("participantes")),
                                 "", null, null, null);
                     }catch(JSONException e){Log.e("JSON ERRO",e.getMessage());}
+                    Log.i("ADD EVENTO",evento.getDenominacao());
                     calendar.addEventNotification(evento,local,getBaseContext(),getContentResolver());
                 }
             }
