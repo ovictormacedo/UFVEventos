@@ -286,7 +286,7 @@ public class categorias_pagina_inicial extends AppCompatActivity
         } else if (id == R.id.nav_editar_perfil) {
             Intent it;
             //Se não é um usuário logado com a conta Google pode editar o perfil
-            if (usuario.getGoogleId().equals("")){
+            if (usuario.getGoogleId().equals("default")){
                 it = new Intent(getBaseContext(), editar_perfil.class);
                 startActivity(it);
             }

@@ -8,7 +8,17 @@ public class Usuario {
     private String id="", nome="", email="", senha="", nascimento="", sexo="", matricula="", foto="",
             googleId="";
 
-    public Usuario(){}
+    public Usuario(){
+        id="";
+        nome="";
+        email="";
+        senha="";
+        nascimento="";
+        sexo="";
+        matricula="";
+        foto="";
+        googleId="";
+    }
 
     public Usuario(String id, String nome, String email, String senha, String nascimento, String sexo, String matricula,
                    String googleId) {
