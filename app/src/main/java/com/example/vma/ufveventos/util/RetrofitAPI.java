@@ -26,4 +26,18 @@ public class RetrofitAPI {
 
         return retrofit;
     }
+
+    public Retrofit retrofit2(){
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        Retrofit retrofit = new retrofit2.Retrofit.Builder()
+                .baseUrl("http://meettest.esy.es/siseventos2/esqueciasenha.php/")
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build();
+
+        return retrofit;
+    }
 }

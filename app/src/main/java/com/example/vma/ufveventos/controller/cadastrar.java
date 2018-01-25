@@ -24,6 +24,7 @@ import com.example.vma.ufveventos.model.Dispositivo;
 import com.example.vma.ufveventos.model.Usuario;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
+import com.example.vma.ufveventos.util.Seguranca;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONObject;
@@ -72,7 +73,10 @@ public class cadastrar extends AppCompatActivity {
             //Recupera dados do formulário
             String nome = ((EditText) findViewById(R.id.nomeCadastro)).getText().toString();
             final String email = ((EditText) findViewById(R.id.emailCadastro)).getText().toString();
-            final String senha = ((EditText) findViewById(R.id.senhaCadastro)).getText().toString();
+            String senhaTemp = ((EditText) findViewById(R.id.senhaCadastro)).getText().toString();
+            Seguranca s = new Seguranca();
+            final String senha = s.duploMd5(senhaTemp);
+            Log.i("SENHA",senha);
             String nascimento = ((EditText) findViewById(R.id.nascimentoCadastro)).getText().toString();
             if (!nascimento.isEmpty())
                 nascimento = nascimento.substring(6,10)+"-"+nascimento.substring(3,5)+"-"+nascimento.substring(0,2);
@@ -195,7 +199,7 @@ public class cadastrar extends AppCompatActivity {
                                             //Cadastra token do dispositivo (se necessário) para receber notificações
                                             //Verifica se o usuário possui um token para este dispositivo
                                             sharedPref = getBaseContext().
-                                                    getSharedPreferences("UFVEVENTOS" + response, Context.MODE_PRIVATE);
+                                                    getSharedPreferences("UFVEVENTOS" + response.getId(), Context.MODE_PRIVATE);
                                             String token = sharedPref.getString("firebasetoken", "falso");
                                             if (token.equals("falso")){
                                                 //Requisita token FCM

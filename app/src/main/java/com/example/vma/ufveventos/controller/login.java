@@ -26,6 +26,7 @@ import com.example.vma.ufveventos.model.Dispositivo;
 import com.example.vma.ufveventos.model.Usuario;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
+import com.example.vma.ufveventos.util.Seguranca;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -41,6 +42,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.iid.FirebaseInstanceId;
 import org.json.JSONObject;
 
+import java.security.MessageDigest;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -182,11 +184,14 @@ public class login extends AppCompatActivity implements View.OnClickListener {
 
                                         @Override
                                         public void onError(Throwable e){
-                                            ResponseBody aux = ((HttpException) e).response().errorBody();
-                                            String aux2 = ((HttpException) e).response().message();
-                                            try {
-                                                Log.i("Login error", aux.string()+aux2);
-                                            }catch (Exception ex){}
+                                            if (e instanceof HttpException)
+                                                Toast.makeText(getBaseContext(),"Já existe uma conta com este e-mail cadastrado",Toast.LENGTH_LONG).show();
+                                            else {
+                                                Toast.makeText(getBaseContext(), "Não foi possível realizar o cadastro, " +
+                                                        "tente novamente em instantes.", Toast.LENGTH_LONG).show();
+                                            }
+                                            //Esconde barra de carregamento
+                                            progressBar.setVisibility(View.GONE);
                                         }
 
                                         @Override
@@ -487,6 +492,8 @@ public class login extends AppCompatActivity implements View.OnClickListener {
             JSONObject json = new JSONObject();
             String usuario = ((EditText) findViewById(R.id.emailmatriculaLogin)).getText().toString();
             String senha = ((EditText) findViewById(R.id.senhaLogin)).getText().toString();
+            Seguranca s = new Seguranca();
+            senha = s.duploMd5(senha);
             try {
                 json.put("usuario", usuario);
                 json.put("senha", senha);
@@ -570,7 +577,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                             //Cadastra token do dispositivo (se necessário) para receber notificações
                             //Verifica se o usuário possui um token para este dispositivo
                             sharedPref = getBaseContext().
-                                    getSharedPreferences("UFVEVENTOS" + response, Context.MODE_PRIVATE);
+                                    getSharedPreferences("UFVEVENTOS" + response.getId(), Context.MODE_PRIVATE);
                             String token = sharedPref.getString("firebasetoken", "falso");
                             if (token.equals("falso")){
                                 //Requisita token FCM
@@ -779,5 +786,9 @@ public class login extends AppCompatActivity implements View.OnClickListener {
             emailmatriculaErro.setText("");
             return true;
         }
+    }
+    public void esqueciASenha(View view){
+        Intent it = new Intent(getBaseContext(),EsqueciASenha.class);
+        startActivity(it);
     }
 }

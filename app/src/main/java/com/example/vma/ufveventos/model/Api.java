@@ -65,6 +65,12 @@ public interface Api{
     @GET("dispositivos/{idUsuario}")
     Observable<Usuario> getDispositivos(@Path("idUsuario") String idUsuario);
 
+    //Recupera senha
+    @FormUrlEncoded
+    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @POST("email")
+    Observable<Void> recuperaSenha(@Field("data") JSONObject data);
+
     //Autentica usuário
     @FormUrlEncoded
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")

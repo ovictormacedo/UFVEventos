@@ -31,6 +31,7 @@ import com.example.vma.ufveventos.model.Api;
 import com.example.vma.ufveventos.model.Usuario;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
+import com.example.vma.ufveventos.util.Seguranca;
 import com.example.vma.ufveventos.util.UsuarioNavigationDrawer;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -79,7 +80,7 @@ public class editar_perfil extends AppCompatActivity
         UsuarioSingleton usuario = UsuarioSingleton.getInstance();
         ((EditText) findViewById(R.id.nomeEditarPerfil)).setText(usuario.getNome());
         ((EditText) findViewById(R.id.emailEditarPerfil)).setText(usuario.getEmail());
-        ((EditText) findViewById(R.id.senhaEditarPerfil)).setText(usuario.getSenha());
+        //((EditText) findViewById(R.id.senhaEditarPerfil)).setText(usuario.getSenha());
         if (!usuario.getNascimento().isEmpty()) {
             Log.i("NASCIMENTO",usuario.getNascimento());
             String data = usuario.getNascimento().substring(8, 10) + "/" + usuario.getNascimento().substring(5,7)
@@ -110,7 +111,9 @@ public class editar_perfil extends AppCompatActivity
             //Recupera dados do formulário
             String nome = ((EditText) findViewById(R.id.nomeEditarPerfil)).getText().toString();
             final String email = ((EditText) findViewById(R.id.emailEditarPerfil)).getText().toString();
-            final String senha = ((EditText) findViewById(R.id.senhaEditarPerfil)).getText().toString();
+            String senhaTemp = ((EditText) findViewById(R.id.senhaEditarPerfil)).getText().toString();
+            Seguranca s = new Seguranca();
+            final String senha = s.duploMd5(senhaTemp);
             String nascimento = ((EditText) findViewById(R.id.nascimentoEditarPefil)).getText().toString();
             if (!nascimento.isEmpty())
                 nascimento = nascimento.substring(6,10)+"-"+nascimento.substring(3,5)+"-"+nascimento.substring(0,2);

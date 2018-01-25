@@ -161,13 +161,27 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="420dp"
-            android:layout_marginLeft="130dp">
+            android:elevation="1dp"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            tools:ignore="UselessLeaf">
             <com.google.android.gms.common.SignInButton
                 android:id="@+id/sign_in_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="visible"/>
+                android:visibility="visible" />
+            <Button
+                android:id="@+id/esqueciaasenha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:textColor="#BC2B3B"
+                style="?android:attr/borderlessButtonStyle"
+                android:textSize="14dp"
+                android:text="Esqueci a senha"
+                android:onClick="esqueciASenha"/>
         </LinearLayout>
     </FrameLayout>
 </ScrollView>
