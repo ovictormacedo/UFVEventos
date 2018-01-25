@@ -40,7 +40,7 @@ public interface Api{
     Observable<List<Evento>> getEventosPorUsuario(@Path("idUsuario") String idUsuario,
                                                   @Path("offset") int offset, @Path("limit") int limit);
     //Não testado
-    //A senha deve ser passada utilizando MD5
+    //a senha deve ser passada utilizando MD5
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @GET("usuario/{idUsuario}")
     Observable<String> getUsuario(@Header("a") String password, @Path("idUsuario") String idUsuario);

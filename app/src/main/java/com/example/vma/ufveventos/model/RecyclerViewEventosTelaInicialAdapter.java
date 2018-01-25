@@ -37,6 +37,91 @@ public class RecyclerViewEventosTelaInicialAdapter extends RecyclerView.Adapter<
     public void onBindViewHolder(CustomViewHolder customViewHolder, int i) {
         final Evento evento = eventos.get(i);
         //Seta imagem do evento
+        char primeiraLetra = evento.getDenominacao().toLowerCase().charAt(0);
+        switch (primeiraLetra){
+            case 'a':
+                customViewHolder.imagem.setImageResource(R.drawable.a);
+                break;
+            case 'b':
+                customViewHolder.imagem.setImageResource(R.drawable.b);
+                break;
+            case 'c':
+                customViewHolder.imagem.setImageResource(R.drawable.c);
+                break;
+            case 'd':
+                customViewHolder.imagem.setImageResource(R.drawable.d);
+                break;
+            case 'e':
+                customViewHolder.imagem.setImageResource(R.drawable.e);
+                break;
+            case 'f':
+                customViewHolder.imagem.setImageResource(R.drawable.f);
+                break;
+            case 'g':
+                customViewHolder.imagem.setImageResource(R.drawable.g);
+                break;
+            case 'h':
+                customViewHolder.imagem.setImageResource(R.drawable.h);
+                break;
+            case 'i':
+                customViewHolder.imagem.setImageResource(R.drawable.i);
+                break;
+            case 'j':
+                customViewHolder.imagem.setImageResource(R.drawable.j);
+                break;
+            case 'k':
+                customViewHolder.imagem.setImageResource(R.drawable.k);
+                break;
+            case 'l':
+                customViewHolder.imagem.setImageResource(R.drawable.l);
+                break;
+            case 'm':
+                customViewHolder.imagem.setImageResource(R.drawable.m);
+                break;
+            case 'n':
+                customViewHolder.imagem.setImageResource(R.drawable.n);
+                break;
+            case 'o':
+                customViewHolder.imagem.setImageResource(R.drawable.o);
+                break;
+            case 'p':
+                customViewHolder.imagem.setImageResource(R.drawable.p);
+                break;
+            case 'q':
+                customViewHolder.imagem.setImageResource(R.drawable.q);
+                break;
+            case 'r':
+                customViewHolder.imagem.setImageResource(R.drawable.r);
+                break;
+            case 's':
+                customViewHolder.imagem.setImageResource(R.drawable.s);
+                break;
+            case 't':
+                customViewHolder.imagem.setImageResource(R.drawable.t);
+                break;
+            case 'u':
+                customViewHolder.imagem.setImageResource(R.drawable.u);
+                break;
+            case 'v':
+                customViewHolder.imagem.setImageResource(R.drawable.v);
+                break;
+            case 'w':
+                customViewHolder.imagem.setImageResource(R.drawable.w);
+                break;
+            case 'x':
+                customViewHolder.imagem.setImageResource(R.drawable.x);
+                break;
+            case 'y':
+                customViewHolder.imagem.setImageResource(R.drawable.y);
+                break;
+            case 'z':
+                customViewHolder.imagem.setImageResource(R.drawable.b);
+                break;
+            default:
+                customViewHolder.imagem.setImageResource(R.drawable.outros);
+                break;
+        }
+
 
         //Seta denominação do evento
         customViewHolder.denominacao.setText(evento.getDenominacao());
