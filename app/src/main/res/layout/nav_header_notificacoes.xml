@@ -22,7 +22,8 @@
             android:layout_gravity="left"
             android:layout_marginTop="30dp"
             android:layout_marginLeft="-10dp"
-            app:srcCompat="@drawable/logo_ufv1" />
+            app:srcCompat="@drawable/logo_ufv1"
+            android:background="@drawable/round_outline2"/>
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="151dp"
