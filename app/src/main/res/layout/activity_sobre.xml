@@ -33,14 +33,14 @@
                 android:layout_height="40dp"
                 android:layout_marginTop="15dp"
                 android:layout_gravity="center_horizontal"
-                android:textSize="30dp"
+                android:textSize="30sp"
                 android:textColor="@color/black"
                 android:text="UFV Eventos"/>
             <TextView
                 android:layout_width="150dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center_horizontal"
-                android:textSize="25dp"
+                android:textSize="25sp"
                 android:textColor="@color/black"
                 android:text="Versão 1.0"/>
             <ImageView
