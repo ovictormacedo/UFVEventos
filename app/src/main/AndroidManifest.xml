@@ -41,7 +41,7 @@
         <activity
             android:name=".controller.cadastrar"
             android:label="Cadastro"
-            android:theme="@style/NoAction"></activity>
+            android:theme="@style/NoAction" />
         <activity
             android:name=".controller.login"
             android:label="@string/title_activity_login"
@@ -63,11 +63,11 @@
         <activity
             android:name=".controller.inicial"
             android:label="@string/title_activity_inicial"
-            android:theme="@style/NoAction"></activity>
+            android:theme="@style/NoAction" />
         <activity
             android:name=".controller.categorias_pagina_inicial"
             android:label="@string/title_activity_categorias_pagina_inicial"
-            android:theme="@style/NoAction"></activity>
+            android:theme="@style/NoAction" />
         <activity
             android:name=".controller.detalhes_evento_com_descricao"
             android:label="Evento"
@@ -117,7 +117,8 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".controller.EsqueciASenha"></activity>
+        <activity android:name=".controller.EsqueciASenha" />
+        <activity android:name=".controller.sobre"></activity>
     </application>
 
 </manifest>
