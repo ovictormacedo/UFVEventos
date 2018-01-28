@@ -13,7 +13,7 @@ import com.example.vma.ufveventos.R;
 
 public class splash_screen extends Activity {
     // Timer da splash screen
-    private static int SPLASH_TIME_OUT = 2000;
+    private static int SPLASH_TIME_OUT = 1200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
