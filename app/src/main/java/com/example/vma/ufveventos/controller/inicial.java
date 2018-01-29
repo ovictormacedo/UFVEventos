@@ -29,6 +29,8 @@ import com.example.vma.ufveventos.util.Calendar;
 import com.example.vma.ufveventos.util.Permission;
 import com.example.vma.ufveventos.util.RetrofitAPI;
 import com.example.vma.ufveventos.util.UsuarioNavigationDrawer;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -83,10 +85,6 @@ public class inicial extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        Log.i("dados do usuario",""+usuario.getId()+" - - "+usuario.getAgenda()+" - - "+usuario.getEmail()+" - - "+usuario.getMatricula()
-                +" - - "+usuario.getGoogleId()+" - - "+usuario.getNascimento()+" - - "+usuario.getNotificacoes()
-                +" - - "+usuario.getSenha()+" - - "+usuario.getSexo()+" - - "+usuario.getToken());
 
         //Seta dados do usuário no navigation drawer
         UsuarioNavigationDrawer und = new UsuarioNavigationDrawer();
