@@ -32,6 +32,7 @@
           "current_key": "AIzaSyCTJepqmDFTeUlLEYXuAsIERQF6MVQmqmc"
         }
       ],
+      "analytics_service": { "status": 1 },
       "services": {
         "analytics_service": {
           "status": 1

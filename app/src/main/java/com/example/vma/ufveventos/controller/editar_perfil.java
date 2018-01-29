@@ -33,6 +33,8 @@ import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
 import com.example.vma.ufveventos.util.Seguranca;
 import com.example.vma.ufveventos.util.UsuarioNavigationDrawer;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -67,10 +69,16 @@ public class editar_perfil extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Google Analytics
+        MyApplication application = (MyApplication) getApplication();
+        Tracker mTracker = application.getDefaultTracker();
+        mTracker.setScreenName("editar_perfil");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
         //Seta dados do usuário no navigation drawer
         UsuarioNavigationDrawer und = new UsuarioNavigationDrawer();
         und.setNomeUsuario(navigationView,usuario.getNome());
-        und.setUsuarioImagem(navigationView,"");
+        und.setUsuarioImagem(navigationView, usuario.getFoto());
 
         //Inicia barra de carregamento
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarEditarPerfil);

@@ -3,6 +3,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,7 +27,6 @@ import com.example.vma.ufveventos.model.Evento;
 import com.example.vma.ufveventos.model.EventosSingleton;
 import com.example.vma.ufveventos.model.RecyclerViewEventosTelaInicialAdapter;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
-import com.example.vma.ufveventos.util.Calendar;
 import com.example.vma.ufveventos.util.Permission;
 import com.example.vma.ufveventos.util.RetrofitAPI;
 import com.example.vma.ufveventos.util.UsuarioNavigationDrawer;
@@ -39,6 +40,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import rx.Observable;
@@ -67,7 +72,7 @@ public class inicial extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         UsuarioNavigationDrawer und = new UsuarioNavigationDrawer();
         und.setNomeUsuario(navigationView,usuario.getNome());
-        und.setUsuarioImagem(navigationView,"");
+        und.setUsuarioImagem(navigationView, usuario.getFoto());
     }
 
     @Override
@@ -86,10 +91,16 @@ public class inicial extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Google Analytics
+        MyApplication application = (MyApplication) getApplication();
+        Tracker mTracker = application.getDefaultTracker();
+        mTracker.setScreenName("inicial");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
         //Seta dados do usuário no navigation drawer
         UsuarioNavigationDrawer und = new UsuarioNavigationDrawer();
         und.setNomeUsuario(navigationView,usuario.getNome());
-        und.setUsuarioImagem(navigationView,"");
+        und.setUsuarioImagem(navigationView, usuario.getFoto());
 
         eventos = new ArrayList<>();
         myRecyclerView = (RecyclerView) findViewById(R.id.lista_eventos);

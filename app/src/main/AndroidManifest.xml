@@ -124,7 +124,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".controller.EsqueciASenha" />
+        <activity android:name=".controller.Esqueci_a_senha" />
         <activity android:name=".controller.sobre"></activity>
     </application>
 

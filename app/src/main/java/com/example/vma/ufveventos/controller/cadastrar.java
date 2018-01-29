@@ -25,6 +25,8 @@ import com.example.vma.ufveventos.model.Usuario;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
 import com.example.vma.ufveventos.util.Seguranca;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONObject;
@@ -48,6 +50,12 @@ public class cadastrar extends AppCompatActivity {
         //Inicia barra de carregamento
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarCadastro);
         progressBar.setVisibility(View.GONE);
+
+        //Google Analytics
+        MyApplication application = (MyApplication) getApplication();
+        Tracker mTracker = application.getDefaultTracker();
+        mTracker.setScreenName("cadastrar");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     public void faca_login(View view) {

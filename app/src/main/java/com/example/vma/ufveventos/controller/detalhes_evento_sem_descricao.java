@@ -36,6 +36,8 @@ import com.example.vma.ufveventos.model.Evento;
 import com.example.vma.ufveventos.model.Local;
 import com.example.vma.ufveventos.util.Calendar;
 import com.example.vma.ufveventos.util.Permission;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -324,6 +326,12 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
         setSupportActionBar(myToolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        //Google Analytics
+        MyApplication application = (MyApplication) getApplication();
+        Tracker mTracker = application.getDefaultTracker();
+        mTracker.setScreenName("detalhes_evento_sem_descricao");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         findViewById(R.id.addAgenda).setOnClickListener(this);
 

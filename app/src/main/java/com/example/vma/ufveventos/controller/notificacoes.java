@@ -34,6 +34,8 @@ import com.example.vma.ufveventos.model.RecyclerViewCategoriasAdapter;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
 import com.example.vma.ufveventos.util.UsuarioNavigationDrawer;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -76,6 +78,12 @@ public class notificacoes extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        //Google Analytics
+        MyApplication application = (MyApplication) getApplication();
+        Tracker mTracker = application.getDefaultTracker();
+        mTracker.setScreenName("notificacoes");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
         usuario = UsuarioSingleton.getInstance();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -98,7 +106,7 @@ public class notificacoes extends AppCompatActivity
         //Seta dados do usuário no navigation drawer
         UsuarioNavigationDrawer und = new UsuarioNavigationDrawer();
         und.setNomeUsuario(navigationView,usuario.getNome());
-        und.setUsuarioImagem(navigationView,"");
+        und.setUsuarioImagem(navigationView, usuario.getFoto());
 
         //Ajusta switchers
         Log.e("GET AGENDA",usuario.getAgenda());

@@ -25,41 +25,45 @@ import java.net.URL;
 
 public class NotificationReceiver extends BroadcastReceiver{
     @Override
-    public void onReceive(Context context, Intent it){
-        Intent notificationIntent = new Intent(context, inicial.class);
+    public void onReceive(final Context context, Intent it){
+        //Recupera Bitmap
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL("http://www.meettest.esy.es/Icone.png");
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setDoInput(true);
+                    connection.connect();
+                    InputStream input = connection.getInputStream();
+                    Bitmap bitmap = BitmapFactory.decodeStream(input);
 
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addParentStack(inicial.class);
-        stackBuilder.addNextIntent(notificationIntent);
+                    Intent notificationIntent = new Intent(context, inicial.class);
 
-        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        Bitmap image = getBitmapfromUrl("http://www.meettest.esy.es/Icone.png");
-        Uri notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        Notification notification = builder.setContentTitle("UFV Eventos")
-                .setContentText("Chegaram novos eventos!")
-                .setTicker("Chegaram novos eventos!")
-                .setLargeIcon(image)
-                .setSmallIcon(R.drawable.logo_ufv1)
-                .setSound(notificationSound)
-                .setContentIntent(pendingIntent).build();
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+                    stackBuilder.addParentStack(inicial.class);
+                    stackBuilder.addNextIntent(notificationIntent);
 
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0, notification);
-    }
-    public Bitmap getBitmapfromUrl(String imageUrl) {
-        try {
-            URL url = new URL(imageUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap bitmap = BitmapFactory.decodeStream(input);
-            return bitmap;
+                    PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                    Uri notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+                    Notification notification = builder.setContentTitle("UFV Eventos")
+                            .setContentText("Chegaram novos eventos!")
+                            .setTicker("Chegaram novos eventos!")
+                            .setLargeIcon(bitmap)
+                            .setSmallIcon(R.drawable.logo_ufv1)
+                            .setSound(notificationSound)
+                            .setContentIntent(pendingIntent).build();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+                    NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                    notificationManager.notify(0, notification);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        thread.start();
     }
 }

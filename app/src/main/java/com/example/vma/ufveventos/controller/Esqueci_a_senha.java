@@ -14,6 +14,8 @@ import android.widget.Toast;
 import com.example.vma.ufveventos.R;
 import com.example.vma.ufveventos.model.Api;
 import com.example.vma.ufveventos.util.RetrofitAPI;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import org.json.JSONObject;
 
@@ -22,13 +24,19 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class EsqueciASenha extends AppCompatActivity {
+public class Esqueci_a_senha extends AppCompatActivity {
     private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_esqueci_asenha);
+
+        //Google Analytics
+        MyApplication application = (MyApplication) getApplication();
+        Tracker mTracker = application.getDefaultTracker();
+        mTracker.setScreenName("esqueci_a_senha");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         progressBar = (ProgressBar) findViewById(R.id.progressBarEsqueciSenha);
         progressBar.setVisibility(View.GONE);

@@ -34,6 +34,8 @@ import com.example.vma.ufveventos.model.RecyclerViewCategoriasAdapter;
 import com.example.vma.ufveventos.model.UsuarioSingleton;
 import com.example.vma.ufveventos.util.RetrofitAPI;
 import com.example.vma.ufveventos.util.UsuarioNavigationDrawer;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -78,6 +80,12 @@ public class categorias_pagina_inicial extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Google Analytics
+        MyApplication application = (MyApplication) getApplication();
+        Tracker mTracker = application.getDefaultTracker();
+        mTracker.setScreenName("categorias_pagina_inicial");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -95,7 +103,7 @@ public class categorias_pagina_inicial extends AppCompatActivity
         //Seta dados do usuário no navigation drawer
         UsuarioNavigationDrawer und = new UsuarioNavigationDrawer();
         und.setNomeUsuario(navigationView,usuario.getNome());
-        und.setUsuarioImagem(navigationView,"");
+        und.setUsuarioImagem(navigationView, usuario.getFoto());
 
         categorias = new ArrayList<>();
         myRecyclerView = (RecyclerView) findViewById(R.id.lista_categorias);

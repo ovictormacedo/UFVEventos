@@ -325,6 +325,12 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
         LinearLayout thirdPart = (LinearLayout) findViewById(R.id.thirdPartDetalhesEvento);
         thirdPart.setOnTouchListener(new ScrollFunction());
 
+        //Google Analytics
+        MyApplication application = (MyApplication) getApplication();
+        Tracker mTracker = application.getDefaultTracker();
+        mTracker.setScreenName("detalhes_evento_com_descricao");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
         findViewById(R.id.addAgenda).setOnClickListener(this);
 
         //Encerra barra de carregamento
