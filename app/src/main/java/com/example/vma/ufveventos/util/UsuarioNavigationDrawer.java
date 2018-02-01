@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * Created by vma on 09/12/2017.
  */
@@ -21,7 +23,7 @@ import java.net.URL;
 public class UsuarioNavigationDrawer {
     public void setUsuarioImagem(NavigationView nv, final String imgUrl){
         View hView =  nv.getHeaderView(0);
-        final ImageView img = (ImageView) hView.findViewById(R.id.imagemUsuario);
+        final CircleImageView img = (CircleImageView) hView.findViewById(R.id.imagemUsuario);
 
         if (imgUrl.equals("") || imgUrl.equals("default"))
             img.setImageResource(R.drawable.user_icon);
