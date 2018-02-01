@@ -214,6 +214,7 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
         String destParam = destLatLng.latitude + "," + destLatLng.longitude;
         String url = "https://maps.googleapis.com/maps/api/directions/json?origin="+srcParam+"&destination="
                 + destParam + "&sensor=false&units=metric&mode=driving&key=AIzaSyCYMR04JVUMSJMs0BtLxl6rsAVY-xwTLqk";
+
         Log.i("URL",url);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,null,
                 new Response.Listener<JSONObject>() {

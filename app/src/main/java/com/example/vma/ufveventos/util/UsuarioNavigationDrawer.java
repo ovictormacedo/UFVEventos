@@ -1,5 +1,6 @@
 package com.example.vma.ufveventos.util;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.design.widget.NavigationView;
@@ -20,7 +21,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by vma on 09/12/2017.
  */
 
-public class UsuarioNavigationDrawer {
+public class UsuarioNavigationDrawer extends Activity{
     public void setUsuarioImagem(NavigationView nv, final String imgUrl){
         View hView =  nv.getHeaderView(0);
         final CircleImageView img = (CircleImageView) hView.findViewById(R.id.imagemUsuario);
@@ -38,8 +39,14 @@ public class UsuarioNavigationDrawer {
                         connection.setDoInput(true);
                         connection.connect();
                         InputStream input = connection.getInputStream();
-                        Bitmap bitmap = BitmapFactory.decodeStream(input);
-                        img.setImageBitmap(bitmap);
+                        final Bitmap bitmap = BitmapFactory.decodeStream(input);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                img.setImageBitmap(bitmap);
+                            }
+                        });
+                        //https://people.googleapis.com/v1/people/E92HPiwOKCOmAJRsR6FYDdUjsw42
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

@@ -1,5 +1,4 @@
 package com.example.vma.ufveventos.controller;
-import android.accounts.Account;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +13,10 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.vma.ufveventos.R;
 import com.example.vma.ufveventos.model.Api;
 import com.example.vma.ufveventos.model.Dispositivo;
@@ -28,11 +31,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.People;
-import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -44,8 +47,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.iid.FirebaseInstanceId;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Set;
+import java.io.IOException;
 
 import okhttp3.ResponseBody;
 import retrofit2.adapter.rxjava.HttpException;
@@ -146,6 +148,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
             }
         }
     }
+
     private void firebaseAuthWithGoogle(final GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         //Mostra barra de carregamento
@@ -206,7 +209,6 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                                         public void onNext(Integer idUsuario){
                                             //TODO
                                             Log.i("DEBUG 1","DEBUG 1 " + user.getDisplayName());
-
 
                                             //Cria json com os dados de login
                                             JSONObject json = new JSONObject();
