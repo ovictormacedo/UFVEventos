@@ -84,7 +84,6 @@ public class cadastrar extends AppCompatActivity {
             String senhaTemp = ((EditText) findViewById(R.id.senhaCadastro)).getText().toString();
             Seguranca s = new Seguranca();
             final String senha = s.duploMd5(senhaTemp);
-            Log.i("SENHA",senha);
             String nascimento = ((EditText) findViewById(R.id.nascimentoCadastro)).getText().toString();
             if (!nascimento.isEmpty())
                 nascimento = nascimento.substring(6,10)+"-"+nascimento.substring(3,5)+"-"+nascimento.substring(0,2);
@@ -136,7 +135,6 @@ public class cadastrar extends AppCompatActivity {
                             }
                             //Esconde barra de carregamento
                             progressBar.setVisibility(View.GONE);
-                            Log.i("Login error1",e.getMessage());
                         }
 
                         @Override
@@ -165,7 +163,6 @@ public class cadastrar extends AppCompatActivity {
                                         public void onError(Throwable e){
                                             //Esconde barra de carregamento
                                             progressBar.setVisibility(View.GONE);
-                                            Log.i("Login error2",e.getMessage());
                                             Toast.makeText(getBaseContext(),"Para entrar na sua conta, " +
                                                     "vá à tela de login.", Toast.LENGTH_LONG).show();
                                         }

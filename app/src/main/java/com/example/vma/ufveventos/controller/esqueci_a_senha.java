@@ -24,7 +24,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class Esqueci_a_senha extends AppCompatActivity {
+public class esqueci_a_senha extends AppCompatActivity {
     private ProgressBar progressBar;
 
     @Override

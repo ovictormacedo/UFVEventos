@@ -24,7 +24,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/logo1"
+                app:srcCompat="@drawable/top_login"
                 tools:ignore="ContentDescription" />
         </LinearLayout>
 

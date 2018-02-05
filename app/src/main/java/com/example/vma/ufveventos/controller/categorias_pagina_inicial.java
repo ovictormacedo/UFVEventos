@@ -137,7 +137,6 @@ public class categorias_pagina_inicial extends AppCompatActivity
                     public void onError(Throwable e) {
                         //Encerra barra de carregamento
                         progressBar.setVisibility(View.GONE);
-                        Log.i("Retrofit error", "Erro:" + e.getMessage());
                         Toast.makeText(getBaseContext(), "Não foi possível carregar as categorias.", Toast.LENGTH_SHORT).show();
                     }
 
@@ -158,8 +157,6 @@ public class categorias_pagina_inicial extends AppCompatActivity
                                     public void onError(Throwable e) {
                                         //Encerra barra de carregamento
                                         progressBar.setVisibility(View.GONE);
-                                        Log.i("Retrofit error", "Erro:" + e.getMessage());
-                                        //Toast.makeText(getBaseContext(), "Não foi possível carregar as categorias personalizadas.", Toast.LENGTH_SHORT).show();
                                     }
 
                                     @Override
@@ -176,16 +173,18 @@ public class categorias_pagina_inicial extends AppCompatActivity
                                                 int itemCount = linearLayoutManager.getItemCount();
                                                 for (int i = 0; i < itemCount; i++) {
                                                     View view = linearLayoutManager.getChildAt(i);
-                                                    String nomeCategoria = ((TextView) view.findViewById(R.id.nomeCategoriaRow))
-                                                            .getText().toString();
+                                                    try{
+                                                        String nomeCategoria = ((TextView) view.findViewById(R.id.nomeCategoriaRow))
+                                                                .getText().toString();
 
-                                                    for (int j = 0; j < response.size(); j++) {
-                                                        if (response.get(j).getNome().equals(nomeCategoria)) {
-                                                            //Seta CheckBox como checked
-                                                            CheckBox checkBox = ((CheckBox) view.findViewById(R.id.checkBoxCategoriaRow));
-                                                            checkBox.setChecked(true);
+                                                        for (int j = 0; j < response.size(); j++) {
+                                                            if (response.get(j).getNome().equals(nomeCategoria)) {
+                                                                //Seta CheckBox como checked
+                                                                CheckBox checkBox = ((CheckBox) view.findViewById(R.id.checkBoxCategoriaRow));
+                                                                checkBox.setChecked(true);
+                                                            }
                                                         }
-                                                    }
+                                                    }catch(Exception e){Log.e("ERRO",""+e.getMessage());}
                                                 }
                                                 //Encerra barra de carregamento
                                                 progressBar.setVisibility(View.GONE);
@@ -236,7 +235,6 @@ public class categorias_pagina_inicial extends AppCompatActivity
                     public void onError(Throwable e) {
                         //Encerra barra de carregamento
                         progressBar.setVisibility(View.GONE);
-                        Log.i("Retrofit error", "Erro:" + e.getMessage());
                         Toast.makeText(getBaseContext(), "Não foi possível atualizar as preferências.", Toast.LENGTH_SHORT).show();
                     }
 
@@ -267,20 +265,6 @@ public class categorias_pagina_inicial extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override

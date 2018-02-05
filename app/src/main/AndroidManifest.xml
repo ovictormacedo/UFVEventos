@@ -124,8 +124,16 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".controller.Esqueci_a_senha" />
-        <activity android:name=".controller.sobre"></activity>
+        <activity android:name=".controller.esqueci_a_senha" />
+        <activity android:name=".controller.sobre"
+            android:parentActivityName=".controller.inicial"
+            android:theme="@style/NoAction">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.vma.ufveventos.controller.inicial" />
+        </activity>
     </application>
 
 </manifest>

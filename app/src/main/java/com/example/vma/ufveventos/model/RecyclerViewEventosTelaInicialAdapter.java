@@ -5,13 +5,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.vma.ufveventos.R;
 import com.example.vma.ufveventos.controller.OnEventoTelaInicialClickListener;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by vma on 08/09/2017.
@@ -147,12 +148,12 @@ public class RecyclerViewEventosTelaInicialAdapter extends RecyclerView.Adapter<
     }
 
     class CustomViewHolder extends RecyclerView.ViewHolder {
-        protected ImageView imagem;
+        protected CircleImageView imagem;
         protected TextView denominacao,horario,data;
 
         public CustomViewHolder(View view) {
             super(view);
-            this.imagem = (ImageView) view.findViewById(R.id.imagemEventoRow);
+            this.imagem = (CircleImageView) view.findViewById(R.id.imagemEventoRow);
             this.denominacao = (TextView) view.findViewById(R.id.denominacaoEventoRow);
             this.horario = (TextView) view.findViewById(R.id.horarioEventoRow);
             this.data = (TextView) view.findViewById(R.id.dataEventoRow);

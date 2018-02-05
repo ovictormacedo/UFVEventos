@@ -109,8 +109,6 @@ public class notificacoes extends AppCompatActivity
         und.setUsuarioImagem(navigationView, usuario.getFoto());
 
         //Ajusta switchers
-        Log.e("GET AGENDA",usuario.getAgenda());
-        Log.e("GET NOTIFICACOES",usuario.getNotificacoes());
         boolean checkAgenda = (usuario.getAgenda().equals("1"))? true:false;
         boolean checkNotificacoes = (usuario.getNotificacoes().equals("0"))? false:true;
         ((Switch) findViewById(R.id.addAgenda)).setChecked(checkAgenda);
@@ -324,16 +322,18 @@ public class notificacoes extends AppCompatActivity
                                                 int itemCount = linearLayoutManager.getItemCount();
                                                 for (int i = 0; i < itemCount; i++) {
                                                     View view = linearLayoutManager.getChildAt(i);
-                                                    String nomeCategoria = ((TextView) view.findViewById(R.id.nomeCategoriaRow))
-                                                            .getText().toString();
+                                                    try {
+                                                        String nomeCategoria = ((TextView) view.findViewById(R.id.nomeCategoriaRow))
+                                                                .getText().toString();
 
-                                                    for (int j = 0; j < response.size(); j++) {
-                                                        if (response.get(j).getNome().equals(nomeCategoria)) {
-                                                            //Seta CheckBox como checked
-                                                            CheckBox checkBox = ((CheckBox) view.findViewById(R.id.checkBoxCategoriaRow));
-                                                            checkBox.setChecked(true);
+                                                        for (int j = 0; j < response.size(); j++) {
+                                                            if (response.get(j).getNome().equals(nomeCategoria)) {
+                                                                //Seta CheckBox como checked
+                                                                CheckBox checkBox = ((CheckBox) view.findViewById(R.id.checkBoxCategoriaRow));
+                                                                checkBox.setChecked(true);
+                                                            }
                                                         }
-                                                    }
+                                                    }catch(Exception e){Log.e("ERRO",""+e.getMessage());}
                                                 }
                                                 //Encerra barra de carregamento
                                                 progressBar.setVisibility(View.GONE);
@@ -411,21 +411,6 @@ public class notificacoes extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.notificacoes, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

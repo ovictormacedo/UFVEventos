@@ -90,7 +90,6 @@ public class editar_perfil extends AppCompatActivity
         ((EditText) findViewById(R.id.emailEditarPerfil)).setText(usuario.getEmail());
         //((EditText) findViewById(R.id.senhaEditarPerfil)).setText(usuario.getSenha());
         if (!usuario.getNascimento().isEmpty()) {
-            Log.i("NASCIMENTO",usuario.getNascimento());
             String data = usuario.getNascimento().substring(8, 10) + "/" + usuario.getNascimento().substring(5,7)
                     +"/"+usuario.getNascimento().substring(0,4);
             ((EditText) findViewById(R.id.nascimentoEditarPefil)).setText(data);
@@ -221,21 +220,6 @@ public class editar_perfil extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.editar_perfil, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
