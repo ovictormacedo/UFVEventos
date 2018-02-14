@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.vma.ufveventos"
+    package="com.labd2m.vma.ufveventos"
     android:versionCode="1"
     android:versionName="1.0">
 
@@ -19,14 +19,14 @@
         android:required="true" />
 
     <permission
-        android:name="com.example.vma.ufveventos.permission.MAPS_RECEIVE"
+        android:name="com.labd2m.vma.ufveventos.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.example.vma.ufveventos.permission.MAPS_RECEIVE" />
     <uses-permission android:name="com.google.android.providers.gsf.permissions.READ_GSERVICE" />
 
     <application
-        android:name=".controller.MyApplication"
+        android:name="com.labd2m.vma.ufveventos.controller.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -41,7 +41,7 @@
             android:value="AIzaSyANEfaILGvdQ56On8HW3cxids4KwJo2gm0" />
 
         <activity
-            android:name=".controller.splash_screen"
+            android:name="com.labd2m.vma.ufveventos.controller.splash_screen"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
@@ -53,51 +53,51 @@
         </activity>
 
         <activity
-            android:name=".controller.cadastrar"
+            android:name="com.labd2m.vma.ufveventos.controller.cadastrar"
             android:label="Cadastro"
             android:theme="@style/NoAction" />
         <activity
-            android:name=".controller.login"
+            android:name="com.labd2m.vma.ufveventos.controller.login"
             android:label="@string/title_activity_login"
             android:theme="@style/NoAction">
         </activity>
         <activity
-            android:name=".controller.editar_perfil"
+            android:name="com.labd2m.vma.ufveventos.controller.editar_perfil"
             android:label="@string/title_activity_editar_perfil"
             android:theme="@style/NoAction" />
         <activity
-            android:name=".controller.notificacoes"
+            android:name="com.labd2m.vma.ufveventos.controller.notificacoes"
             android:label="@string/title_activity_notificacoes"
             android:theme="@style/NoAction" />
         <activity
-            android:name=".controller.inicial"
+            android:name="com.labd2m.vma.ufveventos.controller.inicial"
             android:label="@string/title_activity_inicial"
             android:theme="@style/NoAction" />
         <activity
-            android:name=".controller.categorias_pagina_inicial"
+            android:name="com.labd2m.vma.ufveventos.controller.categorias_pagina_inicial"
             android:label="@string/title_activity_categorias_pagina_inicial"
             android:theme="@style/NoAction" />
         <activity
-            android:name=".controller.detalhes_evento_com_descricao"
+            android:name="com.labd2m.vma.ufveventos.controller.detalhes_evento_com_descricao"
             android:label="Evento"
-            android:parentActivityName=".controller.inicial"
+            android:parentActivityName="com.labd2m.vma.ufveventos.controller.inicial"
             android:theme="@style/NoAction">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.vma.ufveventos.controller.inicial" />
+                android:value="com.labd2m.vma.ufveventos.controller.inicial" />
         </activity>
         <activity
-            android:name=".controller.detalhes_evento_sem_descricao"
+            android:name="com.labd2m.vma.ufveventos.controller.detalhes_evento_sem_descricao"
             android:label="Evento"
-            android:parentActivityName=".controller.inicial"
+            android:parentActivityName="com.labd2m.vma.ufveventos.controller.inicial"
             android:theme="@style/NoAction">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.vma.ufveventos.controller.inicial" />
+                android:value="com.labd2m.vma.ufveventos.controller.inicial" />
         </activity>
 
         <meta-data
@@ -107,18 +107,18 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/black" />
 
-        <service android:name=".controller.MyFirebaseMessagingService">
+        <service android:name="com.labd2m.vma.ufveventos.controller.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".controller.MyFirebaseInstanceIDService">
+        <service android:name="com.labd2m.vma.ufveventos.controller.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
-        <receiver android:name=".controller.NotificationReceiver">
+        <receiver android:name="com.labd2m.vma.ufveventos.controller.NotificationReceiver">
             <intent-filter>
                 <action android:name="android.media.action.DISPLAY_NOTIFICATION" />
 
@@ -126,15 +126,15 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".controller.esqueci_a_senha" />
-        <activity android:name=".controller.sobre"
-            android:parentActivityName=".controller.inicial"
+        <activity android:name="com.labd2m.vma.ufveventos.controller.esqueci_a_senha" />
+        <activity android:name="com.labd2m.vma.ufveventos.controller.sobre"
+            android:parentActivityName="com.labd2m.vma.ufveventos.controller.inicial"
             android:theme="@style/NoAction">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.vma.ufveventos.controller.inicial" />
+                android:value="com.labd2m.vma.ufveventos.controller.inicial" />
         </activity>
     </application>
 

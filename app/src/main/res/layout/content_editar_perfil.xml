@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.vma.ufveventos.controller.editar_perfil"
+    tools:context="com.labd2m.vma.ufveventos.controller.editar_perfil"
     tools:showIn="@layout/app_bar_editar_perfil">
 
     <ScrollView android:layout_width="fill_parent"

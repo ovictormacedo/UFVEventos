@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.vma.ufveventos.controller.categorias_pagina_inicial"
+    tools:context="com.labd2m.vma.ufveventos.controller.categorias_pagina_inicial"
     tools:showIn="@layout/app_bar_categorias_pagina_inicial">
     <FrameLayout
         android:id="@+id/frameLayout"
