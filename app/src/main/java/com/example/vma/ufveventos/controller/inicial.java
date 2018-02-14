@@ -407,7 +407,7 @@ public class inicial extends AppCompatActivity
                 startActivity(it);
             }
             else{
-                Toast.makeText(getBaseContext(),"Funcionalidade indisponível para usuários logado com conta Google.",Toast.LENGTH_LONG)
+                Toast.makeText(getBaseContext(),"Funcionalidade indisponível para usuários logados com conta Google.",Toast.LENGTH_LONG)
                         .show();
             }
         } else if (id == R.id.nav_notificacoes) {
@@ -421,6 +421,8 @@ public class inicial extends AppCompatActivity
             editor.apply();
             editor.putBoolean("logado",false);
             editor.commit();
+
+            usuario.setGoogleId("");
 
             // Firebase sign out
             mAuth.signOut();

@@ -95,9 +95,11 @@ public class editar_perfil extends AppCompatActivity
             ((EditText) findViewById(R.id.nascimentoEditarPefil)).setText(data);
         }
 
-        int sexo = getResources().getIdentifier(usuario.getSexo()+"EditarPerfil", "id",
-                this.getBaseContext().getPackageName());
-        ((RadioButton) findViewById(sexo)).setChecked(true);
+        try {
+            int sexo = getResources().getIdentifier(usuario.getSexo() + "EditarPerfil", "id",
+                    this.getBaseContext().getPackageName());
+            ((RadioButton) findViewById(sexo)).setChecked(true);
+        }catch(Exception e){Log.e("ERRO SEXO EDIT PERFIL",e.getMessage());}
     }
 
     public void alterar_cadastro(View view){

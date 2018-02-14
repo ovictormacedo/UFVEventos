@@ -422,7 +422,12 @@ public class notificacoes extends AppCompatActivity
         if (id == R.id.nav_inicio) {
             Intent it = new Intent(getBaseContext(),inicial.class);
             startActivity(it);
-        } else if (id == R.id.nav_editar_perfil) {
+        }
+        else if(id == R.id.nav_sobre){
+            Intent it = new Intent(getBaseContext(), sobre.class);
+            startActivity(it);
+        }
+        else if (id == R.id.nav_editar_perfil) {
             Intent it;
             //Se não é um usuário logado com a conta Google pode editar o perfil
             if (usuario.getGoogleId().equals("default") || usuario.getGoogleId().equals("") ){
