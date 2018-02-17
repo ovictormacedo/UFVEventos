@@ -94,6 +94,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 //Agenda nova notificação
                 Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
                 notificationIntent.addCategory("android.intent.category.DEFAULT");
+                notificationIntent.putExtra("tipo",tipo);
                 PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 Calendar cal = Calendar.getInstance();
                 cal.add(Calendar.SECOND, 5);

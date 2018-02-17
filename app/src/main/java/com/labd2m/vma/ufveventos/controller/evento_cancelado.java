@@ -77,8 +77,6 @@ public class evento_cancelado extends AppCompatActivity implements OnMapReadyCal
         String datafim = getIntent().getStringExtra("datafim");
         String publico = getIntent().getStringExtra("publico");
         String local = getIntent().getStringExtra("local");
-        Double lat = getIntent().getDoubleExtra("lat",-20.7569953);
-        Double lng = getIntent().getDoubleExtra("lng",-42.8771171);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_evento_cancelado);
@@ -98,7 +96,6 @@ public class evento_cancelado extends AppCompatActivity implements OnMapReadyCal
         permission.requestPermissionMaps(getParent(),getBaseContext());
 
         //Traça rota
-        mDestinationLatLng = new LatLng(lat, lng);
         if (googleServicesAvailable()){
             initMap();
         }
@@ -128,13 +125,13 @@ public class evento_cancelado extends AppCompatActivity implements OnMapReadyCal
         }
 
         //Seta local do evento
-        if (local != "") {
+        if (!local.equals("")) {
             findViewById(R.id.localLabelEvento).setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.localEvento)).
                     setText(local);
         }
 
-        if (publico != "") {
+        if (!publico.equals("")) {
             //Seta público alvo do evento
             findViewById(R.id.publicoAlvoLabelEvento).setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.publicoAlvoEvento)).
@@ -152,13 +149,9 @@ public class evento_cancelado extends AppCompatActivity implements OnMapReadyCal
         mGoogleMap = googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        //mGoogleMap.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener) this);
-
         if (isProviderAvailable() && (provider != null)) {
             locateCurrentPosition();
         }
-
-        traceMe(mSourceLatLng,mDestinationLatLng);
     }
     private void locateCurrentPosition() {
         int status = getPackageManager().checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -283,109 +276,6 @@ public class evento_cancelado extends AppCompatActivity implements OnMapReadyCal
                 break;
         }
     }
-
-    private void traceMe(LatLng srcLatLng, LatLng destLatLng) {
-        String srcParam = srcLatLng.latitude + "," + srcLatLng.longitude;
-        String destParam = destLatLng.latitude + "," + destLatLng.longitude;
-        String url = "https://maps.googleapis.com/maps/api/directions/json?origin="+srcParam+"&destination="
-                + destParam + "&sensor=false&units=metric&mode=driving&key=AIzaSyCYMR04JVUMSJMs0BtLxl6rsAVY-xwTLqk";
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        MapDirectionsParser parser = new MapDirectionsParser();
-                        List<List<HashMap<String, String>>> routes = parser.parse(response);
-                        ArrayList<LatLng> points = null;
-
-                        for (int i = 0; i < routes.size(); i++) {
-                            points = new ArrayList<LatLng>();
-
-                            // Fetching i-th route
-                            List<HashMap<String, String>> path = routes.get(i);
-
-                            //Limpa mapa
-                            mGoogleMap.clear();
-
-                            //Adiciona marcador à posição inicial
-                            HashMap<String, String> pointAux = path.get(0);
-                            double latAux = Double.parseDouble(pointAux.get("lat"));
-                            double lngAux = Double.parseDouble(pointAux.get("lng"));
-
-                            CircleOptions mOptions = new CircleOptions()
-                                    .center(new LatLng(latAux, lngAux)).radius(200)
-                                    .strokeColor(0x110000FF).strokeWidth(5).fillColor(0x110000FF);
-                            mGoogleMap.addCircle(mOptions);
-
-                            CircleOptions circleOptions = new CircleOptions()
-                                    .center(new LatLng(latAux, lngAux))
-                                    .strokeWidth(1)
-                                    .fillColor(Color.BLUE)
-                                    .radius(60); // In meters
-                            mGoogleMap.addCircle(circleOptions);
-
-                            //Adiciona marcador à posição final
-                            pointAux = path.get(path.size()-1);
-                            latAux = Double.parseDouble(pointAux.get("lat"));
-                            lngAux = Double.parseDouble(pointAux.get("lng"));
-                            addMarker(latAux,lngAux,"Destino");
-
-                            // Fetching all the points in i-th route
-                            for (int j = 0; j < path.size(); j++) {
-                                HashMap<String, String> point = path.get(j);
-
-                                double lat = Double.parseDouble(point.get("lat"));
-                                double lng = Double.parseDouble(point.get("lng"));
-                                LatLng position = new LatLng(lat, lng);
-
-                                points.add(position);
-                            }
-                        }
-                        drawPoints(points, mGoogleMap);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.i("ERRO",error.getMessage());
-                    }
-                });
-
-        MyApplication.getInstance().addToReqQueue(jsonObjectRequest);
-        addBoundaryToCurrentPosition(destLatLng.latitude,destLatLng.longitude);
-    }
-
-
-    private void drawPoints(ArrayList<LatLng> points, GoogleMap mMaps) {
-        if (points == null) {
-            return;
-        }
-        traceOfMe = points;
-        PolylineOptions polylineOpt = new PolylineOptions();
-        for (LatLng latlng : traceOfMe) {
-            polylineOpt.add(latlng);
-        }
-        polylineOpt.color(Color.BLUE);
-        if (mPolyline != null) {
-            mPolyline.remove();
-            mPolyline = null;
-        }
-        if (mGoogleMap != null) {
-            mPolyline = mGoogleMap.addPolyline(polylineOpt);
-
-        } else {
-
-        }
-        if (mPolyline != null)
-            mPolyline.setWidth(10);
-    }
-
-
-    public void getDirection(View view) {
-        if (mSourceLatLng != null && mDestinationLatLng != null) {
-            traceMe(mSourceLatLng, mDestinationLatLng);
-        }
-    }
     public boolean googleServicesAvailable(){
         GoogleApiAvailability api = GoogleApiAvailability.getInstance();
         int isAvailable = api.isGooglePlayServicesAvailable(this);
@@ -439,12 +329,5 @@ public class evento_cancelado extends AppCompatActivity implements OnMapReadyCal
         DisplayMetrics metrics = resources.getDisplayMetrics();
         float px = dp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
         return px;
-    }
-
-    public static float convertPixelsToDp(float px, Context context){
-        Resources resources = context.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float dp = px / ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
-        return dp;
     }
 }

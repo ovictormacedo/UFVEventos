@@ -135,7 +135,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.labd2m.vma.ufveventos.controller.inicial" />
         </activity>
-        <activity android:name=".controller.evento_cancelado"></activity>
+        <activity android:name=".controller.evento_cancelado"
+            android:label="Evento Cancelado"
+            android:theme="@style/NoAction"/>
     </application>
 
 </manifest>

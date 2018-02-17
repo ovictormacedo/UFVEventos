@@ -25,10 +25,9 @@ public class NotificationReceiver extends BroadcastReceiver{
         try {
             Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.logo_sobre, null);
 
-            Intent notificationIntent = new Intent(context, inicial.class);
-
             String tipo = it.getStringExtra("tipo");
             if (tipo.equals("3")) {//Evento cancelado
+                Intent notificationIntent = new Intent(context, evento_cancelado.class);
                 notificationIntent.putExtra("denominacao", it.getStringExtra("denominacao"));
                 notificationIntent.putExtra("horainicio", it.getStringExtra("horainicio"));
                 notificationIntent.putExtra("horafim", it.getStringExtra("horafim"));
@@ -55,6 +54,7 @@ public class NotificationReceiver extends BroadcastReceiver{
                 NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.notify(0, notification);
             } else{
+                Intent notificationIntent = new Intent(context, inicial.class);
                 TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
                 stackBuilder.addParentStack(inicial.class);
                 stackBuilder.addNextIntent(notificationIntent);
