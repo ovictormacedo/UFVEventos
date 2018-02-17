@@ -26,7 +26,7 @@
     <uses-permission android:name="com.google.android.providers.gsf.permissions.READ_GSERVICE" />
 
     <application
-        android:name="com.labd2m.vma.ufveventos.controller.MyApplication"
+        android:name=".controller.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -41,46 +41,44 @@
             android:value="AIzaSyANEfaILGvdQ56On8HW3cxids4KwJo2gm0" />
 
         <activity
-            android:name="com.labd2m.vma.ufveventos.controller.splash_screen"
+            android:name=".controller.splash_screen"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
+            android:theme="@android:style/Theme.Black.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name="com.labd2m.vma.ufveventos.controller.cadastrar"
+            android:name=".controller.cadastrar"
             android:label="Cadastro"
             android:theme="@style/NoAction" />
         <activity
-            android:name="com.labd2m.vma.ufveventos.controller.login"
+            android:name=".controller.login"
             android:label="@string/title_activity_login"
-            android:theme="@style/NoAction">
-        </activity>
+            android:theme="@style/NoAction"></activity>
         <activity
-            android:name="com.labd2m.vma.ufveventos.controller.editar_perfil"
+            android:name=".controller.editar_perfil"
             android:label="@string/title_activity_editar_perfil"
             android:theme="@style/NoAction" />
         <activity
-            android:name="com.labd2m.vma.ufveventos.controller.notificacoes"
+            android:name=".controller.notificacoes"
             android:label="@string/title_activity_notificacoes"
             android:theme="@style/NoAction" />
         <activity
-            android:name="com.labd2m.vma.ufveventos.controller.inicial"
+            android:name=".controller.inicial"
             android:label="@string/title_activity_inicial"
             android:theme="@style/NoAction" />
         <activity
-            android:name="com.labd2m.vma.ufveventos.controller.categorias_pagina_inicial"
+            android:name=".controller.categorias_pagina_inicial"
             android:label="@string/title_activity_categorias_pagina_inicial"
             android:theme="@style/NoAction" />
         <activity
-            android:name="com.labd2m.vma.ufveventos.controller.detalhes_evento_com_descricao"
+            android:name=".controller.detalhes_evento_com_descricao"
             android:label="Evento"
-            android:parentActivityName="com.labd2m.vma.ufveventos.controller.inicial"
+            android:parentActivityName=".controller.inicial"
             android:theme="@style/NoAction">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
@@ -89,9 +87,9 @@
                 android:value="com.labd2m.vma.ufveventos.controller.inicial" />
         </activity>
         <activity
-            android:name="com.labd2m.vma.ufveventos.controller.detalhes_evento_sem_descricao"
+            android:name=".controller.detalhes_evento_sem_descricao"
             android:label="Evento"
-            android:parentActivityName="com.labd2m.vma.ufveventos.controller.inicial"
+            android:parentActivityName=".controller.inicial"
             android:theme="@style/NoAction">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
@@ -107,18 +105,18 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/black" />
 
-        <service android:name="com.labd2m.vma.ufveventos.controller.MyFirebaseMessagingService">
+        <service android:name=".controller.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="com.labd2m.vma.ufveventos.controller.MyFirebaseInstanceIDService">
+        <service android:name=".controller.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
-        <receiver android:name="com.labd2m.vma.ufveventos.controller.NotificationReceiver">
+        <receiver android:name=".controller.NotificationReceiver">
             <intent-filter>
                 <action android:name="android.media.action.DISPLAY_NOTIFICATION" />
 
@@ -126,9 +124,10 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name="com.labd2m.vma.ufveventos.controller.esqueci_a_senha" />
-        <activity android:name="com.labd2m.vma.ufveventos.controller.sobre"
-            android:parentActivityName="com.labd2m.vma.ufveventos.controller.inicial"
+        <activity android:name=".controller.esqueci_a_senha" />
+        <activity
+            android:name=".controller.sobre"
+            android:parentActivityName=".controller.inicial"
             android:theme="@style/NoAction">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
@@ -136,6 +135,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.labd2m.vma.ufveventos.controller.inicial" />
         </activity>
+        <activity android:name=".controller.evento_cancelado"></activity>
     </application>
 
 </manifest>

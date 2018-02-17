@@ -23,30 +23,58 @@ public class NotificationReceiver extends BroadcastReceiver{
     @Override
     public void onReceive(final Context context, Intent it){
         try {
-            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.logo_sobre,null);
+            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.logo_sobre, null);
 
             Intent notificationIntent = new Intent(context, inicial.class);
 
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-            stackBuilder.addParentStack(inicial.class);
-            stackBuilder.addNextIntent(notificationIntent);
+            String tipo = it.getStringExtra("tipo");
+            if (tipo.equals("3")) {//Evento cancelado
+                notificationIntent.putExtra("denominacao", it.getStringExtra("denominacao"));
+                notificationIntent.putExtra("horainicio", it.getStringExtra("horainicio"));
+                notificationIntent.putExtra("horafim", it.getStringExtra("horafim"));
+                notificationIntent.putExtra("datainicio", it.getStringExtra("datainicio"));
+                notificationIntent.putExtra("datafim", it.getStringExtra("datafim"));
+                notificationIntent.putExtra("publico", it.getStringExtra("publico"));
+                notificationIntent.putExtra("local", it.getStringExtra("local"));
 
-            PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-            Uri notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-            Notification notification = builder.setContentTitle("UFV Eventos")
-                    .setContentText("Chegaram novos eventos!")
-                    .setTicker("Chegaram novos eventos!")
-                    .setLargeIcon(bitmap)
-                    .setSmallIcon(R.drawable.logo_ufv1)
-                    .setSound(notificationSound)
-                    .setContentIntent(pendingIntent).build();
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+                stackBuilder.addParentStack(evento_cancelado.class);
+                stackBuilder.addNextIntent(notificationIntent);
 
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.notify(0, notification);
+                PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                Uri notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+                Notification notification = builder.setContentTitle("UFV Eventos")
+                        .setContentText("Um evento foi cancelado")
+                        .setTicker("Um evento foi cancelado")
+                        .setLargeIcon(bitmap)
+                        .setSmallIcon(R.drawable.logo_ufv1)
+                        .setSound(notificationSound)
+                        .setContentIntent(pendingIntent).build();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.notify(0, notification);
+            } else{
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+                stackBuilder.addParentStack(inicial.class);
+                stackBuilder.addNextIntent(notificationIntent);
+
+                PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                Uri notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+                Notification notification = builder.setContentTitle("UFV Eventos")
+                        .setContentText("Chegaram novos eventos")
+                        .setTicker("Chegaram novos eventos")
+                        .setLargeIcon(bitmap)
+                        .setSmallIcon(R.drawable.logo_ufv1)
+                        .setSound(notificationSound)
+                        .setContentIntent(pendingIntent).build();
+
+                NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.notify(0, notification);
+            }
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
     }
 }
