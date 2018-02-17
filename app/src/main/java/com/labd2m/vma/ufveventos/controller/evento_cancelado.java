@@ -208,7 +208,6 @@ public class evento_cancelado extends AppCompatActivity implements OnMapReadyCal
             if (mGoogleMap != null) {
                 mGoogleMap.animateCamera(CameraUpdateFactory
                         .newCameraPosition(camPosition));
-                Permission permission = new Permission();
                 if (ActivityCompat.checkSelfPermission(getBaseContext(),
                         Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(getParent(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);

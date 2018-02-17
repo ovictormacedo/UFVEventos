@@ -12,6 +12,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -152,9 +153,23 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
             CameraPosition camPosition = new CameraPosition.Builder()
                     .target(new LatLng(lat, lng)).zoom(14f).build();
 
-            if (mGoogleMap != null)
+            if (mGoogleMap != null) {
                 mGoogleMap.animateCamera(CameraUpdateFactory
                         .newCameraPosition(camPosition));
+                if (ActivityCompat.checkSelfPermission(getBaseContext(),
+                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getParent(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                }
+                if (ActivityCompat.checkSelfPermission(getBaseContext(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getParent(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+                }
+                if (ActivityCompat.checkSelfPermission(getBaseContext(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getParent(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                }
+                mGoogleMap.setMyLocationEnabled(true);
+            }
         } else {
             Log.d("Location error", "Something went wrong");
         }

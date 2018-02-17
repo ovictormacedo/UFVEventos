@@ -18,10 +18,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -91,11 +93,25 @@ public class editar_perfil extends AppCompatActivity
             ((EditText) findViewById(R.id.nascimentoEditarPefil)).setText(data);
         }
 
-        try {
-            int sexo = getResources().getIdentifier(usuario.getSexo() + "EditarPerfil", "id",
-                    this.getBaseContext().getPackageName());
-            ((RadioButton) findViewById(sexo)).setChecked(true);
-        }catch(Exception e){Log.e("ERRO SEXO EDIT PERFIL",e.getMessage());}
+        //Recupera sexo
+        Spinner spinner = (Spinner) findViewById(R.id.sexo_editar_perfil);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.sexo_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+
+        //Seta o sexo do usuário cadastrado
+        if (usuario.getSexo().equals("m"))
+            spinner.setSelection(2);
+        else
+            if (usuario.getSexo().equals("f"))
+                spinner.setSelection(1);
+            else
+                if (usuario.getSexo().equals("m"))
+                    spinner.setSelection(3);
     }
 
     public void alterar_cadastro(View view){
@@ -123,19 +139,18 @@ public class editar_perfil extends AppCompatActivity
             if (!nascimento.isEmpty())
                 nascimento = nascimento.substring(6,10)+"-"+nascimento.substring(3,5)+"-"+nascimento.substring(0,2);
 
-            //Recupera referências aos radio buttons contendo as opções de sexo
-            RadioButton masculino = ((RadioButton) findViewById(R.id.mEditarPerfil));
-            RadioButton feminino = ((RadioButton) findViewById(R.id.fEditarPerfil));
-            RadioButton outro = ((RadioButton) findViewById(R.id.oEditarPerfil));
-
-            //Verifica qual o sexo selecionado
-            String sexo = "";
-            if (sexo.isEmpty())
-                sexo = (masculino.isChecked()) ? "m" : "";
-            if (sexo.isEmpty())
-                sexo = (feminino.isChecked()) ? "f" : "";
-            if (sexo.isEmpty())
-                sexo = (outro.isChecked()) ? "o" : "";
+            Spinner spinner = (Spinner) findViewById(R.id.sexo_editar_perfil);
+            String sexo = spinner.getSelectedItem().toString();
+            if (sexo.equals("Prefiro não dizer"))
+                sexo = "p";
+            else
+            if(sexo.equals("Feminino"))
+                sexo = "f";
+            else
+            if (sexo.equals("Masculino"))
+                sexo = "m";
+            else
+                sexo = "o";
 
             //Atualiza singleton usuario
             usuario.setSexo(sexo);

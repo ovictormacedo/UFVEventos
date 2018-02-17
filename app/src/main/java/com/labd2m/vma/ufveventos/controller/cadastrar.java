@@ -1,5 +1,6 @@
 package com.labd2m.vma.ufveventos.controller;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -11,10 +12,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +59,16 @@ public class cadastrar extends AppCompatActivity {
         Tracker mTracker = application.getDefaultTracker();
         mTracker.setScreenName("cadastrar");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
+        //Recupera sexo
+        Spinner spinner = (Spinner) findViewById(R.id.sexo_cadastrar);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.sexo_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
     }
 
     public void faca_login(View view) {
@@ -66,13 +80,11 @@ public class cadastrar extends AppCompatActivity {
         boolean valido1 = validaEditText("nomeErroCadastro","nomeCadastro","O campo não pode estar vazio.");
         boolean valido2 = validaEditText("emailErroCadastro","emailCadastro","O campo não pode estar vazio.");
         boolean valido3 = validaEditText("senhaErroCadastro","senhaCadastro","O campo não pode estar vazio.");
-        boolean valido4 = validaRadioGroup("sexoErroCadastro","mCadastro","fCadastro","oCadastro",
-                "O campo não pode estar vazio.");
         boolean valido5 = validaSenha("confirmaSenhaErroCadastro","confirmaSenhaCadastro",
                 "senhaErroCadastro","senhaCadastro","Este campo precisa ser igual à senha.");
 
         //Se os dados digitados estão corretos envia ao servidor
-        if (valido1 && valido2 && valido3 && valido4 && valido5){
+        if (valido1 && valido2 && valido3 && valido5){
             //Mostra barra de carregamento
             final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarCadastro);
             progressBar.setVisibility(View.VISIBLE);
@@ -87,19 +99,18 @@ public class cadastrar extends AppCompatActivity {
             if (!nascimento.isEmpty())
                 nascimento = nascimento.substring(6,10)+"-"+nascimento.substring(3,5)+"-"+nascimento.substring(0,2);
 
-            //Recupera referências aos radio buttons contendo as opções de sexo
-            RadioButton masculino = ((RadioButton) findViewById(R.id.mCadastro));
-            RadioButton feminino = ((RadioButton) findViewById(R.id.fCadastro));
-            RadioButton outro = ((RadioButton) findViewById(R.id.oCadastro));
-
-            //Verifica qual o sexo selecionado
-            String sexo = "";
-            if (sexo.isEmpty())
-                sexo = (masculino.isChecked()) ? "m" : "";
-            if (sexo.isEmpty())
-                sexo = (feminino.isChecked()) ? "f" : "";
-            if (sexo.isEmpty())
-                sexo = (outro.isChecked()) ? "o" : "";
+            Spinner spinner = (Spinner) findViewById(R.id.sexo_cadastrar);
+            String sexo = spinner.getSelectedItem().toString();
+            if (sexo.equals("Prefiro não dizer"))
+                sexo = "p";
+            else
+                if(sexo.equals("Feminino"))
+                    sexo = "f";
+                else
+                    if (sexo.equals("Masculino"))
+                        sexo = "m";
+                    else
+                        sexo = "o";
 
             //Cria json object
             JSONObject json = new JSONObject();
@@ -177,6 +188,7 @@ public class cadastrar extends AppCompatActivity {
                                             usuario.setNome(response.getNome());
                                             usuario.setSenha(response.getSenha());
                                             usuario.setFoto(response.getFoto());
+                                            usuario.setSexo(response.getSexo());
 
                                             //Atualiza shared preferences
                                             sharedPref = getBaseContext().

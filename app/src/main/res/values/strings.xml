@@ -11,9 +11,9 @@
     <string name="title_activity_login">UFV Eventos</string>
     <string name="title_activity_categorias_pagina_inicial">Categorias Página Inicial</string>
     <string-array name="sexo_array">
+        <item>Prefiro não dizer</item>
         <item>Feminino</item>
         <item>Masculino</item>
         <item>Outro</item>
-        <item>Prefiro não dizer</item>
     </string-array>
 </resources>
