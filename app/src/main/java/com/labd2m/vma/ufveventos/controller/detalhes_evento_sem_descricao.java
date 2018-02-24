@@ -13,6 +13,7 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -82,9 +83,11 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
         int i = view.getId();
         //Clicou no botão de adicionar à agenda
         if (i == R.id.addAgenda) {
-            Calendar calendar = new Calendar();
-            calendar.addEvent(evento,getBaseContext(),getContentResolver(), getParent());
-            Toast.makeText(getBaseContext(),"Evento adicionado à agenda.",Toast.LENGTH_LONG).show();
+            if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+                Calendar calendar = new Calendar();
+                calendar.addEvent(evento, getBaseContext(), getContentResolver(), getParent());
+                Toast.makeText(getBaseContext(), "Evento adicionado à agenda.", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -156,19 +159,10 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
             if (mGoogleMap != null) {
                 mGoogleMap.animateCamera(CameraUpdateFactory
                         .newCameraPosition(camPosition));
-                if (ActivityCompat.checkSelfPermission(getBaseContext(),
-                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getParent(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                }
-                if (ActivityCompat.checkSelfPermission(getBaseContext(),
-                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getParent(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-                }
-                if (ActivityCompat.checkSelfPermission(getBaseContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getParent(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                }
-                mGoogleMap.setMyLocationEnabled(true);
+
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED)
+                    mGoogleMap.setMyLocationEnabled(true);
             }
         } else {
             Log.d("Location error", "Something went wrong");
@@ -354,10 +348,6 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarDetalhesEvento);
         progressBar.setVisibility(View.GONE);
 
-        //Requisita permissões para localização
-        Permission permission = new Permission();
-        permission.requestPermissionMaps(getParent(),getBaseContext());
-
         //Traça rota
         List<Local> locaisAux = evento.getLocais();
         double latDest = Double.parseDouble(locaisAux.get(0).getLatitude());
@@ -407,10 +397,40 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
         }
 
         //Seta número de participantes do evento
-        if (evento.getNumeroParticipantes() > 0) {
+        if (evento.getMostrarparticipantes() == 1) { //Deseja divulgar o número de participantes
+            if (evento.getNumeroParticipantes() > 0) {
+                findViewById(R.id.participantesLabelEvento).setVisibility(View.VISIBLE);
+                ((TextView) findViewById(R.id.participantesEvento)).
+                        setText(String.valueOf(evento.getNumeroParticipantes()));
+            }
+        }else{
             findViewById(R.id.participantesLabelEvento).setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.participantesEvento)).
-                    setText(String.valueOf(evento.getNumeroParticipantes()));
+                    setText("Ilimitado");
+        }
+
+        //Seta valor da inscrição
+        if (evento.getTeminscricao() == 1)
+            if (evento.getValorinscricao() == 0){
+                findViewById(R.id.taxaIngressoLabel).setVisibility(View.VISIBLE);
+                ((TextView) findViewById(R.id.taxaIngresso)).
+                        setText("Gratuito");
+            }else{
+                findViewById(R.id.taxaIngressoLabel).setVisibility(View.VISIBLE);
+                ((TextView) findViewById(R.id.taxaIngresso)).
+                        setText(String.valueOf(evento.getValorinscricao()));
+            }
+        else {
+            ((TextView) findViewById(R.id.taxaIngresso)).
+                    setText("Não é necessário realizar inscrição.");
+        }
+
+
+        //Seta local ou link da inscricao
+        if (evento.getTeminscricao() == 1){
+            findViewById(R.id.localInscricaoLabel).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.localInscricao)).
+                    setText(evento.getLinklocalinscricao());
         }
 
         if (evento.getPublicoAlvo() != null) {
@@ -488,12 +508,5 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
         DisplayMetrics metrics = resources.getDisplayMetrics();
         float px = dp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
         return px;
-    }
-
-    public static float convertPixelsToDp(float px, Context context){
-        Resources resources = context.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float dp = px / ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
-        return dp;
     }
 }

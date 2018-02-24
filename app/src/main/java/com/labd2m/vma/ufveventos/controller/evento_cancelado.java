@@ -81,6 +81,10 @@ public class evento_cancelado extends AppCompatActivity implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_evento_cancelado);
 
+        //Requsita permissão para utilizar mapas
+        Permission permission = new Permission();
+        permission.requestPermissionMaps(evento_cancelado.this,this);
+
         //Google Analytics
         MyApplication application = (MyApplication) getApplication();
         Tracker mTracker = application.getDefaultTracker();
@@ -92,8 +96,7 @@ public class evento_cancelado extends AppCompatActivity implements OnMapReadyCal
         progressBar.setVisibility(View.GONE);
 
         //Requisita permissões para localização
-        Permission permission = new Permission();
-        permission.requestPermissionMaps(getParent(),getBaseContext());
+        permission.requestPermissionMaps(evento_cancelado.this,this);
 
         //Traça rota
         if (googleServicesAvailable()){
@@ -208,19 +211,9 @@ public class evento_cancelado extends AppCompatActivity implements OnMapReadyCal
             if (mGoogleMap != null) {
                 mGoogleMap.animateCamera(CameraUpdateFactory
                         .newCameraPosition(camPosition));
-                if (ActivityCompat.checkSelfPermission(getBaseContext(),
-                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getParent(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                }
-                if (ActivityCompat.checkSelfPermission(getBaseContext(),
-                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getParent(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-                }
-                if (ActivityCompat.checkSelfPermission(getBaseContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getParent(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                }
-                mGoogleMap.setMyLocationEnabled(true);
+                try {
+                    mGoogleMap.setMyLocationEnabled(true);
+                }catch (SecurityException e){Log.e("ERRO MAPS",e.getMessage());}
             }
         } else {
             Log.d("Location error", "Something went wrong");

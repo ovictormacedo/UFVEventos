@@ -1,10 +1,14 @@
 package com.labd2m.vma.ufveventos.controller;
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -96,6 +100,17 @@ public class inicial extends AppCompatActivity
         und.setNomeUsuario(navigationView,usuario.getNome());
         und.setUsuarioImagem(navigationView, usuario.getFoto());
 
+        //Pede permissão da localização e do Calendar
+
+        if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_CALENDAR)
+                != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(inicial.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.WRITE_CALENDAR,Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+
         eventos = new ArrayList<>();
         myRecyclerView = (RecyclerView) findViewById(R.id.lista_eventos);
         myRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -157,6 +172,7 @@ public class inicial extends AppCompatActivity
                             //Encerra barra de carregamento
                             progressBar.setVisibility(View.GONE);
                             Log.i("Retrofit error", "Erro:" + e.getMessage());
+                            e.printStackTrace();
                             Toast.makeText(getBaseContext(), "Não foi possível carregar os eventos.", Toast.LENGTH_SHORT).show();
                         }
 
@@ -240,9 +256,6 @@ public class inicial extends AppCompatActivity
                     }
                 }
             });
-        //Requsita permissão para utilizar a agenda
-        Permission permission = new Permission();
-        permission.requestPermissionCalendar(getParent(),getBaseContext());
     }
 
     public void escolher_categorias(View view){

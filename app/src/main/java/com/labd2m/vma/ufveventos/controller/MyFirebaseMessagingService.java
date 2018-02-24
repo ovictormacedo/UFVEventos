@@ -55,7 +55,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         dadosJson.getString("horainicio"), dadosJson.getString("horafim"),
                         dadosJson.getString("datainicio"), dadosJson.getString("datafim"),
                         dadosJson.getString("descricao"), "",Integer.parseInt(dadosJson.getString("participantes")),
-                        "", null, null, null);
+                        "", null, null, null, 0, 0, null, 0);
             }catch(JSONException e){Log.e("JSON ERRO",e.getMessage());}
 
             com.labd2m.vma.ufveventos.util.Calendar calendar = new com.labd2m.vma.ufveventos.util.Calendar();

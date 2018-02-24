@@ -29,6 +29,7 @@ import com.labd2m.vma.ufveventos.model.Api;
 import com.labd2m.vma.ufveventos.model.Categoria;
 import com.labd2m.vma.ufveventos.model.RecyclerViewCategoriasAdapter;
 import com.labd2m.vma.ufveventos.model.UsuarioSingleton;
+import com.labd2m.vma.ufveventos.util.Permission;
 import com.labd2m.vma.ufveventos.util.RetrofitAPI;
 import com.labd2m.vma.ufveventos.util.UsuarioNavigationDrawer;
 import com.google.android.gms.analytics.HitBuilders;
@@ -74,6 +75,10 @@ public class notificacoes extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+
+        //Requsita permissão para utilizar a agenda
+        Permission permission = new Permission();
+        permission.requestPermissionCalendar(notificacoes.this,this);
 
         //Google Analytics
         MyApplication application = (MyApplication) getApplication();

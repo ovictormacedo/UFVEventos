@@ -12,6 +12,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -84,8 +85,8 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
         //Clicou no botão de adicionar à agenda
         if (i == R.id.addAgenda) {
             Calendar calendar = new Calendar();
-            calendar.addEvent(evento,getBaseContext(),getContentResolver(), getParent());
-            Toast.makeText(getBaseContext(),"Evento adicionado à agenda.",Toast.LENGTH_LONG).show();
+            calendar.addEvent(evento, getBaseContext(), getContentResolver(), getParent());
+            Toast.makeText(getBaseContext(), "Evento adicionado à agenda.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -93,7 +94,6 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
         if (isProviderAvailable() && (provider != null)) {
             locateCurrentPosition();
         }
@@ -154,19 +154,9 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
             if (mGoogleMap != null) {
                 mGoogleMap.animateCamera(CameraUpdateFactory
                         .newCameraPosition(camPosition));
-                if (ActivityCompat.checkSelfPermission(getBaseContext(),
-                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getParent(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                }
-                if (ActivityCompat.checkSelfPermission(getBaseContext(),
-                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getParent(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-                }
-                if (ActivityCompat.checkSelfPermission(getBaseContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getParent(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                }
-                mGoogleMap.setMyLocationEnabled(true);
+                try {
+                    mGoogleMap.setMyLocationEnabled(true);
+                }catch(SecurityException e){Log.e("MAPS ERROR",e.getMessage());}
             }
         } else {
             Log.d("Location error", "Something went wrong");
@@ -235,27 +225,10 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
                             //Limpa mapa
                             mGoogleMap.clear();
 
-                            //Adiciona marcador à posição inicial
-                            HashMap<String, String> pointAux = path.get(0);
-                            double latAux = Double.parseDouble(pointAux.get("lat"));
-                            double lngAux = Double.parseDouble(pointAux.get("lng"));
-
-                            CircleOptions mOptions = new CircleOptions()
-                                    .center(new LatLng(latAux, lngAux)).radius(200)
-                                    .strokeColor(0x110000FF).strokeWidth(5).fillColor(0x110000FF);
-                            mGoogleMap.addCircle(mOptions);
-
-                            CircleOptions circleOptions = new CircleOptions()
-                                    .center(new LatLng(latAux, lngAux))
-                                    .strokeWidth(1)
-                                    .fillColor(Color.BLUE)
-                                    .radius(60); // In meters
-                            mGoogleMap.addCircle(circleOptions);
-
                             //Adiciona marcador à posição final
-                            pointAux = path.get(path.size()-1);
-                            latAux = Double.parseDouble(pointAux.get("lat"));
-                            lngAux = Double.parseDouble(pointAux.get("lng"));
+                            HashMap<String, String> pointAux = path.get(path.size()-1);
+                            Double latAux = Double.parseDouble(pointAux.get("lat"));
+                            Double lngAux = Double.parseDouble(pointAux.get("lng"));
                             addMarker(latAux,lngAux,"Destino");
 
                             // Fetching all the points in i-th route
@@ -345,15 +318,10 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarDetalhesEvento);
         progressBar.setVisibility(View.GONE);
 
-        //Requisita permissões para localização
-        Permission permission = new Permission();
-        permission.requestPermissionMaps(getParent(),getBaseContext());
-
         //Traça rota
         List<Local> locaisAux = evento.getLocais();
         double latDest = Double.parseDouble(locaisAux.get(0).getLatitude());
         double lngDest = Double.parseDouble(locaisAux.get(0).getLongitude());
-        //mDestinationLatLng = new LatLng(-20.763757, -42.881494);
         mDestinationLatLng = new LatLng(latDest, lngDest);
         if (googleServicesAvailable()){
             initMap();
@@ -400,14 +368,44 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
         }
 
         //Seta número de participantes do evento
-        if (evento.getNumeroParticipantes() > 0) {
+        if (evento.getMostrarparticipantes() == 1) { //Deseja divulgar o número de participantes
+            if (evento.getNumeroParticipantes() > 0) {
+                findViewById(R.id.participantesLabelEvento).setVisibility(View.VISIBLE);
+                ((TextView) findViewById(R.id.participantesEvento)).
+                        setText(String.valueOf(evento.getNumeroParticipantes()));
+            }
+        }else{
             findViewById(R.id.participantesLabelEvento).setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.participantesEvento)).
-                    setText(String.valueOf(evento.getNumeroParticipantes()));
+                    setText("Ilimitado");
         }
 
+        //Seta valor da inscrição
+        if (evento.getTeminscricao() == 1)
+            if (evento.getValorinscricao() == 0){
+                findViewById(R.id.taxaIngressoLabel).setVisibility(View.VISIBLE);
+                ((TextView) findViewById(R.id.taxaIngresso)).
+                        setText("Gratuito");
+            }else{
+                findViewById(R.id.taxaIngressoLabel).setVisibility(View.VISIBLE);
+                ((TextView) findViewById(R.id.taxaIngresso)).
+                        setText(String.valueOf(evento.getValorinscricao()));
+            }
+        else {
+            ((TextView) findViewById(R.id.taxaIngresso)).
+                    setText("Não é necessário realizar inscrição.");
+        }
+
+
+        //Seta local ou link da inscricao
+        if (evento.getTeminscricao() == 1){
+            findViewById(R.id.localInscricaoLabel).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.localInscricao)).
+                    setText(evento.getLinklocalinscricao());
+        }
+
+        //Seta público alvo do evento
         if (evento.getPublicoAlvo() != null) {
-            //Seta público alvo do evento
             findViewById(R.id.publicoAlvoLabelEvento).setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.publicoAlvoEvento)).
                     setText(evento.getPublicoAlvo());

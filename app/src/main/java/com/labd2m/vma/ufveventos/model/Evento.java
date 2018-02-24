@@ -20,6 +20,11 @@ public class Evento {
     private String programacao_evento = null;
     private int participantes = 0;
     private String publico = null;
+    private int teminscricao;
+    private float valorinscricao;
+    private String linklocalinscricao = null;
+    private int mostrarparticipantes;
+
     @SerializedName("categorias")
     @Expose
     private List<Categoria> categorias = null;
@@ -30,9 +35,12 @@ public class Evento {
     @Expose
     private List<Servico> servicos = null;
 
+    public Evento(){}
+
     public Evento(int id, String denominacao, String horainicio, String horafim, String datainicio,
                   String datafim, String descricao_evento, String programacao_evento, int participantes,
-                  String publico, List<Categoria> categorias, List<Local> locais, List<Servico> servicos) {
+                  String publico, List<Categoria> categorias, List<Local> locais, List<Servico> servicos,
+                  int teminscricao, float valorinscricao, String linklocalinscricao, int mostrarparticipantes) {
         this.id = id;
         this.denominacao = denominacao;
         this.horainicio = horainicio;
@@ -46,6 +54,10 @@ public class Evento {
         this.categorias = categorias;
         this.locais = locais;
         this.servicos = servicos;
+        this.teminscricao = teminscricao;
+        this.valorinscricao = valorinscricao;
+        this.linklocalinscricao = linklocalinscricao;
+        this.mostrarparticipantes = mostrarparticipantes;
     }
 
     public String getDescricao_evento() {
@@ -62,6 +74,38 @@ public class Evento {
 
     public void setProgramacao_evento(String programacao_evento) {
         this.programacao_evento = programacao_evento;
+    }
+
+    public int getTeminscricao() {
+        return teminscricao;
+    }
+
+    public void setTeminscricao(int teminscricao) {
+        this.teminscricao = teminscricao;
+    }
+
+    public float getValorinscricao() {
+        return valorinscricao;
+    }
+
+    public void setValorinscricao(float valorinscricao) {
+        this.valorinscricao = valorinscricao;
+    }
+
+    public String getLinklocalinscricao() {
+        return linklocalinscricao;
+    }
+
+    public void setLinklocalinscricao(String linklocalinscricao) {
+        this.linklocalinscricao = linklocalinscricao;
+    }
+
+    public int getMostrarparticipantes() {
+        return mostrarparticipantes;
+    }
+
+    public void setMostrarparticipantes(int mostrarparticipantes) {
+        this.mostrarparticipantes = mostrarparticipantes;
     }
 
     public int getId() {
