@@ -75,14 +75,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     Log.i("ADD EVENTO",evento.getDenominacao());
 
                     if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALENDAR)
-                            != PackageManager.PERMISSION_GRANTED)
+                            == PackageManager.PERMISSION_GRANTED)
                         calendar.addEventNotification(evento,local,getBaseContext(),getContentResolver());
 
                 /*Verifica se o usuário deseja gravar a notificação na agenda,
                 se o evento está deferido e se ele acabou de ser atualizado no sistema*/
                 }else if (agenda.equals("1") && acao.equals("update")){
                     Log.i("UPDATE EVENTO",evento.getDenominacao());
-                    //calendar.addEventNotification(evento,local,getBaseContext(),getContentResolver());
+                    if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALENDAR)
+                            == PackageManager.PERMISSION_GRANTED)
+                        calendar.updateEventNotification(evento,local,getBaseContext(),getContentResolver());
                 }
             }
 
