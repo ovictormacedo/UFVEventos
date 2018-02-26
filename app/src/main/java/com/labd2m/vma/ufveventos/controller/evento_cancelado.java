@@ -12,6 +12,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -49,6 +50,7 @@ import com.labd2m.vma.ufveventos.R;
 import com.labd2m.vma.ufveventos.model.Categoria;
 import com.labd2m.vma.ufveventos.model.Evento;
 import com.labd2m.vma.ufveventos.model.Local;
+import com.labd2m.vma.ufveventos.util.Calendar;
 import com.labd2m.vma.ufveventos.util.Permission;
 
 import org.json.JSONObject;
@@ -81,10 +83,6 @@ public class evento_cancelado extends AppCompatActivity implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_evento_cancelado);
 
-        //Requsita permissão para utilizar mapas
-        Permission permission = new Permission();
-        permission.requestPermissionMaps(evento_cancelado.this,this);
-
         //Google Analytics
         MyApplication application = (MyApplication) getApplication();
         Tracker mTracker = application.getDefaultTracker();
@@ -95,13 +93,15 @@ public class evento_cancelado extends AppCompatActivity implements OnMapReadyCal
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarDetalhesEvento);
         progressBar.setVisibility(View.GONE);
 
-        //Requisita permissões para localização
+        //Requisita permissão para mapas
+        Permission permission = new Permission();
         permission.requestPermissionMaps(evento_cancelado.this,this);
 
-        //Traça rota
-        if (googleServicesAvailable()){
-            initMap();
-        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED)
+            if (googleServicesAvailable()){
+                initMap();
+            }
 
         //Seta denominação do evento
         if (denominacao != null){
@@ -211,9 +211,11 @@ public class evento_cancelado extends AppCompatActivity implements OnMapReadyCal
             if (mGoogleMap != null) {
                 mGoogleMap.animateCamera(CameraUpdateFactory
                         .newCameraPosition(camPosition));
-                try {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED
+                        && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_GRANTED)
                     mGoogleMap.setMyLocationEnabled(true);
-                }catch (SecurityException e){Log.e("ERRO MAPS",e.getMessage());}
             }
         } else {
             Log.d("Location error", "Something went wrong");
@@ -321,5 +323,24 @@ public class evento_cancelado extends AppCompatActivity implements OnMapReadyCal
         DisplayMetrics metrics = resources.getDisplayMetrics();
         float px = dp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
         return px;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED)
+                        if (googleServicesAvailable())
+                            initMap();
+                } else {
+                }
+                return;
+            }
+        }
     }
 }

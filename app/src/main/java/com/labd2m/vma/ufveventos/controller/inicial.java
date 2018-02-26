@@ -101,7 +101,7 @@ public class inicial extends AppCompatActivity
         und.setUsuarioImagem(navigationView, usuario.getFoto());
 
         //Pede permissão da localização e do Calendar
-
+        /*
         if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_CALENDAR)
@@ -110,6 +110,7 @@ public class inicial extends AppCompatActivity
                 != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(inicial.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.WRITE_CALENDAR,Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+        */
 
         eventos = new ArrayList<>();
         myRecyclerView = (RecyclerView) findViewById(R.id.lista_eventos);

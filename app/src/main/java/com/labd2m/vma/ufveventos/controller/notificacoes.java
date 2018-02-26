@@ -76,10 +76,6 @@ public class notificacoes extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        //Requsita permissão para utilizar a agenda
-        Permission permission = new Permission();
-        permission.requestPermissionCalendar(notificacoes.this,this);
-
         //Google Analytics
         MyApplication application = (MyApplication) getApplication();
         Tracker mTracker = application.getDefaultTracker();
@@ -125,6 +121,13 @@ public class notificacoes extends AppCompatActivity
                         getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 if(isChecked) {
+                    //Requsita permissão para utilizar a agenda
+                    Permission permission = new Permission();
+                    permission.requestPermissionCalendar(notificacoes.this,getBaseContext());
+
+                    //Ajusta recebimento de notificações
+                    ((Switch) findViewById(R.id.habilitarNotificacoes)).setChecked(true);
+
                     editor.putString("agenda", "1");
                     usuario.setAgenda("1");
                 }

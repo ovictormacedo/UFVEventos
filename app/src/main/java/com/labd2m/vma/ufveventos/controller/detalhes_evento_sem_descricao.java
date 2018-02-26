@@ -83,7 +83,12 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
         int i = view.getId();
         //Clicou no botão de adicionar à agenda
         if (i == R.id.addAgenda) {
-            if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+            //Requisita permissão para escrita
+            Permission permission = new Permission();
+            permission.requestPermissionCalendar(detalhes_evento_sem_descricao.this,this);
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
+                    == PackageManager.PERMISSION_GRANTED) {
                 Calendar calendar = new Calendar();
                 calendar.addEvent(evento, getBaseContext(), getContentResolver(), getParent());
                 Toast.makeText(getBaseContext(), "Evento adicionado à agenda.", Toast.LENGTH_LONG).show();
@@ -161,6 +166,8 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
                         .newCameraPosition(camPosition));
 
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED
+                        && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                         == PackageManager.PERMISSION_GRANTED)
                     mGoogleMap.setMyLocationEnabled(true);
             }
@@ -353,9 +360,17 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
         double latDest = Double.parseDouble(locaisAux.get(0).getLatitude());
         double lngDest = Double.parseDouble(locaisAux.get(0).getLongitude());
         mDestinationLatLng = new LatLng(latDest, lngDest);
-        if (googleServicesAvailable()){
-            initMap();
-        }
+
+        //Requisita permissão para mapas
+        Permission permission = new Permission();
+        permission.requestPermissionMaps(detalhes_evento_sem_descricao.this,this);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED)
+            if (googleServicesAvailable()){
+                initMap();
+            }
+
         //Seta denominação do evento
         if (evento.getDenominacao() != null){
             ((TextView) findViewById(R.id.tituloEvento)).
@@ -508,5 +523,38 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
         DisplayMetrics metrics = resources.getDisplayMetrics();
         float px = dp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
         return px;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED)
+                        if (googleServicesAvailable())
+                            initMap();
+                } else {
+                }
+                return;
+            }
+            case 2: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        Calendar calendar = new Calendar();
+                        calendar.addEvent(evento, getBaseContext(), getContentResolver(), getParent());
+                        Toast.makeText(getBaseContext(), "Evento adicionado à agenda.", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                }
+                return;
+            }
+        }
     }
 }

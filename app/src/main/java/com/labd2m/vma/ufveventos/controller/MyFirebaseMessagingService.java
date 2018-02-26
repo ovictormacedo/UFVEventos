@@ -1,10 +1,13 @@
 package com.labd2m.vma.ufveventos.controller;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.labd2m.vma.ufveventos.model.Evento;
@@ -70,13 +73,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 se o evento está deferido e se ele acabou de ser adicionado ao sistema*/
                 if (agenda.equals("1") && tipo.equals("1") && acao.equals("insert")){
                     Log.i("ADD EVENTO",evento.getDenominacao());
-                    calendar.addEventNotification(evento,local,getBaseContext(),getContentResolver());
+
+                    if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALENDAR)
+                            != PackageManager.PERMISSION_GRANTED)
+                        calendar.addEventNotification(evento,local,getBaseContext(),getContentResolver());
 
                 /*Verifica se o usuário deseja gravar a notificação na agenda,
                 se o evento está deferido e se ele acabou de ser atualizado no sistema*/
                 }else if (agenda.equals("1") && acao.equals("update")){
                     Log.i("UPDATE EVENTO",evento.getDenominacao());
-                    calendar.addEventNotification(evento,local,getBaseContext(),getContentResolver());
+                    //calendar.addEventNotification(evento,local,getBaseContext(),getContentResolver());
                 }
             }
 

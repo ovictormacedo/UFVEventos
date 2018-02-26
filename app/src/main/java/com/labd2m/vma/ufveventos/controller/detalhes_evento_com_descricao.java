@@ -74,6 +74,163 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
     public Evento evento;
     public int _yDelta;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        //Captura evento solicitado
+        String eventoJson = getIntent().getStringExtra("evento");
+        Gson gson = new Gson();
+        evento = gson.fromJson(eventoJson, Evento.class);
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_detalhes_evento_com_descricao);
+
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        LinearLayout thirdPart = (LinearLayout) findViewById(R.id.thirdPartDetalhesEvento);
+        thirdPart.setOnTouchListener(new ScrollFunction());
+
+        //Google Analytics
+        MyApplication application = (MyApplication) getApplication();
+        Tracker mTracker = application.getDefaultTracker();
+        mTracker.setScreenName("detalhes_evento_com_descricao");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
+        findViewById(R.id.addAgenda).setOnClickListener(this);
+
+        //Encerra barra de carregamento
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarDetalhesEvento);
+        progressBar.setVisibility(View.GONE);
+
+        //Traça rota
+        List<Local> locaisAux = evento.getLocais();
+        double latDest = Double.parseDouble(locaisAux.get(0).getLatitude());
+        double lngDest = Double.parseDouble(locaisAux.get(0).getLongitude());
+        mDestinationLatLng = new LatLng(latDest, lngDest);
+
+        //Requisita permissão para mapas
+        Permission permission = new Permission();
+        permission.requestPermissionMaps(detalhes_evento_com_descricao.this,this);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED)
+            if (googleServicesAvailable()){
+                initMap();
+            }
+
+        //Seta denominação do evento
+        if (evento.getDenominacao() != null){
+            ((TextView) findViewById(R.id.tituloEvento)).
+                    setText(evento.getDenominacao());
+        }
+
+        //Seta hora de início e fim do evento
+        if (evento.getHoraInicio() != null && evento.getHoraFim() != null) {
+            String horaInicio = evento.getHoraInicio().substring(0, 5);
+            String horaFim = evento.getHoraFim().substring(0, 5);
+            findViewById(R.id.horarioLabelEvento).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.horarioEvento)).
+                    setText(horaInicio+" - "+horaFim);
+        }
+
+        //Seta data do evento
+        if (evento.getDataInicio() != null && evento.getDataFim() != null) {
+            String aux = evento.getDataInicio();
+            String dataInicio = aux.substring(8, 10) + "/" + aux.substring(5, 7) + "/" + aux.substring(0, 4);
+            aux = evento.getDataFim();
+            String dataFim = aux.substring(8, 10) + "/" + aux.substring(5, 7) + "/" + aux.substring(0, 4);
+            findViewById(R.id.dataLabelEvento).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.dataEvento)).
+                    setText(dataInicio + " à " + dataFim);
+        }
+
+        //Seta local do evento
+        if (evento.getLocais().size() > 0) {
+            List<Local> locais = evento.getLocais();
+            String local = "";
+            for (int i = 0; i < locais.size(); i++) {
+                local = local + locais.get(i).getDescricao();
+                if (i != locais.size() - 1)
+                    local = local + ", ";
+            }
+            findViewById(R.id.localLabelEvento).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.localEvento)).
+                    setText(local);
+        }
+
+        //Seta número de participantes do evento
+        if (evento.getMostrarparticipantes() == 1) { //Deseja divulgar o número de participantes
+            if (evento.getNumeroParticipantes() > 0) {
+                findViewById(R.id.participantesLabelEvento).setVisibility(View.VISIBLE);
+                ((TextView) findViewById(R.id.participantesEvento)).
+                        setText(String.valueOf(evento.getNumeroParticipantes()));
+            }
+        }else{
+            findViewById(R.id.participantesLabelEvento).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.participantesEvento)).
+                    setText("Ilimitado");
+        }
+
+        //Seta valor da inscrição
+        if (evento.getTeminscricao() == 1)
+            if (evento.getValorinscricao() == 0){
+                findViewById(R.id.taxaIngressoLabel).setVisibility(View.VISIBLE);
+                ((TextView) findViewById(R.id.taxaIngresso)).
+                        setText("Gratuito");
+            }else{
+                findViewById(R.id.taxaIngressoLabel).setVisibility(View.VISIBLE);
+                ((TextView) findViewById(R.id.taxaIngresso)).
+                        setText(String.valueOf(evento.getValorinscricao()));
+            }
+        else {
+            ((TextView) findViewById(R.id.taxaIngresso)).
+                    setText("Não é necessário realizar inscrição.");
+        }
+
+
+        //Seta local ou link da inscricao
+        if (evento.getTeminscricao() == 1){
+            findViewById(R.id.localInscricaoLabel).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.localInscricao)).
+                    setText(evento.getLinklocalinscricao());
+        }
+
+        //Seta público alvo do evento
+        if (evento.getPublicoAlvo() != null) {
+            findViewById(R.id.publicoAlvoLabelEvento).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.publicoAlvoEvento)).
+                    setText(evento.getPublicoAlvo());
+        }
+
+        //Seta categorias do evento
+        if (evento.getCategorias().size() > 0) {
+            List<Categoria> categorias = evento.getCategorias();
+            String categoria = "";
+            for (int i = 0; i < categorias.size(); i++) {
+                categoria = categoria + categorias.get(i).getNome();
+                if (i != categorias.size() - 1)
+                    categoria = categoria + ", ";
+            }
+            findViewById(R.id.categoriaLabelEvento).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.categoriaEvento)).
+                    setText(categoria);
+        }
+
+        //Seta descrição do evento
+        if (evento.getDescricao_evento() != null){
+            ((TextView) findViewById(R.id.descricaoEvento)).
+                    setText(evento.getDescricao_evento());
+        }
+
+        //Seta programação do evento
+        if (evento.getProgramacao_evento() != null){
+            ((TextView) findViewById(R.id.programacaoEvento)).
+                    setText(evento.getProgramacao_evento());
+        }
+    }
+
     private void initMap(){
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this);
@@ -84,9 +241,16 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
         int i = view.getId();
         //Clicou no botão de adicionar à agenda
         if (i == R.id.addAgenda) {
-            Calendar calendar = new Calendar();
-            calendar.addEvent(evento, getBaseContext(), getContentResolver(), getParent());
-            Toast.makeText(getBaseContext(), "Evento adicionado à agenda.", Toast.LENGTH_LONG).show();
+            //Requisita permissão para escrita
+            Permission permission = new Permission();
+            permission.requestPermissionCalendar(detalhes_evento_com_descricao.this,this);
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Calendar calendar = new Calendar();
+                calendar.addEvent(evento, getBaseContext(), getContentResolver(), getParent());
+                Toast.makeText(getBaseContext(), "Evento adicionado à agenda.", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -154,9 +318,11 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
             if (mGoogleMap != null) {
                 mGoogleMap.animateCamera(CameraUpdateFactory
                         .newCameraPosition(camPosition));
-                try {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED
+                        && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_GRANTED)
                     mGoogleMap.setMyLocationEnabled(true);
-                }catch(SecurityException e){Log.e("MAPS ERROR",e.getMessage());}
             }
         } else {
             Log.d("Location error", "Something went wrong");
@@ -285,156 +451,6 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
     public void getDirection(View view) {
         if (mSourceLatLng != null && mDestinationLatLng != null) {
             traceMe(mSourceLatLng, mDestinationLatLng);
-        }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        //Captura evento solicitado
-        String eventoJson = getIntent().getStringExtra("evento");
-        Gson gson = new Gson();
-        evento = gson.fromJson(eventoJson, Evento.class);
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detalhes_evento_com_descricao);
-
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
-        LinearLayout thirdPart = (LinearLayout) findViewById(R.id.thirdPartDetalhesEvento);
-        thirdPart.setOnTouchListener(new ScrollFunction());
-
-        //Google Analytics
-        MyApplication application = (MyApplication) getApplication();
-        Tracker mTracker = application.getDefaultTracker();
-        mTracker.setScreenName("detalhes_evento_com_descricao");
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-
-        findViewById(R.id.addAgenda).setOnClickListener(this);
-
-        //Encerra barra de carregamento
-        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarDetalhesEvento);
-        progressBar.setVisibility(View.GONE);
-
-        //Traça rota
-        List<Local> locaisAux = evento.getLocais();
-        double latDest = Double.parseDouble(locaisAux.get(0).getLatitude());
-        double lngDest = Double.parseDouble(locaisAux.get(0).getLongitude());
-        mDestinationLatLng = new LatLng(latDest, lngDest);
-        if (googleServicesAvailable()){
-            initMap();
-        }
-
-        //Seta denominação do evento
-        if (evento.getDenominacao() != null){
-            ((TextView) findViewById(R.id.tituloEvento)).
-                    setText(evento.getDenominacao());
-        }
-
-        //Seta hora de início e fim do evento
-        if (evento.getHoraInicio() != null && evento.getHoraFim() != null) {
-            String horaInicio = evento.getHoraInicio().substring(0, 5);
-            String horaFim = evento.getHoraFim().substring(0, 5);
-            findViewById(R.id.horarioLabelEvento).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.horarioEvento)).
-                    setText(horaInicio+" - "+horaFim);
-        }
-
-        //Seta data do evento
-        if (evento.getDataInicio() != null && evento.getDataFim() != null) {
-            String aux = evento.getDataInicio();
-            String dataInicio = aux.substring(8, 10) + "/" + aux.substring(5, 7) + "/" + aux.substring(0, 4);
-            aux = evento.getDataFim();
-            String dataFim = aux.substring(8, 10) + "/" + aux.substring(5, 7) + "/" + aux.substring(0, 4);
-            findViewById(R.id.dataLabelEvento).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.dataEvento)).
-                    setText(dataInicio + " à " + dataFim);
-        }
-
-        //Seta local do evento
-        if (evento.getLocais().size() > 0) {
-            List<Local> locais = evento.getLocais();
-            String local = "";
-            for (int i = 0; i < locais.size(); i++) {
-                local = local + locais.get(i).getDescricao();
-                if (i != locais.size() - 1)
-                    local = local + ", ";
-            }
-            findViewById(R.id.localLabelEvento).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.localEvento)).
-                    setText(local);
-        }
-
-        //Seta número de participantes do evento
-        if (evento.getMostrarparticipantes() == 1) { //Deseja divulgar o número de participantes
-            if (evento.getNumeroParticipantes() > 0) {
-                findViewById(R.id.participantesLabelEvento).setVisibility(View.VISIBLE);
-                ((TextView) findViewById(R.id.participantesEvento)).
-                        setText(String.valueOf(evento.getNumeroParticipantes()));
-            }
-        }else{
-            findViewById(R.id.participantesLabelEvento).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.participantesEvento)).
-                    setText("Ilimitado");
-        }
-
-        //Seta valor da inscrição
-        if (evento.getTeminscricao() == 1)
-            if (evento.getValorinscricao() == 0){
-                findViewById(R.id.taxaIngressoLabel).setVisibility(View.VISIBLE);
-                ((TextView) findViewById(R.id.taxaIngresso)).
-                        setText("Gratuito");
-            }else{
-                findViewById(R.id.taxaIngressoLabel).setVisibility(View.VISIBLE);
-                ((TextView) findViewById(R.id.taxaIngresso)).
-                        setText(String.valueOf(evento.getValorinscricao()));
-            }
-        else {
-            ((TextView) findViewById(R.id.taxaIngresso)).
-                    setText("Não é necessário realizar inscrição.");
-        }
-
-
-        //Seta local ou link da inscricao
-        if (evento.getTeminscricao() == 1){
-            findViewById(R.id.localInscricaoLabel).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.localInscricao)).
-                    setText(evento.getLinklocalinscricao());
-        }
-
-        //Seta público alvo do evento
-        if (evento.getPublicoAlvo() != null) {
-            findViewById(R.id.publicoAlvoLabelEvento).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.publicoAlvoEvento)).
-                    setText(evento.getPublicoAlvo());
-        }
-
-        //Seta categorias do evento
-        if (evento.getCategorias().size() > 0) {
-            List<Categoria> categorias = evento.getCategorias();
-            String categoria = "";
-            for (int i = 0; i < categorias.size(); i++) {
-                categoria = categoria + categorias.get(i).getNome();
-                if (i != categorias.size() - 1)
-                    categoria = categoria + ", ";
-            }
-            findViewById(R.id.categoriaLabelEvento).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.categoriaEvento)).
-                    setText(categoria);
-        }
-
-        //Seta descrição do evento
-        if (evento.getDescricao_evento() != null){
-            ((TextView) findViewById(R.id.descricaoEvento)).
-                    setText(evento.getDescricao_evento());
-        }
-
-        //Seta programação do evento
-        if (evento.getProgramacao_evento() != null){
-            ((TextView) findViewById(R.id.programacaoEvento)).
-                    setText(evento.getProgramacao_evento());
         }
     }
 
@@ -580,5 +596,38 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
         DisplayMetrics metrics = resources.getDisplayMetrics();
         float dp = px / ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
         return dp;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                                == PackageManager.PERMISSION_GRANTED)
+                            if (googleServicesAvailable())
+                                initMap();
+                } else {
+                }
+                return;
+            }
+            case 2: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        Calendar calendar = new Calendar();
+                        calendar.addEvent(evento, getBaseContext(), getContentResolver(), getParent());
+                        Toast.makeText(getBaseContext(), "Evento adicionado à agenda.", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                }
+                return;
+            }
+        }
     }
 }
