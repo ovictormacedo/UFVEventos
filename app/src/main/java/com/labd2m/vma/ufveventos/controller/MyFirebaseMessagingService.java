@@ -80,11 +80,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                 /*Verifica se o usuário deseja gravar a notificação na agenda,
                 se o evento está deferido e se ele acabou de ser atualizado no sistema*/
-                }else if (agenda.equals("1") && acao.equals("update")){
+                }else if (agenda.equals("1") && tipo.equals("1") && acao.equals("update")){
                     Log.i("UPDATE EVENTO",evento.getDenominacao());
                     if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALENDAR)
                             == PackageManager.PERMISSION_GRANTED)
                         calendar.updateEventNotification(evento,local,getBaseContext(),getContentResolver());
+                }else if (agenda.equals("1") && tipo.equals("3") && acao.equals("update")) {
+                    Log.i("UPDATE EVENTO CANCELADO",evento.getDenominacao());
+                    if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALENDAR)
+                            == PackageManager.PERMISSION_GRANTED)
+                        calendar.deleteEventNotification(evento,local,getBaseContext(),getContentResolver());
                 }
             }
 
@@ -116,7 +121,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 Calendar cal = Calendar.getInstance();
                 cal.add(Calendar.SECOND, 5); //Envia a notificação num horário agendado
                 alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
-            }else if (notificacoes.equals("1")) {
+            }else if (notificacoes.equals("1") && tipo.equals("3") && acao.equals("update")) { //Evento cancelado
                     //Agenda nova notificação
                     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                     Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");

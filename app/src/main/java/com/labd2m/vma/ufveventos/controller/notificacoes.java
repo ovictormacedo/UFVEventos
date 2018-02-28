@@ -182,7 +182,7 @@ public class notificacoes extends AppCompatActivity
                                 //Esconde barra de carregamento
                                 progressBar.setVisibility(View.GONE);
                                 Toast.makeText(getBaseContext(),"Dado atualizado!",Toast.LENGTH_SHORT).show();
-                                finish();
+                                //finish();
                             }
                         });
             }
@@ -201,6 +201,9 @@ public class notificacoes extends AppCompatActivity
                     usuario.setNotificacoes("1");
                 }
                 else {
+                    //Ajusta recebimento de notificações
+                    ((Switch) findViewById(R.id.addAgenda)).setChecked(false);
+
                     editor.putString("notificacoes", "0");
                     usuario.setNotificacoes("0");
                 }
@@ -250,7 +253,7 @@ public class notificacoes extends AppCompatActivity
                                 //Esconde barra de carregamento
                                 progressBar.setVisibility(View.GONE);
                                 Toast.makeText(getBaseContext(),"Dado atualizado!",Toast.LENGTH_SHORT).show();
-                                finish();
+                                //finish();
                             }
                         });
             }
