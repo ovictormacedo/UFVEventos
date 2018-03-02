@@ -32,12 +32,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         //Verifica se a mensagem contém notificação
         if (remoteMessage.getNotification() != null || !remoteMessage.getData().isEmpty()){
             //Recupera dados da notificação
-            String tipo = "",acao="";
+            String acao="";
             Map<String,String> dados = remoteMessage.getData();
             JSONObject dadosJson = null;
             try {
                 dadosJson = new JSONObject(dados.get("body"));
-                tipo = dadosJson.getString("tipo");
                 acao = dadosJson.getString("acao");
             }catch(JSONException e){Log.e("JSON ERRO",e.getMessage());}
 
@@ -47,11 +46,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 if (dadosJson.has("local" + i)) {
                     try {
                         local = local + " " + dadosJson.getString("local" + i);
-                    } catch (JSONException e) {
-                        Log.e("JSON ERRO", e.getMessage());
-                    }
+                    } catch (JSONException e) {Log.e("JSON ERRO", e.getMessage());}
                 }
             }
+            Log.i("EVENTO",""+acao+" ----- "+dadosJson);
             Evento evento = null;
             try {
                 evento = new Evento(Integer.parseInt(dadosJson.getString("id")), dadosJson.getString("denominacao"),
@@ -62,16 +60,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }catch(JSONException e){Log.e("JSON ERRO",e.getMessage());}
 
             com.labd2m.vma.ufveventos.util.Calendar calendar = new com.labd2m.vma.ufveventos.util.Calendar();
+
             //Verifica se o usuário deseja que a notificação seja adicionada à agenda
             SharedPreferences sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
             String idUsuario = sharedPref.getString("id","default");
+
             //Se o usuário está logado
             if (!idUsuario.equals("default")) {
                 Log.i("ADD EVENTO","LOGADO");
                 String agenda = sharedPref.getString("agenda","default");
                 /*Verifica se o usuário deseja gravar a notificação na agenda,
-                se o evento está deferido e se ele acabou de ser adicionado ao sistema*/
-                if (agenda.equals("1") && tipo.equals("1") && acao.equals("insert")){
+                e se ele acabou de ser adicionado ao sistema*/
+                Log.i("ADD EVENTO","LOGADO2");
+                if (agenda.equals("1") && acao.equals("novo")){
                     Log.i("ADD EVENTO",evento.getDenominacao());
 
                     if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALENDAR)
@@ -79,13 +80,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         calendar.addEventNotification(evento,local,getBaseContext(),getContentResolver());
 
                 /*Verifica se o usuário deseja gravar a notificação na agenda,
-                se o evento está deferido e se ele acabou de ser atualizado no sistema*/
-                }else if (agenda.equals("1") && tipo.equals("1") && acao.equals("update")){
+                e se ele acabou de ser atualizado no sistema*/
+                }else if (agenda.equals("1") && acao.equals("atualizado")){
                     Log.i("UPDATE EVENTO",evento.getDenominacao());
                     if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALENDAR)
                             == PackageManager.PERMISSION_GRANTED)
                         calendar.updateEventNotification(evento,local,getBaseContext(),getContentResolver());
-                }else if (agenda.equals("1") && tipo.equals("3") && acao.equals("update")) {
+
+                }else if (agenda.equals("1") && acao.equals("cancelado")) {
+                    /*Verifica se o usuário deseja gravar a notificação na agenda,
+                    e se ele acabou de ser cancelado no sistema*/
                     Log.i("UPDATE EVENTO CANCELADO",evento.getDenominacao());
                     if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALENDAR)
                             == PackageManager.PERMISSION_GRANTED)
@@ -95,10 +99,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             //Verifica se o usuário deseja receber notificacoes
             String notificacoes = sharedPref.getString("notificacoes","1");
-            Log.i("NOTIFICATION",notificacoes);
-            Log.i("NOTIFICATION",tipo);
-            if (notificacoes.equals("1") && tipo.equals("1") && acao.equals("insert")) { //tipo = deferido
-                Log.i("NOTIFICATION","Envia notificação");
+            //Chegou novo evento
+            if (notificacoes.equals("1") && acao.equals("novo")) {
+                Log.i("NOTIFICATION","Envia notificação - novo");
                 /*Cancela notificação já agendada, a fim de impedir que o app
                 inunde o celular de notificações de novos eventos*/
                 Context ctx = getApplicationContext();
@@ -115,17 +118,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 //Agenda nova notificação
                 Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
                 notificationIntent.addCategory("android.intent.category.DEFAULT");
-                notificationIntent.putExtra("tipo",tipo);
                 notificationIntent.putExtra("acao",acao);
                 PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 Calendar cal = Calendar.getInstance();
                 cal.add(Calendar.SECOND, 5); //Envia a notificação num horário agendado
                 alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
-            }else if (notificacoes.equals("1") && tipo.equals("3") && acao.equals("update")) { //Evento cancelado
+
+                //Evento cancelado
+            }else if (notificacoes.equals("1") && acao.equals("cancelado")) {
+                    Log.i("NOTIFICATION","Envia notificação - cancelado");
                     //Agenda nova notificação
                     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                     Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
-                    notificationIntent.putExtra("tipo",tipo);
                     notificationIntent.putExtra("acao",acao);
                     notificationIntent.putExtra("denominacao",evento.getDenominacao());
                     notificationIntent.putExtra("horainicio",evento.getHoraInicio());
@@ -143,11 +147,40 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     }
 
                     notificationIntent.addCategory("android.intent.category.DEFAULT");
-                    PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    PendingIntent broadcast = PendingIntent.getBroadcast(this, 101, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                     Calendar cal = Calendar.getInstance();
                     cal.add(Calendar.SECOND, 1); //Envia notificação imediatamente
                     alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
-                }
+
+                    //Evento atualizado
+                    }/*else if (notificacoes.equals("1") && acao.equals("atualizado")) {
+                        Log.i("NOTIFICATION","Envia notificação - cancelado");
+
+                        //Agenda nova notificação
+                        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                        Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
+                        notificationIntent.putExtra("acao",acao);
+                        notificationIntent.putExtra("denominacao",evento.getDenominacao());
+                        notificationIntent.putExtra("horainicio",evento.getHoraInicio());
+                        notificationIntent.putExtra("horafim",evento.getHoraFim());
+                        notificationIntent.putExtra("datainicio",evento.getDataInicio());
+                        notificationIntent.putExtra("datafim",evento.getDataFim());
+                        if (evento.getPublicoAlvo() != null)
+                            notificationIntent.putExtra("publico",evento.getPublicoAlvo());
+                        else
+                            notificationIntent.putExtra("publico","");
+                        if (local != "") {
+                            notificationIntent.putExtra("local",local);
+                        }else{
+                            notificationIntent.putExtra("local","");
+                        }
+
+                        notificationIntent.addCategory("android.intent.category.DEFAULT");
+                        PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        Calendar cal = Calendar.getInstance();
+                        cal.add(Calendar.SECOND, 1); //Envia notificação imediatamente
+                        alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
+                    }*/
         }
     }
 }
