@@ -30,7 +30,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage){
         Log.i("NOTIFICATION","Chegou notificação");
         //Verifica se a mensagem contém notificação
-        if (remoteMessage.getNotification() != null || !remoteMessage.getData().isEmpty()){
+        if (remoteMessage.getNotification() != null || remoteMessage.getData().size() > 0){
             //Recupera dados da notificação
             String acao="";
             Map<String,String> dados = remoteMessage.getData();
@@ -109,7 +109,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 Intent cancelServiceIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
                 PendingIntent cancelServicePendingIntent = PendingIntent.getBroadcast(
                         ctx,
-                        100, // integer constant used to identify the service
+                        0, // integer constant used to identify the service
                         cancelServiceIntent,
                         0 //no FLAG needed for a service cancel
                 );
@@ -119,7 +119,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
                 notificationIntent.addCategory("android.intent.category.DEFAULT");
                 notificationIntent.putExtra("acao",acao);
-                PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent broadcast = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 Calendar cal = Calendar.getInstance();
                 cal.add(Calendar.SECOND, 5); //Envia a notificação num horário agendado
                 alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
@@ -147,7 +147,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     }
 
                     notificationIntent.addCategory("android.intent.category.DEFAULT");
-                    PendingIntent broadcast = PendingIntent.getBroadcast(this, 101, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    PendingIntent broadcast = PendingIntent.getBroadcast(this, 1, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                     Calendar cal = Calendar.getInstance();
                     cal.add(Calendar.SECOND, 1); //Envia notificação imediatamente
                     alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
@@ -183,4 +183,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     }*/
         }
     }
+
+    @Override
+    public void onDeletedMessages(){Log.i("NOTIFICATION DELETED","CHEGOU");}
 }

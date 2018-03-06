@@ -12,6 +12,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 
 import com.labd2m.vma.ufveventos.R;
 
@@ -22,11 +23,13 @@ import com.labd2m.vma.ufveventos.R;
 public class NotificationReceiver extends BroadcastReceiver{
     @Override
     public void onReceive(final Context context, Intent it){
+        Log.i("NOTIFICATION RECEIVER","CHEGOU");
         try {
             Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.logo_sobre, null);
 
             String acao = it.getStringExtra("acao");
             if (acao.equals("cancelado")) {//Evento cancelado
+                Log.i("NOTIFICATION RECEIVER","CANCELADO");
                 Intent notificationIntent = new Intent(context, evento_cancelado.class);
                 notificationIntent.putExtra("denominacao", it.getStringExtra("denominacao"));
                 notificationIntent.putExtra("horainicio", it.getStringExtra("horainicio"));
@@ -40,10 +43,11 @@ public class NotificationReceiver extends BroadcastReceiver{
                 stackBuilder.addParentStack(evento_cancelado.class);
                 stackBuilder.addNextIntent(notificationIntent);
 
-                PendingIntent pendingIntent = stackBuilder.getPendingIntent(101, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent pendingIntent = stackBuilder.getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT);
                 Uri notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
                 Notification notification = builder.setContentTitle("UFV Eventos")
+                        .setAutoCancel(true)
                         .setContentText("Um evento foi cancelado")
                         .setTicker("Um evento foi cancelado")
                         .setLargeIcon(bitmap)
@@ -52,17 +56,19 @@ public class NotificationReceiver extends BroadcastReceiver{
                         .setContentIntent(pendingIntent).build();
 
                 NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                notificationManager.notify(0, notification);
+                notificationManager.notify(1, notification);
             } else if (acao.equals("novo")) { //Novo evento adicionado
+                    Log.i("NOTIFICATION RECEIVER","NOVO");
                     Intent notificationIntent = new Intent(context, inicial.class);
                     TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
                     stackBuilder.addParentStack(inicial.class);
                     stackBuilder.addNextIntent(notificationIntent);
 
-                    PendingIntent pendingIntent = stackBuilder.getPendingIntent(100, PendingIntent.FLAG_UPDATE_CURRENT);
+                    PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                     Uri notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
                     Notification notification = builder.setContentTitle("UFV Eventos")
+                            .setAutoCancel(true)
                             .setContentText("Chegaram novos eventos")
                             .setTicker("Chegaram novos eventos")
                             .setLargeIcon(bitmap)
@@ -71,7 +77,7 @@ public class NotificationReceiver extends BroadcastReceiver{
                             .setContentIntent(pendingIntent).build();
 
                     NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                    notificationManager.notify(1, notification);
+                    notificationManager.notify(0, notification);
                 } /*else if (acao.equals("atualizado")) { //Evento atualizado
                         Intent notificationIntent = new Intent(context, inicial.class);
                         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
@@ -87,6 +93,7 @@ public class NotificationReceiver extends BroadcastReceiver{
                                 .setLargeIcon(bitmap)
                                 .setSmallIcon(R.drawable.logo_ufv1)
                                 .setSound(notificationSound)
+                                .setAutoCancel(true)
                                 .setContentIntent(pendingIntent).build();
 
                         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
