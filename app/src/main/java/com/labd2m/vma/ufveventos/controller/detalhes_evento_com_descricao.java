@@ -109,16 +109,17 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
         double latDest = Double.parseDouble(locaisAux.get(0).getLatitude());
         double lngDest = Double.parseDouble(locaisAux.get(0).getLongitude());
         mDestinationLatLng = new LatLng(latDest, lngDest);
+        mSourceLatLng = new LatLng(latDest, lngDest);
 
         //Requisita permissão para mapas
         Permission permission = new Permission();
         permission.requestPermissionMaps(detalhes_evento_com_descricao.this,this);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED)
-            if (googleServicesAvailable()){
+                == PackageManager.PERMISSION_GRANTED) {
+            if (googleServicesAvailable())
                 initMap();
-            }
+        }
 
         //Seta denominação do evento
         if (evento.getDenominacao() != null){
@@ -605,9 +606,10 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                                == PackageManager.PERMISSION_GRANTED)
+                                == PackageManager.PERMISSION_GRANTED){
                             if (googleServicesAvailable())
                                 initMap();
+                        }
                 } else {
                 }
                 return;
