@@ -51,7 +51,7 @@ public class NotificationReceiver extends BroadcastReceiver{
                         .setContentText("Um evento foi cancelado")
                         .setTicker("Um evento foi cancelado")
                         .setLargeIcon(bitmap)
-                        .setSmallIcon(R.drawable.logo_ufv1)
+                        .setSmallIcon(R.drawable.notificacao)
                         .setSound(notificationSound)
                         .setContentIntent(pendingIntent).build();
 
@@ -72,7 +72,7 @@ public class NotificationReceiver extends BroadcastReceiver{
                             .setContentText("Chegaram novos eventos")
                             .setTicker("Chegaram novos eventos")
                             .setLargeIcon(bitmap)
-                            .setSmallIcon(R.drawable.logo_ufv1)
+                            .setSmallIcon(R.drawable.notificacao)
                             .setSound(notificationSound)
                             .setContentIntent(pendingIntent).build();
 
@@ -91,7 +91,7 @@ public class NotificationReceiver extends BroadcastReceiver{
                                 .setContentText("Um evento foi atualizado")
                                 .setTicker("Um evento foi atualizado")
                                 .setLargeIcon(bitmap)
-                                .setSmallIcon(R.drawable.logo_ufv1)
+                                .setSmallIcon(R.drawable.notificacao)
                                 .setSound(notificationSound)
                                 .setAutoCancel(true)
                                 .setContentIntent(pendingIntent).build();

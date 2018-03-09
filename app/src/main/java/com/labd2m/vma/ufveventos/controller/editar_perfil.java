@@ -119,12 +119,11 @@ public class editar_perfil extends AppCompatActivity
         boolean valido1 = validaEditText("nomeErroEditarPerfil","nomeEditarPerfil","O campo não pode estar vazio.");
         boolean valido2 = validaEditText("emailErroEditarPerfil","emailEditarPerfil","O campo não pode estar vazio.");
         boolean valido3 = validaEditText("senhaErroEditarPerfil","senhaEditarPerfil","O campo não pode estar vazio.");
-        boolean valido4 = validaRadioGroup("sexoErroEditarPerfil","mEditarPerfil","fEditarPerfil","oEditarPerfil","O campo não pode estar vazio.");
-        boolean valido5 = validaSenha("confirmaSenhaErroEditarPerfil","confirmaSenhaEditarPerfil",
+        boolean valido4 = validaSenha("confirmaSenhaErroEditarPerfil","confirmaSenhaEditarPerfil",
                 "senhaErroEditarPerfil","senhaEditarPerfil","Este campo precisa ser igual à senha.");
 
         //Se os dados digitados estão corretos envia ao servidor
-        if (valido1 && valido2 && valido3 && valido4 && valido5){
+        if (valido1 && valido2 && valido3 && valido4){
             //Mostra barra de carregamento
             final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarEditarPerfil);
             progressBar.setVisibility(View.VISIBLE);
@@ -345,47 +344,6 @@ public class editar_perfil extends AppCompatActivity
             emailmatriculaErro.setText("");
             return true;
         }
-    }
-    public boolean validaRadioGroup(String idErro,String id1,String id2,String id3,String msg){
-        //Busca referência do campo
-        int erro = getResources().getIdentifier(idErro, "id",
-                this.getBaseContext().getPackageName());
-
-        int r1 = getResources().getIdentifier(id1, "id",
-                this.getBaseContext().getPackageName());
-
-        int r2 = getResources().getIdentifier(id2, "id",
-                this.getBaseContext().getPackageName());
-
-        int r3 = getResources().getIdentifier(id3, "id",
-                this.getBaseContext().getPackageName());
-
-        RadioButton rb1 = ((RadioButton) findViewById(r1));
-        RadioButton rb2 = ((RadioButton) findViewById(r2));
-        RadioButton rb3 = ((RadioButton) findViewById(r3));
-        TextView er = ((TextView) findViewById(erro));
-
-        boolean valida = false;
-        if (rb1 != null)
-            if(rb1.isChecked())
-                valida = true;
-
-        if (rb2 != null)
-            if(rb2.isChecked())
-                valida = true;
-
-        if (rb3 != null)
-            if(rb3.isChecked())
-                valida = true;
-
-        //Caso nenhum sexo tenha sido selecionado informado msg de erro
-        if (!valida){
-            er.setText(msg);
-        }else{
-            er.setText("");
-        }
-
-        return valida;
     }
     public static class DatePickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {

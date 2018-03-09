@@ -2,14 +2,21 @@ package com.labd2m.vma.ufveventos.controller;
 
 import android.Manifest;
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.labd2m.vma.ufveventos.R;
 import com.labd2m.vma.ufveventos.model.Evento;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -122,7 +129,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 PendingIntent broadcast = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 Calendar cal = Calendar.getInstance();
                 cal.add(Calendar.SECOND, 5); //Envia a notificação num horário agendado
-                alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
+                 alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
 
                 //Evento cancelado
             }else if (notificacoes.equals("1") && acao.equals("cancelado")) {
@@ -151,7 +158,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     Calendar cal = Calendar.getInstance();
                     cal.add(Calendar.SECOND, 1); //Envia notificação imediatamente
                     alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
-
                     //Evento atualizado
                     }/*else if (notificacoes.equals("1") && acao.equals("atualizado")) {
                         Log.i("NOTIFICATION","Envia notificação - cancelado");

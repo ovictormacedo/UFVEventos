@@ -149,7 +149,7 @@ public class Calendar{
 
         Uri uri = null;
         try {
-            cr.insert(CalendarContract.Events.CONTENT_URI, values);
+            uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
         }catch (SecurityException e){}
 
         long eventID = Long.parseLong(uri.getLastPathSegment());
@@ -196,7 +196,7 @@ public class Calendar{
 
         Uri uri = null;
         try {
-            cr.insert(CalendarContract.Events.CONTENT_URI, values);
+            uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
         }catch (SecurityException e){}
 
         long eventID = Long.parseLong(uri.getLastPathSegment());

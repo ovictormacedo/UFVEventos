@@ -251,6 +251,7 @@ public class cadastrar extends AppCompatActivity {
                                                                 //Dispara intent para a tela inicial
                                                                 Intent it = new Intent(getBaseContext(),inicial.class);
                                                                 startActivity(it);
+                                                                finish();
                                                             }
 
                                                             public void onNext(Void response) {
@@ -286,6 +287,7 @@ public class cadastrar extends AppCompatActivity {
                                                                                     //Dispara intent para a tela inicial
                                                                                     Intent it = new Intent(getBaseContext(),inicial.class);
                                                                                     startActivity(it);
+                                                                                    finish();
                                                                                 }
 
                                                                                 @Override
@@ -307,6 +309,7 @@ public class cadastrar extends AppCompatActivity {
                                                                                     //Dispara intent para a tela inicial
                                                                                     Intent it = new Intent(getBaseContext(),inicial.class);
                                                                                     startActivity(it);
+                                                                                    finish();
                                                                                 }
                                                                             });
                                                                 }else{
@@ -318,6 +321,7 @@ public class cadastrar extends AppCompatActivity {
                                                                     //Dispara intent para a tela inicial
                                                                     Intent it = new Intent(getBaseContext(),inicial.class);
                                                                     startActivity(it);
+                                                                    finish();
                                                                 }
                                                             }
                                                         });
@@ -355,6 +359,7 @@ public class cadastrar extends AppCompatActivity {
                                                                     //Dispara intent para a tela inicial
                                                                     Intent it = new Intent(getBaseContext(),inicial.class);
                                                                     startActivity(it);
+                                                                    finish();
                                                                 }
 
                                                                 @Override
@@ -376,6 +381,7 @@ public class cadastrar extends AppCompatActivity {
                                                                     //Dispara intent para a tela inicial
                                                                     Intent it = new Intent(getBaseContext(),inicial.class);
                                                                     startActivity(it);
+                                                                    finish();
                                                                 }
                                                             });
                                                 }else{
@@ -386,6 +392,7 @@ public class cadastrar extends AppCompatActivity {
                                                     //Dispara intent para a tela inicial
                                                     Intent it = new Intent(getBaseContext(),inicial.class);
                                                     startActivity(it);
+                                                    finish();
                                                 }
                                             }
                                         }

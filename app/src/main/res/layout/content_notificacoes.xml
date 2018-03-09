@@ -84,13 +84,16 @@
             android:minWidth="28dp"
             android:indeterminate="true"
             android:indeterminateDrawable="@drawable/progress_bar"/>/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/lista_categorias"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginLeft="20dp">
-        </android.support.v7.widget.RecyclerView>
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/lista_categorias"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginLeft="20dp">
+            </android.support.v7.widget.RecyclerView>
+        </ScrollView>
     </LinearLayout>
     <LinearLayout
         android:layout_width="305dp"
