@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -138,13 +139,15 @@ public interface Api{
     @PUT("preferencias_notificacoes/{idUsuario}")
     Observable<Void> updatePreferenciasNotificacoes(@Field("data") String data,@Path("idUsuario") String idUsuario);
 
-    @GET("maps/api/directions/json")
-    Call<Object> getRota(
-            @Query("origin") String srcParam,
-            @Query("destination") String destParam,
-            @Query("sensor") String sensor,
-            @Query("units") String units,
-            @Query("driving") String mode,
-            @Query("key") String key
-    );
+    //Adiciona a agenda do usuário
+    @FormUrlEncoded
+    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @POST("calendar/{token}")
+    Observable<Void> addAgenda(@Field("data") JSONObject data);
+
+    //Adiciona a agenda do usuário
+    @FormUrlEncoded
+    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @DELETE("calendar/token/{token}/usuario/{usuario}/agenda/{agenda}")
+    Observable<Void> deleteAgenda(@Path("token") String token,@Path("usuario") String usuario,@Path("agenda") String agenda);
 }

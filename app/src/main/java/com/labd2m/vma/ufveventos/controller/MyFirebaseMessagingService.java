@@ -20,11 +20,15 @@ import com.labd2m.vma.ufveventos.R;
 import com.labd2m.vma.ufveventos.model.Evento;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.labd2m.vma.ufveventos.model.Local;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,26 +43,48 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         //Verifica se a mensagem contém notificação
         if (remoteMessage.getNotification() != null || remoteMessage.getData().size() > 0){
             //Recupera dados da notificação
-            String acao="";
+            String acao="",id="",denominacao="",descricao_evento="",programacao_evento="",
+                    horainicio="",horafim="",datainicio="",datafim="",participantes="",
+                    publico="",teminscricao="",valorinscricao="",linklocalinscricao="",mostrarparticipantes="";
             Map<String,String> dados = remoteMessage.getData();
             JSONObject dadosJson = null;
             try {
                 dadosJson = new JSONObject(dados.get("body"));
                 acao = dadosJson.getString("acao");
+                id = dadosJson.getString("id");
+                denominacao = dadosJson.getString("denominacao");
+                descricao_evento = dadosJson.getString("descricao_evento");
+                programacao_evento = dadosJson.getString("programacao_evento");
+                horainicio = dadosJson.getString("horainicio").substring(0, 5);
+                horafim = dadosJson.getString("horafim").substring(0, 5);
+                datainicio = dadosJson.getString("datainicio");
+                datainicio = datainicio.substring(8, 10) + "/" + datainicio.substring(5, 7) + "/" + datainicio.substring(0, 4);
+                datafim = dadosJson.getString("datafim");
+                datafim = datafim.substring(8, 10) + "/" + datafim.substring(5, 7) + "/" + datafim.substring(0, 4);
+                participantes = dadosJson.getString("participantes");
+                publico = dadosJson.getString("publico");
+                teminscricao = dadosJson.getString("teminscricao");
+                valorinscricao = dadosJson.getString("valorinscricao");
+                linklocalinscricao = dadosJson.getString("linklocalinscricao");
+                mostrarparticipantes = dadosJson.getString("mostrarparticipantes");
+                JSONArray jsonAux = new JSONArray(dadosJson.getString("locais"));
+                int numLocais = jsonAux.length();
+                List<Local> locais = new ArrayList<>();
+                for (int i = 0; i < numLocais; i++) {
+                    Local local = new Local(Integer.parseInt(jsonAux.getJSONObject(0).getString("id")),
+                            jsonAux.getJSONObject(0).getString("descricao"),
+                            jsonAux.getJSONObject(0).getString("lat"),
+                            jsonAux.getJSONObject(0).getString("lng"));
+                    locais.add(local);
+                }
             }catch(JSONException e){Log.e("JSON ERRO",e.getMessage());}
 
-            //Busca locais
-            String local = "";
-            for (int i = 0; i < 3; i++) {
-                if (dadosJson.has("local" + i)) {
-                    try {
-                        local = local + " " + dadosJson.getString("local" + i);
-                    } catch (JSONException e) {Log.e("JSON ERRO", e.getMessage());}
-                }
-            }
             Log.i("EVENTO",""+acao+" ----- "+dadosJson);
             Evento evento = null;
             try {
+                evento = new Evento(id,denominacao,horainicio,horafim,datainicio,datafim,descricao_evento,
+                        programacao_evento,participantes,publico,null,);
+
                 evento = new Evento(Integer.parseInt(dadosJson.getString("id")), dadosJson.getString("denominacao"),
                         dadosJson.getString("horainicio"), dadosJson.getString("horafim"),
                         dadosJson.getString("datainicio"), dadosJson.getString("datafim"),
@@ -78,7 +104,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 String agenda = sharedPref.getString("agenda","default");
                 /*Verifica se o usuário deseja gravar a notificação na agenda,
                 e se ele acabou de ser adicionado ao sistema*/
-                Log.i("ADD EVENTO","LOGADO2");
                 if (agenda.equals("1") && acao.equals("novo")){
                     Log.i("ADD EVENTO",evento.getDenominacao());
 
@@ -100,7 +125,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     Log.i("UPDATE EVENTO CANCELADO",evento.getDenominacao());
                     if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALENDAR)
                             == PackageManager.PERMISSION_GRANTED)
-                        calendar.deleteEventNotification(evento,local,getBaseContext(),getContentResolver());
+                        calendar.deleteEventNotification(evento,getBaseContext(),getContentResolver());
                 }
             }
 
@@ -130,7 +155,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 Calendar cal = Calendar.getInstance();
                 cal.add(Calendar.SECOND, 5); //Envia a notificação num horário agendado
                  alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
-
                 //Evento cancelado
             }else if (notificacoes.equals("1") && acao.equals("cancelado")) {
                     Log.i("NOTIFICATION","Envia notificação - cancelado");
@@ -158,12 +182,30 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     Calendar cal = Calendar.getInstance();
                     cal.add(Calendar.SECOND, 1); //Envia notificação imediatamente
                     alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
+
+                    //Recupera id do evento
+                    sharedPref = getApplicationContext().getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0agenda",
+                            Context.MODE_PRIVATE);
+                    long eventID = sharedPref.getLong(""+evento.getId(),-1);
+                    if (eventID != -1)
+                        calendar.deleteEventNotification(evento,getApplicationContext(),getContentResolver());
                     //Evento atualizado
-                    }/*else if (notificacoes.equals("1") && acao.equals("atualizado")) {
-                        Log.i("NOTIFICATION","Envia notificação - cancelado");
+                    }else if (notificacoes.equals("1") && acao.equals("atualizado")) {
+                        Log.i("NOTIFICATION","Envia notificação - atualizado");
+                        /*Cancela notificação já agendada, a fim de impedir que o app
+                        inunde o celular de notificações de novos eventos*/
+                        Context ctx = getApplicationContext();
+                        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                        Intent cancelServiceIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
+                        PendingIntent cancelServicePendingIntent = PendingIntent.getBroadcast(
+                                ctx,
+                                2, // integer constant used to identify the service
+                                cancelServiceIntent,
+                                0 //no FLAG needed for a service cancel
+                        );
+                        alarmManager.cancel(cancelServicePendingIntent);
 
                         //Agenda nova notificação
-                        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                         Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
                         notificationIntent.putExtra("acao",acao);
                         notificationIntent.putExtra("denominacao",evento.getDenominacao());
@@ -182,11 +224,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         }
 
                         notificationIntent.addCategory("android.intent.category.DEFAULT");
-                        PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        PendingIntent broadcast = PendingIntent.getBroadcast(this, 2, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                         Calendar cal = Calendar.getInstance();
                         cal.add(Calendar.SECOND, 1); //Envia notificação imediatamente
                         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
-                    }*/
+
+                        //Recupera id do evento
+                        sharedPref = ctx.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0agenda",
+                                Context.MODE_PRIVATE);
+                        long eventID = sharedPref.getLong(""+evento.getId(),-1);
+                        if (eventID != -1)
+                            calendar.updateEventNotification(evento,local,getApplicationContext(),getContentResolver());
+                    }
         }
     }
 
