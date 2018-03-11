@@ -12,11 +12,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -32,12 +29,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.labd2m.vma.ufveventos.R;
-import com.labd2m.vma.ufveventos.model.Categoria;
-import com.labd2m.vma.ufveventos.model.Evento;
-import com.labd2m.vma.ufveventos.model.Local;
-import com.labd2m.vma.ufveventos.util.Calendar;
-import com.labd2m.vma.ufveventos.util.Permission;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
@@ -54,6 +45,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
+import com.labd2m.vma.ufveventos.R;
+import com.labd2m.vma.ufveventos.model.Evento;
+import com.labd2m.vma.ufveventos.model.Local;
+import com.labd2m.vma.ufveventos.util.Permission;
 
 import org.json.JSONObject;
 
@@ -61,8 +56,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class detalhes_evento_sem_descricao extends AppCompatActivity implements OnMapReadyCallback, LocationListener,
-    View.OnClickListener{
+public class evento_cancelado_sem_descricao extends AppCompatActivity implements OnMapReadyCallback, LocationListener{
     GoogleMap mGoogleMap;
     private LocationManager mLocationManager = null;
     private String provider = null;
@@ -76,24 +70,6 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
     private void initMap(){
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this);
-    }
-
-    @Override
-    public void onClick(View view){
-        int i = view.getId();
-        //Clicou no botão de adicionar à agenda
-        if (i == R.id.addAgenda) {
-            //Requisita permissão para escrita
-            Permission permission = new Permission();
-            permission.requestPermissionCalendar(detalhes_evento_sem_descricao.this,this);
-
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
-                    == PackageManager.PERMISSION_GRANTED) {
-                Calendar calendar = new Calendar();
-                calendar.addEvent(evento, getBaseContext(), getContentResolver(), getParent());
-                Toast.makeText(getBaseContext(), "Evento adicionado à agenda.", Toast.LENGTH_LONG).show();
-            }
-        }
     }
 
     @Override
@@ -333,28 +309,18 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
         Gson gson = new Gson();
         evento = gson.fromJson(eventoJson, Evento.class);
 
-        Log.i("EVENTO","EVENTO ATUALIZADO SEM DESC");
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_evento_atualizado_sem_descricao);
-
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        setContentView(R.layout.activity_detalhes_evento_sem_descricao);
 
         //Google Analytics
         MyApplication application = (MyApplication) getApplication();
         Tracker mTracker = application.getDefaultTracker();
-        mTracker.setScreenName("detalhes_evento_sem_descricao");
+        mTracker.setScreenName("evento_atualizado_sem_descricao");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-
-        findViewById(R.id.addAgenda).setOnClickListener(this);
 
         //Encerra barra de carregamento
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarDetalhesEvento);
         progressBar.setVisibility(View.GONE);
-
 
         //Traça rota
         List<Local> locaisAux = evento.getLocais();
@@ -362,13 +328,15 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
         double lngDest = Double.parseDouble(locaisAux.get(0).getLongitude());
         mDestinationLatLng = new LatLng(latDest, lngDest);
 
+        //Requisita permissão para mapas
+        Permission permission = new Permission();
+        permission.requestPermissionMaps(evento_cancelado_sem_descricao.this,this);
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED)
             if (googleServicesAvailable()){
                 initMap();
             }
-
-        Log.i("EVENTO","EVENTO ATUALIZADO SEM DESC 1");
 
         //Seta denominação do evento
         if (evento.getDenominacao() != null){
@@ -453,21 +421,6 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
             ((TextView) findViewById(R.id.publicoAlvoEvento)).
                     setText(evento.getPublicoAlvo());
         }
-
-        //Seta categorias do evento
-        if (evento.getCategorias().size() > 0) {
-            List<Categoria> categorias = evento.getCategorias();
-            String categoria = "";
-            for (int i = 0; i < categorias.size(); i++) {
-                categoria = categoria + categorias.get(i).getNome();
-                if (i != categorias.size() - 1)
-                    categoria = categoria + ", ";
-            }
-            findViewById(R.id.categoriaLabelEvento).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.categoriaEvento)).
-                    setText(categoria);
-        }
-        Log.i("EVENTO","EVENTO ATUALIZADO SEM DESC 2");
     }
 
     public boolean googleServicesAvailable(){
@@ -537,20 +490,6 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
                             == PackageManager.PERMISSION_GRANTED)
                         if (googleServicesAvailable())
                             initMap();
-                } else {
-                }
-                return;
-            }
-            case 2: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
-                            == PackageManager.PERMISSION_GRANTED) {
-                        Calendar calendar = new Calendar();
-                        calendar.addEvent(evento, getBaseContext(), getContentResolver(), getParent());
-                        Toast.makeText(getBaseContext(), "Evento adicionado à agenda.", Toast.LENGTH_LONG).show();
-                    }
                 } else {
                 }
                 return;

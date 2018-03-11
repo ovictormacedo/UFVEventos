@@ -135,7 +135,24 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.labd2m.vma.ufveventos.controller.inicial" />
         </activity>
+
         <activity android:name=".controller.evento_cancelado"
+            android:label="Evento Cancelado"
+            android:theme="@style/NoAction"/>
+
+        <activity android:name=".controller.evento_atualizado_com_descricao"
+            android:label="Evento Atualizado"
+            android:theme="@style/NoAction"/>
+
+        <activity android:name=".controller.evento_atualizado_sem_descricao"
+            android:label="Evento Atualizado"
+            android:theme="@style/NoAction"/>
+
+        <activity android:name=".controller.evento_cancelado_com_descricao"
+            android:label="Evento Cancelado"
+            android:theme="@style/NoAction"/>
+
+        <activity android:name=".controller.evento_cancelado_sem_descricao"
             android:label="Evento Cancelado"
             android:theme="@style/NoAction"/>
     </application>

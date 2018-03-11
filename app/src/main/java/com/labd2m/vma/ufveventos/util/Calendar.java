@@ -72,7 +72,7 @@ public class Calendar{
         }
     }
 
-    public void updateEventNotification(Evento evento,String local,Context context,ContentResolver cr){
+    public void updateEventNotification(Evento evento,Context context,ContentResolver cr){
         int diaInicio = Integer.parseInt(evento.getDataInicio().substring(8,10));
         int mesInicio = Integer.parseInt(evento.getDataInicio().substring(5,7));
         int anoInicio = Integer.parseInt(evento.getDataInicio().substring(0,4));
@@ -92,6 +92,9 @@ public class Calendar{
 
         java.util.Calendar endTime = java.util.Calendar.getInstance();
         endTime.set(anoFim,mesFim-1,diaFim,horaFim,minutoFim);
+
+        String local = evento.getLocais().get(0).getDescricao()+","+
+                evento.getLocais().get(0).getLatitude()+","+evento.getLocais().get(0).getLongitude();
 
         //Recupera id do evento
         SharedPreferences sharedPref = context.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0agenda",
@@ -205,7 +208,7 @@ public class Calendar{
                     }
                 });
     }
-    public void addEventNotification(Evento evento, String local,Context context, ContentResolver cr) {
+    public void addEventNotification(Evento evento,Context context, ContentResolver cr) {
         int diaInicio = Integer.parseInt(evento.getDataInicio().substring(8,10));
         int mesInicio = Integer.parseInt(evento.getDataInicio().substring(5,7));
         int anoInicio = Integer.parseInt(evento.getDataInicio().substring(0,4));
@@ -225,6 +228,9 @@ public class Calendar{
 
         java.util.Calendar endTime = java.util.Calendar.getInstance();
         endTime.set(anoFim,mesFim-1,diaFim,horaFim,minutoFim);
+
+        String local = evento.getLocais().get(0).getDescricao()+","+
+                evento.getLocais().get(0).getLatitude()+","+evento.getLocais().get(0).getLongitude();
 
         ContentValues values = new ContentValues();
         TimeZone timeZone = TimeZone.getDefault();

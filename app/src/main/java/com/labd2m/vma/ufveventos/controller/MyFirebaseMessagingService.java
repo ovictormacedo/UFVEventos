@@ -14,8 +14,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.FloatProperty;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.labd2m.vma.ufveventos.R;
 import com.labd2m.vma.ufveventos.model.Evento;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -48,6 +50,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     publico="",teminscricao="",valorinscricao="",linklocalinscricao="",mostrarparticipantes="";
             Map<String,String> dados = remoteMessage.getData();
             JSONObject dadosJson = null;
+            List<Local> locais = new ArrayList<>();
             try {
                 dadosJson = new JSONObject(dados.get("body"));
                 acao = dadosJson.getString("acao");
@@ -69,28 +72,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 mostrarparticipantes = dadosJson.getString("mostrarparticipantes");
                 JSONArray jsonAux = new JSONArray(dadosJson.getString("locais"));
                 int numLocais = jsonAux.length();
-                List<Local> locais = new ArrayList<>();
                 for (int i = 0; i < numLocais; i++) {
-                    Local local = new Local(Integer.parseInt(jsonAux.getJSONObject(0).getString("id")),
-                            jsonAux.getJSONObject(0).getString("descricao"),
-                            jsonAux.getJSONObject(0).getString("lat"),
-                            jsonAux.getJSONObject(0).getString("lng"));
+                    Local local = new Local(Integer.parseInt(jsonAux.getJSONObject(i).getString("id")),
+                            jsonAux.getJSONObject(i).getString("descricao"),
+                            jsonAux.getJSONObject(i).getString("lat"),
+                            jsonAux.getJSONObject(i).getString("lng"));
                     locais.add(local);
                 }
             }catch(JSONException e){Log.e("JSON ERRO",e.getMessage());}
 
             Log.i("EVENTO",""+acao+" ----- "+dadosJson);
-            Evento evento = null;
-            try {
-                evento = new Evento(id,denominacao,horainicio,horafim,datainicio,datafim,descricao_evento,
-                        programacao_evento,participantes,publico,null,);
-
-                evento = new Evento(Integer.parseInt(dadosJson.getString("id")), dadosJson.getString("denominacao"),
-                        dadosJson.getString("horainicio"), dadosJson.getString("horafim"),
-                        dadosJson.getString("datainicio"), dadosJson.getString("datafim"),
-                        dadosJson.getString("descricao"), "",Integer.parseInt(dadosJson.getString("participantes")),
-                        "", null, null, null, 0, 0, null, 0);
-            }catch(JSONException e){Log.e("JSON ERRO",e.getMessage());}
+            Evento evento = new Evento(Integer.parseInt(id),denominacao,horainicio,horafim,datainicio,datafim,descricao_evento,
+                    programacao_evento,Integer.parseInt(participantes),publico,null,locais,null,Integer.parseInt(teminscricao),
+                    Float.parseFloat(valorinscricao),linklocalinscricao,Integer.parseInt(mostrarparticipantes));
 
             com.labd2m.vma.ufveventos.util.Calendar calendar = new com.labd2m.vma.ufveventos.util.Calendar();
 
@@ -109,7 +103,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                     if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALENDAR)
                             == PackageManager.PERMISSION_GRANTED)
-                        calendar.addEventNotification(evento,local,getBaseContext(),getContentResolver());
+                        calendar.addEventNotification(evento,getBaseContext(),getContentResolver());
 
                 /*Verifica se o usuário deseja gravar a notificação na agenda,
                 e se ele acabou de ser atualizado no sistema*/
@@ -117,7 +111,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     Log.i("UPDATE EVENTO",evento.getDenominacao());
                     if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALENDAR)
                             == PackageManager.PERMISSION_GRANTED)
-                        calendar.updateEventNotification(evento,local,getBaseContext(),getContentResolver());
+                        calendar.updateEventNotification(evento,getBaseContext(),getContentResolver());
 
                 }else if (agenda.equals("1") && acao.equals("cancelado")) {
                     /*Verifica se o usuário deseja gravar a notificação na agenda,
@@ -161,21 +155,29 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     //Agenda nova notificação
                     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                     Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
+
+                    /*
+                    notificationIntent.putExtra("descricao_evento",descricao_evento);
+                    notificationIntent.putExtra("programacao_evento",programacao_evento);
+                    notificationIntent.putExtra("participantes",participantes);
+                    notificationIntent.putExtra("mostrarparticipantes",mostrarparticipantes);
+                    notificationIntent.putExtra("teminscricao",teminscricao);
+                    notificationIntent.putExtra("valorinscricao",valorinscricao);
+                    notificationIntent.putExtra("linklocalinscricao",linklocalinscricao);
                     notificationIntent.putExtra("acao",acao);
-                    notificationIntent.putExtra("denominacao",evento.getDenominacao());
-                    notificationIntent.putExtra("horainicio",evento.getHoraInicio());
-                    notificationIntent.putExtra("horafim",evento.getHoraFim());
-                    notificationIntent.putExtra("datainicio",evento.getDataInicio());
-                    notificationIntent.putExtra("datafim",evento.getDataFim());
-                    if (evento.getPublicoAlvo() != null)
-                        notificationIntent.putExtra("publico",evento.getPublicoAlvo());
-                    else
-                        notificationIntent.putExtra("publico","");
-                    if (local != "") {
-                        notificationIntent.putExtra("local",local);
-                    }else{
-                        notificationIntent.putExtra("local","");
-                    }
+                    notificationIntent.putExtra("id",id);
+                    notificationIntent.putExtra("denominacao",denominacao);
+                    notificationIntent.putExtra("horainicio",horainicio);
+                    notificationIntent.putExtra("horafim",horafim);
+                    notificationIntent.putExtra("datainicio",datainicio);
+                    notificationIntent.putExtra("datafim",datafim);
+                    notificationIntent.putExtra("publico",publico);
+                    */
+
+                    Gson gson = new Gson();
+                    String json = gson.toJson(evento);
+                    notificationIntent.putExtra("evento", json);
+                    notificationIntent.putExtra("acao", acao);
 
                     notificationIntent.addCategory("android.intent.category.DEFAULT");
                     PendingIntent broadcast = PendingIntent.getBroadcast(this, 1, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -207,21 +209,28 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                         //Agenda nova notificação
                         Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
+                        /*
+                        notificationIntent.putExtra("descricao_evento",descricao_evento);
+                        notificationIntent.putExtra("programacao_evento",programacao_evento);
+                        notificationIntent.putExtra("participantes",participantes);
+                        notificationIntent.putExtra("mostrarparticipantes",mostrarparticipantes);
+                        notificationIntent.putExtra("teminscricao",teminscricao);
+                        notificationIntent.putExtra("valorinscricao",valorinscricao);
+                        notificationIntent.putExtra("linklocalinscricao",linklocalinscricao);
                         notificationIntent.putExtra("acao",acao);
-                        notificationIntent.putExtra("denominacao",evento.getDenominacao());
-                        notificationIntent.putExtra("horainicio",evento.getHoraInicio());
-                        notificationIntent.putExtra("horafim",evento.getHoraFim());
-                        notificationIntent.putExtra("datainicio",evento.getDataInicio());
-                        notificationIntent.putExtra("datafim",evento.getDataFim());
-                        if (evento.getPublicoAlvo() != null)
-                            notificationIntent.putExtra("publico",evento.getPublicoAlvo());
-                        else
-                            notificationIntent.putExtra("publico","");
-                        if (local != "") {
-                            notificationIntent.putExtra("local",local);
-                        }else{
-                            notificationIntent.putExtra("local","");
-                        }
+                        notificationIntent.putExtra("id",id);
+                        notificationIntent.putExtra("denominacao",denominacao);
+                        notificationIntent.putExtra("horainicio",horainicio);
+                        notificationIntent.putExtra("horafim",horafim);
+                        notificationIntent.putExtra("datainicio",datainicio);
+                        notificationIntent.putExtra("datafim",datafim);
+                        notificationIntent.putExtra("publico",publico);
+                        */
+
+                        Gson gson = new Gson();
+                        String json = gson.toJson(evento);
+                        notificationIntent.putExtra("evento", json);
+                        notificationIntent.putExtra("acao", acao);
 
                         notificationIntent.addCategory("android.intent.category.DEFAULT");
                         PendingIntent broadcast = PendingIntent.getBroadcast(this, 2, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -234,7 +243,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                 Context.MODE_PRIVATE);
                         long eventID = sharedPref.getLong(""+evento.getId(),-1);
                         if (eventID != -1)
-                            calendar.updateEventNotification(evento,local,getApplicationContext(),getContentResolver());
+                            calendar.updateEventNotification(evento,getApplicationContext(),getContentResolver());
                     }
         }
     }

@@ -13,9 +13,7 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -58,7 +56,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class evento_atualizado_com_descricao extends AppCompatActivity implements OnMapReadyCallback, LocationListener{
+public class evento_cancelado_com_descricao extends AppCompatActivity implements OnMapReadyCallback, LocationListener{
     GoogleMap mGoogleMap;
     private LocationManager mLocationManager = null;
     private String provider = null;
@@ -102,7 +100,7 @@ public class evento_atualizado_com_descricao extends AppCompatActivity implement
 
         //Requisita permissão para mapas
         Permission permission = new Permission();
-        permission.requestPermissionMaps(evento_atualizado_com_descricao.this,this);
+        permission.requestPermissionMaps(evento_cancelado_com_descricao.this,this);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {

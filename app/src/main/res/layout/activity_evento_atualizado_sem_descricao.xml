@@ -18,7 +18,7 @@
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="551dp"
         android:layout_marginTop="40dp"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -49,6 +49,7 @@
             android:layout_marginTop="-10dp"
             android:background="@drawable/rectangle_appbar"
             android:orientation="horizontal">
+
         </LinearLayout>
 
         <LinearLayout
