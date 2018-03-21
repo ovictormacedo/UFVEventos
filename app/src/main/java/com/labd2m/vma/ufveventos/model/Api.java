@@ -1,5 +1,6 @@
 package com.labd2m.vma.ufveventos.model;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -18,6 +19,11 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 public interface Api{
+    //Retorna agenda do dispositivo
+    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @GET("calendar/token/{token}")
+    Observable<Object> getCalendar(@Path("token") String token);
+
     //Retorna dados do evento
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @GET("evento/{idEvento}")
@@ -146,7 +152,6 @@ public interface Api{
     Observable<Void> addAgenda(@Field("data") JSONObject data);
 
     //Adiciona a agenda do usuário
-    @FormUrlEncoded
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
     @DELETE("calendar/token/{token}/usuario/{usuario}/agenda/{agenda}")
     Observable<Void> deleteAgenda(@Path("token") String token,@Path("usuario") String usuario,@Path("agenda") String agenda);

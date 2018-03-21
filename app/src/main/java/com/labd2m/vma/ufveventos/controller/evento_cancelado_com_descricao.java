@@ -75,7 +75,7 @@ public class evento_cancelado_com_descricao extends AppCompatActivity implements
         Gson gson = new Gson();
         evento = gson.fromJson(eventoJson, Evento.class);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_evento_atualizado_com_descricao);
+        setContentView(R.layout.activity_evento_cancelado_com_descricao);
 
         LinearLayout thirdPart = (LinearLayout) findViewById(R.id.thirdPartDetalhesEvento);
         thirdPart.setOnTouchListener(new ScrollFunction());

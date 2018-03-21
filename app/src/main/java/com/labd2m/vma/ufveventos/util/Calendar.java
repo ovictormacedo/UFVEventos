@@ -36,19 +36,15 @@ public class Calendar{
         //Recupera id do evento
         SharedPreferences sharedPref = context.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0agenda",
                 Context.MODE_PRIVATE);
-        long eventID = sharedPref.getInt(""+evento.getId(),-1);
-
+        long eventID = sharedPref.getLong(""+evento.getId(),-1);
         if (eventID != -1) {
             Uri deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
             int rows = cr.delete(deleteUri, null, null);
-
             //Envia ao servidor
             sharedPref = context.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
             String idUsuario = sharedPref.getString("id", "falso");
-
             sharedPref = context.getSharedPreferences("UFVEVENTOS" + idUsuario, Context.MODE_PRIVATE);
             String token = sharedPref.getString("firebasetoken", "falso");
-
             RetrofitAPI retrofit = new RetrofitAPI();
             final Api api = retrofit.retrofit().create(Api.class);
             Observable<Void> observable = api.deleteAgenda(token, idUsuario, "" + eventID);
@@ -69,38 +65,43 @@ public class Calendar{
                             Log.i("DeletaAgendaServer", "Delete");
                         }
                     });
+
+            //Remove chave do shared preferences
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.remove(""+evento.getId());
+            editor.commit();
         }
     }
 
     public void updateEventNotification(Evento evento,Context context,ContentResolver cr){
-        int diaInicio = Integer.parseInt(evento.getDataInicio().substring(8,10));
-        int mesInicio = Integer.parseInt(evento.getDataInicio().substring(5,7));
-        int anoInicio = Integer.parseInt(evento.getDataInicio().substring(0,4));
-
+        int diaInicio = Integer.parseInt(evento.getDataInicio().substring(0,2));
+        int mesInicio = Integer.parseInt(evento.getDataInicio().substring(3,5));
+        int anoInicio = Integer.parseInt(evento.getDataInicio().substring(6,10));
+        Log.i("CHEGOU","CHEGOU1");
         int horaInicio = Integer.parseInt(evento.getHoraInicio().substring(0,2));
         int minutoInicio = Integer.parseInt(evento.getHoraInicio().substring(3,5));
-
+        Log.i("CHEGOU","CHEGOU2");
         java.util.Calendar beginTime = java.util.Calendar.getInstance();
         beginTime.set(anoInicio,mesInicio-1,diaInicio,horaInicio,minutoInicio);
-
-        int diaFim = Integer.parseInt(evento.getDataFim().substring(8,10));
-        int mesFim = Integer.parseInt(evento.getDataFim().substring(5,7));
-        int anoFim = Integer.parseInt(evento.getDataFim().substring(0,4));
-
+        Log.i("CHEGOU","CHEGOU3");
+        int diaFim = Integer.parseInt(evento.getDataFim().substring(0,2));
+        int mesFim = Integer.parseInt(evento.getDataFim().substring(3,5));
+        int anoFim = Integer.parseInt(evento.getDataFim().substring(6,10));
+        Log.i("CHEGOU","CHEGOU4");
         int horaFim = Integer.parseInt(evento.getHoraFim().substring(0,2));
         int minutoFim = Integer.parseInt(evento.getHoraFim().substring(3,5));
-
+        Log.i("CHEGOU","CHEGOU5");
         java.util.Calendar endTime = java.util.Calendar.getInstance();
         endTime.set(anoFim,mesFim-1,diaFim,horaFim,minutoFim);
-
+        Log.i("CHEGOU","CHEGOU6");
         String local = evento.getLocais().get(0).getDescricao()+","+
                 evento.getLocais().get(0).getLatitude()+","+evento.getLocais().get(0).getLongitude();
-
+        Log.i("CHEGOU","CHEGOU7");
         //Recupera id do evento
         SharedPreferences sharedPref = context.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0agenda",
                 Context.MODE_PRIVATE);
-        long eventID = sharedPref.getInt(""+evento.getId(),-1);
-
+        long eventID = sharedPref.getLong(""+evento.getId(),-1);
+        Log.i("EVENT ID",""+eventID);
         if (eventID != -1) {
             ContentValues values = new ContentValues();
             TimeZone timeZone = TimeZone.getDefault();
@@ -117,6 +118,11 @@ public class Calendar{
             values.put(CalendarContract.Events.GUESTS_CAN_SEE_GUESTS, "1");
 
             int rows = cr.update(updateUri, values, null, null);
+
+            //Remove chave do shared preferences
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.remove(""+evento.getId());
+            editor.commit();
         }
     }
 
@@ -178,13 +184,14 @@ public class Calendar{
 
         sharedPref = context.getSharedPreferences("UFVEVENTOS"+idUsuario, Context.MODE_PRIVATE);
         String token = sharedPref.getString("firebasetoken", "falso");
-
+        Log.i("TOKEN",token);
         //Cria json object
         JSONObject json = new JSONObject();
         try {
             json.put("token",""+token);
             json.put("agenda",""+eventID);
             json.put("evento",""+evento.getId());
+            json.put("usuario",idUsuario);
         }catch(Exception e){
             Toast.makeText(context,e.getMessage(),Toast.LENGTH_SHORT).show();}
 
@@ -209,9 +216,9 @@ public class Calendar{
                 });
     }
     public void addEventNotification(Evento evento,Context context, ContentResolver cr) {
-        int diaInicio = Integer.parseInt(evento.getDataInicio().substring(8,10));
-        int mesInicio = Integer.parseInt(evento.getDataInicio().substring(5,7));
-        int anoInicio = Integer.parseInt(evento.getDataInicio().substring(0,4));
+        int diaInicio = Integer.parseInt(evento.getDataInicio().substring(0,2));
+        int mesInicio = Integer.parseInt(evento.getDataInicio().substring(3,5));
+        int anoInicio = Integer.parseInt(evento.getDataInicio().substring(6,10));
 
         int horaInicio = Integer.parseInt(evento.getHoraInicio().substring(0,2));
         int minutoInicio = Integer.parseInt(evento.getHoraInicio().substring(3,5));
@@ -219,9 +226,9 @@ public class Calendar{
         java.util.Calendar beginTime = java.util.Calendar.getInstance();
         beginTime.set(anoInicio,mesInicio-1,diaInicio,horaInicio,minutoInicio);
 
-        int diaFim = Integer.parseInt(evento.getDataFim().substring(8,10));
-        int mesFim = Integer.parseInt(evento.getDataFim().substring(5,7));
-        int anoFim = Integer.parseInt(evento.getDataFim().substring(0,4));
+        int diaFim = Integer.parseInt(evento.getDataFim().substring(0,2));
+        int mesFim = Integer.parseInt(evento.getDataFim().substring(3,5));
+        int anoFim = Integer.parseInt(evento.getDataFim().substring(6,10));
 
         int horaFim = Integer.parseInt(evento.getHoraFim().substring(0,2));
         int minutoFim = Integer.parseInt(evento.getHoraFim().substring(3,5));
@@ -270,6 +277,7 @@ public class Calendar{
             json.put("token",""+token);
             json.put("agenda",""+eventID);
             json.put("evento",""+evento.getId());
+            json.put("usuario",idUsuario);
         }catch(Exception e){
             Toast.makeText(context,e.getMessage(),Toast.LENGTH_SHORT).show();}
 

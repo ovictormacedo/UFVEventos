@@ -42,6 +42,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import rx.Observable;
@@ -62,7 +66,7 @@ public class inicial extends AppCompatActivity
     GoogleSignInOptions gso;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
-
+    private SharedPreferences sharedPref;
     @Override
     protected void onResume(){
         super.onResume();
@@ -89,28 +93,88 @@ public class inicial extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Cria objeto para acessar a API de dados Siseventos
+        retrofit = new RetrofitAPI();
+        final Api api = retrofit.retrofit().create(Api.class);
+
         //Google Analytics
         MyApplication application = (MyApplication) getApplication();
         Tracker mTracker = application.getDefaultTracker();
         mTracker.setScreenName("inicial");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
+        /*O usuário acontece de estar vazio na situação em que o usuário
+        clica na notificação de novos eventos, neste caso, recupera os dados
+        do shared preferences*/
+        if (usuario.getNome().equals("")) {
+            SharedPreferences sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0",
+                    Context.MODE_PRIVATE);
+                UsuarioSingleton usuario = UsuarioSingleton.getInstance();
+                usuario.setId(sharedPref.getString("id","default"));
+                usuario.setGoogleId(sharedPref.getString("googleId","default"));
+                usuario.setEmail(sharedPref.getString("email","default"));
+                usuario.setMatricula(sharedPref.getString("matricula","default"));
+                usuario.setNascimento(sharedPref.getString("nascimento","default"));
+                usuario.setNome(sharedPref.getString("nome","default"));
+                usuario.setSenha(sharedPref.getString("senha","default"));
+                usuario.setSexo(sharedPref.getString("sexo","default"));
+                usuario.setFoto(sharedPref.getString("foto","default"));
+                usuario.setAgenda(sharedPref.getString("agenda","0"));
+                usuario.setNotificacoes(sharedPref.getString("notificacoes","1"));
+                SharedPreferences sharedPref2 = getBaseContext().
+                        getSharedPreferences("UFVEVENTOS"+usuario.getId(), Context.MODE_PRIVATE);
+                usuario.setToken(sharedPref2.getString("firebasetoken","default"));
+        }
+
+        //Busca dados armazenados na agenda do usuário no servidor
+        Observable<Object> observableCalendar = api.getCalendar(usuario.getToken());
+        observableCalendar.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Object>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i("Retrofit error", "Erro:" + e.getMessage());
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object response) {
+                        Log.i("RESPONSE CALENDAR",""+response);
+                        JSONArray jsonArray = null;
+                        boolean agendaVazia = false;
+                        try{
+                            jsonArray = new JSONArray(response.toString());
+                            if (jsonArray.getJSONObject(0).has("erro"))
+                                agendaVazia = true;
+                        }catch(JSONException e){}
+
+                        //Se a agenda não está vazia
+                        if (!agendaVazia) {
+                            sharedPref = getBaseContext()
+                                    .getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0agenda",
+                                            Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            int numObjetos = jsonArray.length();
+                            for (int i = 0; i < numObjetos; i++) {
+                                try {
+                                    JSONObject json = new JSONObject();
+                                    json = jsonArray.getJSONObject(i);
+                                    editor.putLong(json.getString("idEvento"), Long.parseLong(json.getString("idAgenda")));
+                                    editor.commit();
+                                } catch (JSONException e) {e.printStackTrace();}
+                            }
+                        }
+                    }
+                });
+
         //Seta dados do usuário no navigation drawer
         UsuarioNavigationDrawer und = new UsuarioNavigationDrawer();
         und.setNomeUsuario(navigationView,usuario.getNome());
         und.setUsuarioImagem(navigationView, usuario.getFoto());
-
-        //Pede permissão da localização e do Calendar
-        /*
-        if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_CALENDAR)
-                != PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(inicial.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.WRITE_CALENDAR,Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
-        */
 
         eventos = new ArrayList<>();
         myRecyclerView = (RecyclerView) findViewById(R.id.lista_eventos);
@@ -148,17 +212,13 @@ public class inicial extends AppCompatActivity
         //Start initialize_auth]
         mAuth = FirebaseAuth.getInstance();
 
-        //Cria objeto para acessar a API de dados Siseventos
-        retrofit = new RetrofitAPI();
-        final Api api = retrofit.retrofit().create(Api.class);
-
         //Inicia barra de carregamento
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarTelaInicial);
         progressBar.setProgress(View.VISIBLE);
 
         //Verifica se a lista possui algum evento
         if (eventosSing.tamanho() == 0) {
-            offset = 100;
+            offset = 0;
             limit = 110;
             Observable<List<Evento>> observable = api.getEventos(offset, limit);
             observable.subscribeOn(Schedulers.newThread())

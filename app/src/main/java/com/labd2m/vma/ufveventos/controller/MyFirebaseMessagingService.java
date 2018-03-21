@@ -41,7 +41,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage){
-        Log.i("NOTIFICATION","Chegou notificação");
         //Verifica se a mensagem contém notificação
         if (remoteMessage.getNotification() != null || remoteMessage.getData().size() > 0){
             //Recupera dados da notificação
@@ -81,7 +80,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
             }catch(JSONException e){Log.e("JSON ERRO",e.getMessage());}
 
-            Log.i("EVENTO",""+acao+" ----- "+dadosJson);
             Evento evento = new Evento(Integer.parseInt(id),denominacao,horainicio,horafim,datainicio,datafim,descricao_evento,
                     programacao_evento,Integer.parseInt(participantes),publico,null,locais,null,Integer.parseInt(teminscricao),
                     Float.parseFloat(valorinscricao),linklocalinscricao,Integer.parseInt(mostrarparticipantes));
@@ -94,32 +92,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             //Se o usuário está logado
             if (!idUsuario.equals("default")) {
-                Log.i("ADD EVENTO","LOGADO");
-                String agenda = sharedPref.getString("agenda","default");
+                Log.i("ADD EVENTO", "LOGADO");
+                String agenda = sharedPref.getString("agenda", "default");
                 /*Verifica se o usuário deseja gravar a notificação na agenda,
                 e se ele acabou de ser adicionado ao sistema*/
-                if (agenda.equals("1") && acao.equals("novo")){
-                    Log.i("ADD EVENTO",evento.getDenominacao());
-
+                if (agenda.equals("1") && acao.equals("novo")) {
                     if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALENDAR)
                             == PackageManager.PERMISSION_GRANTED)
-                        calendar.addEventNotification(evento,getBaseContext(),getContentResolver());
-
-                /*Verifica se o usuário deseja gravar a notificação na agenda,
-                e se ele acabou de ser atualizado no sistema*/
-                }else if (agenda.equals("1") && acao.equals("atualizado")){
-                    Log.i("UPDATE EVENTO",evento.getDenominacao());
-                    if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALENDAR)
-                            == PackageManager.PERMISSION_GRANTED)
-                        calendar.updateEventNotification(evento,getBaseContext(),getContentResolver());
-
-                }else if (agenda.equals("1") && acao.equals("cancelado")) {
-                    /*Verifica se o usuário deseja gravar a notificação na agenda,
-                    e se ele acabou de ser cancelado no sistema*/
-                    Log.i("UPDATE EVENTO CANCELADO",evento.getDenominacao());
-                    if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALENDAR)
-                            == PackageManager.PERMISSION_GRANTED)
-                        calendar.deleteEventNotification(evento,getBaseContext(),getContentResolver());
+                        calendar.addEventNotification(evento, getBaseContext(), getContentResolver());
                 }
             }
 
@@ -127,7 +107,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String notificacoes = sharedPref.getString("notificacoes","1");
             //Chegou novo evento
             if (notificacoes.equals("1") && acao.equals("novo")) {
-                Log.i("NOTIFICATION","Envia notificação - novo");
                 /*Cancela notificação já agendada, a fim de impedir que o app
                 inunde o celular de notificações de novos eventos*/
                 Context ctx = getApplicationContext();
@@ -148,31 +127,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 PendingIntent broadcast = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 Calendar cal = Calendar.getInstance();
                 cal.add(Calendar.SECOND, 5); //Envia a notificação num horário agendado
-                 alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
                 //Evento cancelado
             }else if (notificacoes.equals("1") && acao.equals("cancelado")) {
-                    Log.i("NOTIFICATION","Envia notificação - cancelado");
                     //Agenda nova notificação
                     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                     Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
-
-                    /*
-                    notificationIntent.putExtra("descricao_evento",descricao_evento);
-                    notificationIntent.putExtra("programacao_evento",programacao_evento);
-                    notificationIntent.putExtra("participantes",participantes);
-                    notificationIntent.putExtra("mostrarparticipantes",mostrarparticipantes);
-                    notificationIntent.putExtra("teminscricao",teminscricao);
-                    notificationIntent.putExtra("valorinscricao",valorinscricao);
-                    notificationIntent.putExtra("linklocalinscricao",linklocalinscricao);
-                    notificationIntent.putExtra("acao",acao);
-                    notificationIntent.putExtra("id",id);
-                    notificationIntent.putExtra("denominacao",denominacao);
-                    notificationIntent.putExtra("horainicio",horainicio);
-                    notificationIntent.putExtra("horafim",horafim);
-                    notificationIntent.putExtra("datainicio",datainicio);
-                    notificationIntent.putExtra("datafim",datafim);
-                    notificationIntent.putExtra("publico",publico);
-                    */
 
                     Gson gson = new Gson();
                     String json = gson.toJson(evento);
@@ -190,10 +150,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             Context.MODE_PRIVATE);
                     long eventID = sharedPref.getLong(""+evento.getId(),-1);
                     if (eventID != -1)
-                        calendar.deleteEventNotification(evento,getApplicationContext(),getContentResolver());
-                    //Evento atualizado
+                        calendar.deleteEventNotification(evento,getBaseContext(),getContentResolver());
                     }else if (notificacoes.equals("1") && acao.equals("atualizado")) {
-                        Log.i("NOTIFICATION","Envia notificação - atualizado");
+                        //Evento atualizado
                         /*Cancela notificação já agendada, a fim de impedir que o app
                         inunde o celular de notificações de novos eventos*/
                         Context ctx = getApplicationContext();
@@ -209,24 +168,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                         //Agenda nova notificação
                         Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
-                        /*
-                        notificationIntent.putExtra("descricao_evento",descricao_evento);
-                        notificationIntent.putExtra("programacao_evento",programacao_evento);
-                        notificationIntent.putExtra("participantes",participantes);
-                        notificationIntent.putExtra("mostrarparticipantes",mostrarparticipantes);
-                        notificationIntent.putExtra("teminscricao",teminscricao);
-                        notificationIntent.putExtra("valorinscricao",valorinscricao);
-                        notificationIntent.putExtra("linklocalinscricao",linklocalinscricao);
-                        notificationIntent.putExtra("acao",acao);
-                        notificationIntent.putExtra("id",id);
-                        notificationIntent.putExtra("denominacao",denominacao);
-                        notificationIntent.putExtra("horainicio",horainicio);
-                        notificationIntent.putExtra("horafim",horafim);
-                        notificationIntent.putExtra("datainicio",datainicio);
-                        notificationIntent.putExtra("datafim",datafim);
-                        notificationIntent.putExtra("publico",publico);
-                        */
-
                         Gson gson = new Gson();
                         String json = gson.toJson(evento);
                         notificationIntent.putExtra("evento", json);
@@ -243,7 +184,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                 Context.MODE_PRIVATE);
                         long eventID = sharedPref.getLong(""+evento.getId(),-1);
                         if (eventID != -1)
-                            calendar.updateEventNotification(evento,getApplicationContext(),getContentResolver());
+                            calendar.updateEventNotification(evento,getBaseContext(),getContentResolver());
                     }
         }
     }

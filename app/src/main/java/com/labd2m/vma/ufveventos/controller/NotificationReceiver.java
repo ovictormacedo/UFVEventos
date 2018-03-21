@@ -27,7 +27,6 @@ import com.labd2m.vma.ufveventos.util.Calendar;
 public class NotificationReceiver extends BroadcastReceiver{
     @Override
     public void onReceive(final Context context, Intent it){
-        Log.i("NOTIFICATION RECEIVER","CHEGOU");
         String eventoJson = it.getStringExtra("evento");
         Gson gson = new Gson();
         Evento evento = gson.fromJson(eventoJson, Evento.class);
@@ -36,30 +35,12 @@ public class NotificationReceiver extends BroadcastReceiver{
             Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.logo_sobre, null);
 
             if (acao.equals("cancelado")) {//Evento cancelado
-                Log.i("NOTIFICATION RECEIVER","CANCELADO");
                 String descricao = evento.getDescricao_evento();
                 Intent notificationIntent = null;
                 if (!descricao.equals(""))
                     notificationIntent = new Intent(context,evento_cancelado_com_descricao.class);
                 else
                     notificationIntent = new Intent(context,evento_cancelado_sem_descricao.class);
-                /*
-                notificationIntent.putExtra("descricao_evento",it.getStringExtra("descricao_evento"));
-                notificationIntent.putExtra("participantes",it.getStringExtra("participantes"));
-                notificationIntent.putExtra("mostrarparticipantes",it.getStringExtra("mostrarparticipantes"));
-                notificationIntent.putExtra("programacao_evento",it.getStringExtra("programacao_evento"));
-                notificationIntent.putExtra("teminscricao",it.getStringExtra("teminscricao"));
-                notificationIntent.putExtra("valorinscricao",it.getStringExtra("valorinscricao"));
-                notificationIntent.putExtra("linklocalinscricao",it.getStringExtra("linklocalinscricao"));
-                notificationIntent.putExtra("id",it.getStringExtra("id"));
-                notificationIntent.putExtra("acao",it.getStringExtra("acao"));
-                notificationIntent.putExtra("denominacao", it.getStringExtra("denominacao"));
-                notificationIntent.putExtra("horainicio", it.getStringExtra("horainicio"));
-                notificationIntent.putExtra("horafim", it.getStringExtra("horafim"));
-                notificationIntent.putExtra("datainicio", it.getStringExtra("datainicio"));
-                notificationIntent.putExtra("datafim", it.getStringExtra("datafim"));
-                notificationIntent.putExtra("publico", it.getStringExtra("publico"));
-                */
 
                 gson = new Gson();
                 String json = gson.toJson(evento);
@@ -89,7 +70,6 @@ public class NotificationReceiver extends BroadcastReceiver{
                 NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.notify(1, notification);
             } else if (acao.equals("novo")) { //Novo evento adicionado
-                    Log.i("NOTIFICATION RECEIVER","NOVO");
                     Intent notificationIntent = new Intent(context, inicial.class);
                     TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
                     stackBuilder.addParentStack(inicial.class);
@@ -109,30 +89,12 @@ public class NotificationReceiver extends BroadcastReceiver{
                     NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                     notificationManager.notify(0, notification);
                 } else if (acao.equals("atualizado")) { //Evento atualizado
-                        Log.i("NOTIFICATION RECEIVER","ATUALIZADO");
                         String descricao = evento.getDescricao_evento();
                         Intent notificationIntent = null;
                         if (!descricao.equals(""))
                             notificationIntent = new Intent(context,evento_atualizado_com_descricao.class);
                         else
                             notificationIntent = new Intent(context,evento_atualizado_sem_descricao.class);
-                        /*
-                        notificationIntent.putExtra("descricao_evento",it.getStringExtra("descricao_evento"));
-                        notificationIntent.putExtra("participantes",it.getStringExtra("participantes"));
-                        notificationIntent.putExtra("mostrarparticipantes",it.getStringExtra("mostrarparticipantes"));
-                        notificationIntent.putExtra("programacao_evento",it.getStringExtra("programacao_evento"));
-                        notificationIntent.putExtra("teminscricao",it.getStringExtra("teminscricao"));
-                        notificationIntent.putExtra("valorinscricao",it.getStringExtra("valorinscricao"));
-                        notificationIntent.putExtra("linklocalinscricao",it.getStringExtra("linklocalinscricao"));
-                        notificationIntent.putExtra("id",it.getStringExtra("id"));
-                        notificationIntent.putExtra("acao",it.getStringExtra("acao"));
-                        notificationIntent.putExtra("denominacao", it.getStringExtra("denominacao"));
-                        notificationIntent.putExtra("horainicio", it.getStringExtra("horainicio"));
-                        notificationIntent.putExtra("horafim", it.getStringExtra("horafim"));
-                        notificationIntent.putExtra("datainicio", it.getStringExtra("datainicio"));
-                        notificationIntent.putExtra("datafim", it.getStringExtra("datafim"));
-                        notificationIntent.putExtra("publico", it.getStringExtra("publico"));
-                        */
 
                         gson = new Gson();
                         String json = gson.toJson(evento);

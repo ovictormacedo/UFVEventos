@@ -28,15 +28,6 @@
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintTop_creator="1">
 
-        <ImageView
-            android:id="@+id/addAgenda"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:src="@drawable/carimbo_cancelado"
-            android:layout_marginLeft="125dp"
-            android:layout_marginTop="120dp"
-            android:elevation="10dp"/>
-
         <ProgressBar
             android:id="@+id/progressBarDetalhesEvento"
             style="?android:attr/progressBarStyleSmall"
@@ -342,6 +333,18 @@
                         android:text="" />
                 </LinearLayout>
             </ScrollView>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="125dp"
+            android:layout_marginTop="120dp"
+            android:elevation="10dp">
+            <ImageView
+                android:id="@+id/addAgenda"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:src="@drawable/carimbo_cancelado"/>
         </LinearLayout>
     </FrameLayout>
 </RelativeLayout>

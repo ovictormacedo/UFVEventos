@@ -310,7 +310,7 @@ public class evento_cancelado_sem_descricao extends AppCompatActivity implements
         evento = gson.fromJson(eventoJson, Evento.class);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detalhes_evento_sem_descricao);
+        setContentView(R.layout.activity_evento_cancelado_sem_descricao);
 
         //Google Analytics
         MyApplication application = (MyApplication) getApplication();
