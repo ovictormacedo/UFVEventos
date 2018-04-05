@@ -6,19 +6,16 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.labd2m.vma.ufveventos.R;
 import com.labd2m.vma.ufveventos.model.Evento;
-import com.labd2m.vma.ufveventos.util.Calendar;
 
 /**
  * Created by vma on 04/01/2018.

@@ -50,14 +50,6 @@
             android:max="100"
             android:minHeight="43dp"
             android:minWidth="43dp" />
-        <LinearLayout
-            android:id="@+id/retanguloDetalhesEvento"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:layout_marginTop="-10dp"
-            android:background="@drawable/rectangle_appbar"
-            android:orientation="horizontal">
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/firstPartDetalhesEvento"
@@ -270,75 +262,87 @@
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>
-        <fragment
-            android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:layout_marginTop="240dp"
-            android:name="com.google.android.gms.maps.MapFragment"
-            android:id="@+id/mapFragment"/>
-        <LinearLayout
-            android:id="@+id/thirdPartDetalhesEvento"
-            android:layout_width="match_parent"
-            android:layout_height="270dp"
-            android:layout_marginTop="475dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/round_outline"
-            android:orientation="vertical"
-            android:weightSum="1"
-            tools:ignore="UselessLeaf">
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="45dp"
-                android:layout_marginTop="8dp"
-                android:layout_gravity="center"
-                android:src="@drawable/expandir"/>
-            <ScrollView
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom">
+            <LinearLayout
+                android:id="@+id/retanguloDetalhesEvento"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:background="@drawable/rectangle_appbar"
+                android:orientation="horizontal">
+            </LinearLayout>
+            <fragment
+                android:id="@+id/mapFragment"
+                android:name="com.google.android.gms.maps.MapFragment"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="15dp">
-                <LinearLayout
-                    android:layout_width="wrap_content"
+                android:layout_below="@+id/retanguloDetalhesEvento"
+                android:layout_above="@+id/thirdPartDetalhesEvento"/>
+            <LinearLayout
+                android:id="@+id/thirdPartDetalhesEvento"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/round_outline"
+                android:orientation="vertical"
+                android:weightSum="1"
+                tools:ignore="UselessLeaf">
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/expandir"/>
+                <ScrollView
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/descricaoTitulo"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="15dp">
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="20dp"
-                        android:textColor="#000000"
-                        android:text="Descrição"
-                        android:textSize="24dp" />
-                    <TextView
-                        android:id="@+id/descricaoEvento"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="5dp"
-                        android:textColor="#000000"
-                        android:text="" />
-                    <TextView
-                        android:id="@+id/programacaoTitulo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="20dp"
-                        android:textColor="#000000"
-                        android:text="Programação"
-                        android:textSize="24dp" />
-                    <TextView
-                        android:id="@+id/programacaoEvento"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="5dp"
-                        android:textColor="#000000"
-                        android:text="" />
-                </LinearLayout>
-            </ScrollView>
-        </LinearLayout>
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/descricaoTitulo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="20dp"
+                            android:textColor="#000000"
+                            android:text="Descrição"
+                            android:textSize="24dp" />
+                        <TextView
+                            android:id="@+id/descricaoEvento"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="5dp"
+                            android:textColor="#000000"
+                            android:text="" />
+                        <TextView
+                            android:id="@+id/programacaoTitulo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="20dp"
+                            android:textColor="#000000"
+                            android:text="Programação"
+                            android:textSize="24dp" />
+                        <TextView
+                            android:id="@+id/programacaoEvento"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="5dp"
+                            android:textColor="#000000"
+                            android:text="" />
+                    </LinearLayout>
+                </ScrollView>
+            </LinearLayout>
+        </RelativeLayout>
     </FrameLayout>
 </RelativeLayout>

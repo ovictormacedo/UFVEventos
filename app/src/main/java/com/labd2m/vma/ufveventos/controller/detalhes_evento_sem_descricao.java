@@ -12,7 +12,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -36,7 +35,7 @@ import com.labd2m.vma.ufveventos.R;
 import com.labd2m.vma.ufveventos.model.Categoria;
 import com.labd2m.vma.ufveventos.model.Evento;
 import com.labd2m.vma.ufveventos.model.Local;
-import com.labd2m.vma.ufveventos.util.Calendar;
+import com.labd2m.vma.ufveventos.util.Agenda;
 import com.labd2m.vma.ufveventos.util.Permission;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -89,8 +88,8 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
 
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
                     == PackageManager.PERMISSION_GRANTED) {
-                Calendar calendar = new Calendar();
-                calendar.addEvent(evento, getBaseContext(), getContentResolver(), getParent());
+                Agenda agenda = new Agenda();
+                agenda.addEvent(evento, getBaseContext(), getContentResolver(), getParent());
                 Toast.makeText(getBaseContext(), "Evento adicionado à agenda.", Toast.LENGTH_LONG).show();
             }
         }
@@ -547,8 +546,8 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
                             == PackageManager.PERMISSION_GRANTED) {
-                        Calendar calendar = new Calendar();
-                        calendar.addEvent(evento, getBaseContext(), getContentResolver(), getParent());
+                        Agenda agenda = new Agenda();
+                        agenda.addEvent(evento, getBaseContext(), getContentResolver(), getParent());
                         Toast.makeText(getBaseContext(), "Evento adicionado à agenda.", Toast.LENGTH_LONG).show();
                     }
                 } else {

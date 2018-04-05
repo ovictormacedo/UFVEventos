@@ -29,7 +29,7 @@ public class RecyclerViewEventosTelaInicialAdapter extends RecyclerView.Adapter<
 
     @Override
     public CustomViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.evento_row, null);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.evento_row, viewGroup, false);
         CustomViewHolder viewHolder = new CustomViewHolder(view);
         return viewHolder;
     }

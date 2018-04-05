@@ -11,7 +11,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -22,13 +21,12 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -37,7 +35,7 @@ import com.labd2m.vma.ufveventos.R;
 import com.labd2m.vma.ufveventos.model.Categoria;
 import com.labd2m.vma.ufveventos.model.Evento;
 import com.labd2m.vma.ufveventos.model.Local;
-import com.labd2m.vma.ufveventos.util.Calendar;
+import com.labd2m.vma.ufveventos.util.Agenda;
 import com.labd2m.vma.ufveventos.util.Permission;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -48,7 +46,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -56,10 +53,13 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
 import org.json.JSONObject;
-
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 public class detalhes_evento_com_descricao extends AppCompatActivity implements OnMapReadyCallback, LocationListener,
         View.OnClickListener {
@@ -72,7 +72,8 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
     private LatLng mSourceLatLng = null;
     private LatLng mDestinationLatLng;
     public Evento evento;
-    public int _yDelta;
+    public float yAnterior;
+    public float y;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -230,6 +231,33 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
             ((TextView) findViewById(R.id.programacaoEvento)).
                     setText(evento.getProgramacao_evento());
         }
+
+        /*
+        float altura = (float)(getScreenHeight(getBaseContext())*0.4);
+        RelativeLayout.LayoutParams mParams = (RelativeLayout.LayoutParams)findViewById(R.id.mapFragment).getLayoutParams();
+        mParams.height = (int) convertDpToPixel(altura,getBaseContext());
+        */
+
+        /*
+        //Seta layout da thirdPart
+        FrameLayout.LayoutParams lParams = (FrameLayout.LayoutParams)findViewById(R.id.thirdPartDetalhesEvento)
+                .getLayoutParams();
+        float heightDp = getScreenHeight(getBaseContext());
+
+        //Retorna a relação 1px equivale a quantos dp,
+        // o valor 0.2857143 adotado é o valor do google pixel que foi usado como referência
+        //float dpDoAparelho = getDp(getBaseContext());
+        //float razao = (float) 0.2857143-dpDoAparelho;
+
+        float heightPx = convertDpToPixel(heightDp,getBaseContext());
+
+        thirdPartFechado = (int) (heightPx*0.82);
+        lParams.setMargins(0,thirdPartFechado,0,0);
+        //lParams.bottomMargin = (int) (convertDpToPixel(-250,getBaseContext()));
+        lParams.height = (int) (convertDpToPixel(270,getBaseContext()));
+        findViewById(R.id.thirdPartDetalhesEvento).setLayoutParams(lParams);
+
+        thirdPartAberto = (int) (heightPx*0.44);*/
     }
 
     private void initMap(){
@@ -248,7 +276,7 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
 
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
                     == PackageManager.PERMISSION_GRANTED) {
-                Calendar calendar = new Calendar();
+                Agenda calendar = new Agenda();
                 calendar.addEvent(evento, getBaseContext(), getContentResolver(), getParent());
                 Toast.makeText(getBaseContext(), "Evento adicionado à agenda.", Toast.LENGTH_LONG).show();
             }
@@ -469,9 +497,9 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
     public void showHideFirstPart(View view){
         /*Verifica se a terceira parte está aberta*/
         View v = findViewById(R.id.thirdPartDetalhesEvento);
-        FrameLayout.LayoutParams vParams = (FrameLayout.LayoutParams) v.getLayoutParams();
+        RelativeLayout.LayoutParams vParams = (RelativeLayout.LayoutParams) v.getLayoutParams();
         boolean terceiraParteEstaAberta = false;
-        if (convertPixelsToDp(vParams.topMargin,getBaseContext()) < 370) //Está aberto
+        if (convertPixelsToDp(vParams.height,getBaseContext()) > 60) //Está aberto
             terceiraParteEstaAberta = true;
 
         //Aumenta ou reduz quadro com informações gerais
@@ -479,7 +507,7 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
         if (view.getHeight() < convertDpToPixel((float) 270, getBaseContext())){ // Verifica se está recolhido
             params.height = Math.round(convertDpToPixel((float)270, getBaseContext())); //Abre
             if (terceiraParteEstaAberta)
-                vParams.topMargin = Math.round(convertDpToPixel((float) 475, getBaseContext()));
+                vParams.height = Math.round(convertDpToPixel((float) 60, getBaseContext()));
             ((ImageView) findViewById(R.id.abreFechaFirstPart)).setImageResource(R.drawable.fechar); //Seta imagem "fechar"
         }
         else {
@@ -490,94 +518,51 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
 
         //Recolhe retangulo vermelho
         LinearLayout layout = (LinearLayout) findViewById(R.id.retanguloDetalhesEvento);
-        params = (FrameLayout.LayoutParams)layout.getLayoutParams();
+        params = (RelativeLayout.LayoutParams)layout.getLayoutParams();
         if (params.height < convertDpToPixel((float)250, getBaseContext())) // Verifica se está recolhido
             params.height = Math.round(convertDpToPixel((float)250, getBaseContext()));
         else
             params.height = Math.round(convertDpToPixel((float)62.5, getBaseContext()));
         layout.setLayoutParams(params);
-
-        //Aumenta ou reduz mapa
-        View fragment = (View) findViewById(R.id.mapFragment);
-        FrameLayout.LayoutParams fParams = (FrameLayout.LayoutParams)fragment.getLayoutParams();
-        if (fParams.height > convertDpToPixel((float)240, getBaseContext())) {
-            fParams.height = Math.round(convertDpToPixel((float)240, getBaseContext()));
-            fParams.topMargin = Math.round(convertDpToPixel((float)240, getBaseContext()));
-        }
-        else {
-            fParams.height = fParams.height + Math.round(convertDpToPixel((float)195, getBaseContext()));
-            fParams.topMargin = Math.round(convertDpToPixel((float)45, getBaseContext()));
-        }
-        fragment.setLayoutParams(fParams);
     }
 
     private final class ScrollFunction implements View.OnTouchListener{
-        public boolean onTouch(View view, MotionEvent event){
-            final int y = (int) event.getRawY();
+        public boolean onTouch(View view, final MotionEvent event){
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) view.getLayoutParams();
             ViewGroup.LayoutParams firstPartParams;
+
+            boolean alterou = false;
+            y = event.getRawY();
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_DOWN:
-                    FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) view.getLayoutParams();
-                    _yDelta = y-params.topMargin;
+                    yAnterior = y;
                     break;
                 case MotionEvent.ACTION_UP:
+                    yAnterior = y;
                     break;
                 case MotionEvent.ACTION_POINTER_DOWN:
                     break;
                 case MotionEvent.ACTION_POINTER_UP:
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    ViewGroup.LayoutParams fParams = findViewById(R.id.firstPartDetalhesEvento).getLayoutParams();
-                    FrameLayout.LayoutParams rParams = (FrameLayout.LayoutParams)findViewById(R.id.retanguloDetalhesEvento).getLayoutParams();
-                    FrameLayout.LayoutParams mParams = (FrameLayout.LayoutParams)findViewById(R.id.mapFragment).getLayoutParams();
-                    FrameLayout.LayoutParams lParams = (FrameLayout.LayoutParams) view.getLayoutParams();
-                    //Converte px para dp
-                    float dp = convertPixelsToDp((float)y-_yDelta,getBaseContext());
-                    if (dp > 475) { //Atingiu a base
-                        lParams.topMargin = Math.round(convertDpToPixel((float)475,getBaseContext()));
+                    RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
+                    if (lParams.height+(yAnterior-y) < convertDpToPixel((float) 60, getBaseContext())){ //Atingiu a base
+                        lParams.height = (int) convertDpToPixel((float) 60, getBaseContext());
+                        alterou = true;
                     } else
-                        if(dp < 265) { //Atingiu o topo
-                            fParams.height = Math.round(convertDpToPixel((float) 67.5, getBaseContext()));
-                            findViewById(R.id.firstPartDetalhesEvento).setLayoutParams(fParams);
-                            mParams.height = Math.round(convertDpToPixel((float) 435, getBaseContext()));
-                            mParams.topMargin = Math.round(convertDpToPixel((float) 52.5, getBaseContext()));
-                            findViewById(R.id.mapFragment).setLayoutParams(mParams);
-                            rParams.height = Math.round(convertDpToPixel((float) 62.5, getBaseContext()));
-                            findViewById(R.id.retanguloDetalhesEvento).setLayoutParams(rParams);
-                            lParams.topMargin = Math.round(convertDpToPixel((float)265,getBaseContext()));
-                            //Seta imagem "abrir"
-                            ((ImageView) findViewById(R.id.abreFechaFirstPart)).setImageResource(R.drawable.abrir);
+                        if(lParams.height+(yAnterior-y) > convertDpToPixel((float) 270, getBaseContext())) { //Atingiu o topo
+                            lParams.height = (int) convertDpToPixel((float) 270, getBaseContext());
+                            alterou = true;
+                        } else {
+                            if ((lParams.height+(yAnterior-y)) >= convertDpToPixel(60,getBaseContext())
+                                    && (lParams.height+(yAnterior-y)) <= convertDpToPixel(270,getBaseContext())) {
+                                lParams.height = (int) (lParams.height + (yAnterior - y));
+                                alterou = true;
+                            }
                         }
-                        else {
-                            //Detecta direção do scroll
-                            if (lParams.topMargin > (y - _yDelta)) // O scroll é para cima
-                                if (fParams.height <= convertDpToPixel((float)67.5,getBaseContext())) { //Verifica se atingiu o limite
-                                    fParams.height = Math.round(convertDpToPixel((float)67.5,getBaseContext()));
-                                    mParams.height = Math.round(convertDpToPixel((float)435,getBaseContext()));
-                                    mParams.topMargin = Math.round(convertDpToPixel((float)52.5,getBaseContext()));
-                                    rParams.height = Math.round(convertDpToPixel((float)62.5,getBaseContext()));
-                                    findViewById(R.id.firstPartDetalhesEvento).setLayoutParams(fParams);
-                                    findViewById(R.id.mapFragment).setLayoutParams(mParams);
-                                    findViewById(R.id.retanguloDetalhesEvento).setLayoutParams(rParams);
-                                    //Seta imagem "abrir"
-                                    ((ImageView) findViewById(R.id.abreFechaFirstPart)).setImageResource(R.drawable.abrir);
-                                }else {
-                                    int offsetScroll = 22;
-                                    //Move a primeira parte
-                                    fParams.height = fParams.height - offsetScroll;
-                                    findViewById(R.id.firstPartDetalhesEvento).setLayoutParams(fParams);
-                                    //Move retângulo
-                                    rParams.height = rParams.height - offsetScroll;
-                                    findViewById(R.id.retanguloDetalhesEvento).setLayoutParams(rParams);
-                                    //Move Mapa
-                                    mParams.height = mParams.height + offsetScroll;
-                                    mParams.topMargin = mParams.topMargin - offsetScroll;
-                                    findViewById(R.id.mapFragment).setLayoutParams(mParams);
-                                }
-                            //Move terceira parte
-                            lParams.topMargin = y - _yDelta;
-                        }
-                    view.setLayoutParams(lParams);
+                    if (alterou)
+                        view.setLayoutParams(lParams);
+                    yAnterior = y;
                     break;
             }
             return true;
@@ -597,6 +582,26 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
         return dp;
     }
 
+    public static float getScreenWidth(Context context){
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        return dpWidth;
+    }
+
+    public static float getDp(Context context){
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dp = 1/displayMetrics.density;
+        return dp;
+    }
+
+    public static float getScreenHeight(Context context){
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
+        Log.i("ALTURA EM PIXEL",""+displayMetrics.heightPixels);
+        Log.i("VALOR DP",""+1/displayMetrics.density);
+        return dpHeight;
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -605,11 +610,11 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                                == PackageManager.PERMISSION_GRANTED){
-                            if (googleServicesAvailable())
-                                initMap();
-                        }
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED){
+                        if (googleServicesAvailable())
+                            initMap();
+                    }
                 } else {
                 }
                 return;
@@ -620,7 +625,7 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
                             == PackageManager.PERMISSION_GRANTED) {
-                        Calendar calendar = new Calendar();
+                        Agenda calendar = new Agenda();
                         calendar.addEvent(evento, getBaseContext(), getContentResolver(), getParent());
                         Toast.makeText(getBaseContext(), "Evento adicionado à agenda.", Toast.LENGTH_LONG).show();
                     }

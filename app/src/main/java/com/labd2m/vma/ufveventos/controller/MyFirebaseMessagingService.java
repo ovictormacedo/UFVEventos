@@ -2,27 +2,20 @@ package com.labd2m.vma.ufveventos.controller;
 
 import android.Manifest;
 import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.Build;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.FloatProperty;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.labd2m.vma.ufveventos.R;
 import com.labd2m.vma.ufveventos.model.Evento;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.labd2m.vma.ufveventos.model.Local;
+import com.labd2m.vma.ufveventos.util.Agenda;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -84,7 +77,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     programacao_evento,Integer.parseInt(participantes),publico,null,locais,null,Integer.parseInt(teminscricao),
                     Float.parseFloat(valorinscricao),linklocalinscricao,Integer.parseInt(mostrarparticipantes));
 
-            com.labd2m.vma.ufveventos.util.Calendar calendar = new com.labd2m.vma.ufveventos.util.Calendar();
+            Agenda calendar = new Agenda();
 
             //Verifica se o usuário deseja que a notificação seja adicionada à agenda
             SharedPreferences sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);

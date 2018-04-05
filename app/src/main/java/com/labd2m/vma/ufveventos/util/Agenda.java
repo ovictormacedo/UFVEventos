@@ -31,7 +31,7 @@ import rx.schedulers.Schedulers;
  * Created by vma on 15/01/2018.
  */
 
-public class Calendar{
+public class Agenda {
     public void deleteEventNotification(Evento evento,Context context,ContentResolver cr){
         //Recupera id do evento
         SharedPreferences sharedPref = context.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0agenda",
