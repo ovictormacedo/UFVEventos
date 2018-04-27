@@ -25,9 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.labd2m.vma.ufveventos.R;
-import com.labd2m.vma.ufveventos.model.Api;
 import com.labd2m.vma.ufveventos.model.Categoria;
-import com.labd2m.vma.ufveventos.model.RecyclerViewCategoriasAdapter;
 import com.labd2m.vma.ufveventos.model.UsuarioSingleton;
 import com.labd2m.vma.ufveventos.util.Permission;
 import com.labd2m.vma.ufveventos.util.RetrofitAPI;

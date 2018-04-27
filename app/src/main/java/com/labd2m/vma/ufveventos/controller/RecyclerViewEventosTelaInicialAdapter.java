@@ -1,4 +1,4 @@
-package com.labd2m.vma.ufveventos.model;
+package com.labd2m.vma.ufveventos.controller;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.labd2m.vma.ufveventos.R;
-import com.labd2m.vma.ufveventos.controller.OnEventoTelaInicialClickListener;
+import com.labd2m.vma.ufveventos.model.Evento;
 
 import java.util.List;
 

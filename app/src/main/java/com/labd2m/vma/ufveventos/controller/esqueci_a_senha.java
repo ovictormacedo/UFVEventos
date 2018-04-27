@@ -12,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.labd2m.vma.ufveventos.R;
-import com.labd2m.vma.ufveventos.model.Api;
 import com.labd2m.vma.ufveventos.util.RetrofitAPI;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;

@@ -1,4 +1,9 @@
-package com.labd2m.vma.ufveventos.model;
+package com.labd2m.vma.ufveventos.controller;
+
+import com.labd2m.vma.ufveventos.model.Categoria;
+import com.labd2m.vma.ufveventos.model.Dispositivo;
+import com.labd2m.vma.ufveventos.model.Evento;
+import com.labd2m.vma.ufveventos.model.Usuario;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

@@ -5,17 +5,13 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.provider.CalendarContract;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
-import com.labd2m.vma.ufveventos.controller.inicial;
-import com.labd2m.vma.ufveventos.model.Api;
-import com.labd2m.vma.ufveventos.model.Dispositivo;
+import com.labd2m.vma.ufveventos.controller.Api;
 import com.labd2m.vma.ufveventos.model.Evento;
 
 import org.json.JSONObject;

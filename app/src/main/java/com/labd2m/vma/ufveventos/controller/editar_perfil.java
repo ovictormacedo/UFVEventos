@@ -22,13 +22,11 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.labd2m.vma.ufveventos.R;
-import com.labd2m.vma.ufveventos.model.Api;
 import com.labd2m.vma.ufveventos.model.UsuarioSingleton;
 import com.labd2m.vma.ufveventos.util.RetrofitAPI;
 import com.labd2m.vma.ufveventos.util.Seguranca;

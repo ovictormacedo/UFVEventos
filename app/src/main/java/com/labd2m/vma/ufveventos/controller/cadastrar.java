@@ -1,6 +1,5 @@
 package com.labd2m.vma.ufveventos.controller;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -12,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -23,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.labd2m.vma.ufveventos.R;
-import com.labd2m.vma.ufveventos.model.Api;
 import com.labd2m.vma.ufveventos.model.Dispositivo;
 import com.labd2m.vma.ufveventos.model.Usuario;
 import com.labd2m.vma.ufveventos.model.UsuarioSingleton;
