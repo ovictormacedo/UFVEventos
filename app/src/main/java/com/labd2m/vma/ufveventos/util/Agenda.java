@@ -1,13 +1,17 @@
 package com.labd2m.vma.ufveventos.util;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CalendarContract;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -36,6 +40,7 @@ public class Agenda {
         if (eventID != -1) {
             Uri deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
             int rows = cr.delete(deleteUri, null, null);
+
             //Envia ao servidor
             sharedPref = context.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
             String idUsuario = sharedPref.getString("id", "falso");
@@ -70,29 +75,42 @@ public class Agenda {
     }
 
     public void updateEventNotification(Evento evento,Context context,ContentResolver cr){
+        String[] projection =
+                new String[]{
+                        CalendarContract.Calendars._ID,
+                        CalendarContract.Calendars.NAME,
+                        CalendarContract.Calendars.ACCOUNT_NAME,
+                        CalendarContract.Calendars.ACCOUNT_TYPE};
+        String calendar_id = "";
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR)
+                == PackageManager.PERMISSION_GRANTED){
+            Cursor calCursor =
+                    context.getContentResolver().
+                            query(CalendarContract.Calendars.CONTENT_URI,
+                                    projection,
+                                    CalendarContract.Calendars.VISIBLE + " = 1",
+                                    null,
+                                    CalendarContract.Calendars._ID + " ASC");
+            calCursor.moveToFirst();
+            calendar_id = calCursor.getString(0);
+        }
+
         int diaInicio = Integer.parseInt(evento.getDataInicio().substring(0,2));
         int mesInicio = Integer.parseInt(evento.getDataInicio().substring(3,5));
         int anoInicio = Integer.parseInt(evento.getDataInicio().substring(6,10));
-        Log.i("CHEGOU","CHEGOU1");
         int horaInicio = Integer.parseInt(evento.getHoraInicio().substring(0,2));
         int minutoInicio = Integer.parseInt(evento.getHoraInicio().substring(3,5));
-        Log.i("CHEGOU","CHEGOU2");
         java.util.Calendar beginTime = java.util.Calendar.getInstance();
         beginTime.set(anoInicio,mesInicio-1,diaInicio,horaInicio,minutoInicio);
-        Log.i("CHEGOU","CHEGOU3");
         int diaFim = Integer.parseInt(evento.getDataFim().substring(0,2));
         int mesFim = Integer.parseInt(evento.getDataFim().substring(3,5));
         int anoFim = Integer.parseInt(evento.getDataFim().substring(6,10));
-        Log.i("CHEGOU","CHEGOU4");
         int horaFim = Integer.parseInt(evento.getHoraFim().substring(0,2));
         int minutoFim = Integer.parseInt(evento.getHoraFim().substring(3,5));
-        Log.i("CHEGOU","CHEGOU5");
         java.util.Calendar endTime = java.util.Calendar.getInstance();
         endTime.set(anoFim,mesFim-1,diaFim,horaFim,minutoFim);
-        Log.i("CHEGOU","CHEGOU6");
         String local = evento.getLocais().get(0).getDescricao()+","+
                 evento.getLocais().get(0).getLatitude()+","+evento.getLocais().get(0).getLongitude();
-        Log.i("CHEGOU","CHEGOU7");
         //Recupera id do evento
         SharedPreferences sharedPref = context.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0agenda",
                 Context.MODE_PRIVATE);
@@ -108,7 +126,7 @@ public class Agenda {
             values.put(CalendarContract.Events.DTEND, endTime.getTimeInMillis());
             values.put(CalendarContract.Events.TITLE, evento.getDenominacao());
             values.put(CalendarContract.Events.DESCRIPTION, evento.getDescricao_evento());
-            values.put(CalendarContract.Events.CALENDAR_ID, 1);
+            values.put(CalendarContract.Events.CALENDAR_ID, calendar_id);
             values.put(CalendarContract.Events.EVENT_LOCATION, local);
             values.put(CalendarContract.Events.GUESTS_CAN_INVITE_OTHERS, "1");
             values.put(CalendarContract.Events.GUESTS_CAN_SEE_GUESTS, "1");
@@ -126,7 +144,29 @@ public class Agenda {
     public void addEvent(Evento evento, Context context, ContentResolver cr, Activity activity) {
         //Requisita permissão para escrita no calendar
         Permission permission = new Permission();
-        permission.requestPermissionCalendar(activity,context);
+        permission.requestPermissionCalendar(activity, context);
+
+        ContentResolver contentResolver = context.getContentResolver();
+
+        String[] projection =
+                new String[]{
+                        CalendarContract.Calendars._ID,
+                        CalendarContract.Calendars.NAME,
+                        CalendarContract.Calendars.ACCOUNT_NAME,
+                        CalendarContract.Calendars.ACCOUNT_TYPE};
+        String calendar_id = "";
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR)
+                == PackageManager.PERMISSION_GRANTED){
+            Cursor calCursor =
+                    context.getContentResolver().
+                            query(CalendarContract.Calendars.CONTENT_URI,
+                                    projection,
+                                    CalendarContract.Calendars.VISIBLE + " = 1",
+                                    null,
+                                    CalendarContract.Calendars._ID + " ASC");
+            calCursor.moveToFirst();
+            calendar_id = calCursor.getString(0);
+        }
 
         int diaInicio = Integer.parseInt(evento.getDataInicio().substring(8,10));
         int mesInicio = Integer.parseInt(evento.getDataInicio().substring(5,7));
@@ -151,11 +191,11 @@ public class Agenda {
         ContentValues values = new ContentValues();
         TimeZone timeZone = TimeZone.getDefault();
         values.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone.getID());
+        values.put(CalendarContract.Events.CALENDAR_ID, calendar_id);
         values.put(CalendarContract.Events.DTSTART, beginTime.getTimeInMillis());
         values.put(CalendarContract.Events.DTEND, endTime.getTimeInMillis());
         values.put(CalendarContract.Events.TITLE, evento.getDenominacao());
         values.put(CalendarContract.Events.DESCRIPTION, evento.getDescricao_evento());
-        values.put(CalendarContract.Events.CALENDAR_ID, 1);
         String local = evento.getLocais().get(0).getDescricao()+","+
                 evento.getLocais().get(0).getLatitude()+","+evento.getLocais().get(0).getLongitude();
         values.put(CalendarContract.Events.EVENT_LOCATION, local);
@@ -213,6 +253,26 @@ public class Agenda {
                 });
     }
     public void addEventNotification(Evento evento,Context context, ContentResolver cr) {
+        String[] projection =
+                new String[]{
+                        CalendarContract.Calendars._ID,
+                        CalendarContract.Calendars.NAME,
+                        CalendarContract.Calendars.ACCOUNT_NAME,
+                        CalendarContract.Calendars.ACCOUNT_TYPE};
+        String calendar_id = "";
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR)
+                == PackageManager.PERMISSION_GRANTED){
+            Cursor calCursor =
+                    context.getContentResolver().
+                            query(CalendarContract.Calendars.CONTENT_URI,
+                                    projection,
+                                    CalendarContract.Calendars.VISIBLE + " = 1",
+                                    null,
+                                    CalendarContract.Calendars._ID + " ASC");
+            calCursor.moveToFirst();
+            calendar_id = calCursor.getString(0);
+        }
+
         int diaInicio = Integer.parseInt(evento.getDataInicio().substring(0,2));
         int mesInicio = Integer.parseInt(evento.getDataInicio().substring(3,5));
         int anoInicio = Integer.parseInt(evento.getDataInicio().substring(6,10));
@@ -243,7 +303,7 @@ public class Agenda {
         values.put(CalendarContract.Events.DTEND, endTime.getTimeInMillis());
         values.put(CalendarContract.Events.TITLE, evento.getDenominacao());
         values.put(CalendarContract.Events.DESCRIPTION, evento.getDescricao_evento());
-        values.put(CalendarContract.Events.CALENDAR_ID, 1);
+        values.put(CalendarContract.Events.CALENDAR_ID, calendar_id);
         values.put(CalendarContract.Events.EVENT_LOCATION, local);
         values.put(CalendarContract.Events.GUESTS_CAN_INVITE_OTHERS, "1");
         values.put(CalendarContract.Events.GUESTS_CAN_SEE_GUESTS, "1");
