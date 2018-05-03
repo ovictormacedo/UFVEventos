@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -25,6 +27,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +53,7 @@ import com.google.gson.Gson;
 import com.labd2m.vma.ufveventos.R;
 import com.labd2m.vma.ufveventos.model.Evento;
 import com.labd2m.vma.ufveventos.model.Local;
+import com.labd2m.vma.ufveventos.model.Programacao;
 import com.labd2m.vma.ufveventos.util.Permission;
 
 import org.json.JSONObject;
@@ -68,7 +72,8 @@ public class evento_atualizado_com_descricao extends AppCompatActivity implement
     private LatLng mSourceLatLng = null;
     private LatLng mDestinationLatLng;
     public Evento evento;
-    public int _yDelta;
+    public float yAnterior;
+    public float y;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,7 +174,7 @@ public class evento_atualizado_com_descricao extends AppCompatActivity implement
             }else{
                 findViewById(R.id.taxaIngressoLabel).setVisibility(View.VISIBLE);
                 ((TextView) findViewById(R.id.taxaIngresso)).
-                        setText(String.valueOf(evento.getValorinscricao()));
+                        setText("R$"+String.valueOf(evento.getValorinscricao()));
             }
         else {
             ((TextView) findViewById(R.id.taxaIngresso)).
@@ -189,14 +194,21 @@ public class evento_atualizado_com_descricao extends AppCompatActivity implement
                     setText(evento.getPublicoAlvo());
         }
         //Seta descrição do evento
-        if (evento.getDescricao_evento() != null){
+        if (evento.getDescricao_evento() != ""){
+            findViewById(R.id.descricaoTitulo).setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.descricaoEvento)).
                     setText(evento.getDescricao_evento());
+
         }
-        //Seta programação do evento
-        if (evento.getProgramacao_evento() != null){
-            ((TextView) findViewById(R.id.programacaoEvento)).
-                    setText(evento.getProgramacao_evento());
+        //Seta a programação do evento
+        if (evento.getProgramacoes().size() > 0){
+            List <Programacao> programacoes = new ArrayList<>();
+            programacoes = evento.getProgramacoes();
+            RecyclerView myRecyclerView = (RecyclerView) findViewById(R.id.programacaoEvento);
+            myRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            RecyclerViewProgramacaoAdapter adapter = new RecyclerViewProgramacaoAdapter(getBaseContext(),programacoes);
+            myRecyclerView.setAdapter(adapter);
+            findViewById(R.id.programacaoTitulo).setVisibility(View.VISIBLE);
         }
     }
 
@@ -419,9 +431,9 @@ public class evento_atualizado_com_descricao extends AppCompatActivity implement
     public void showHideFirstPart(View view){
         /*Verifica se a terceira parte está aberta*/
         View v = findViewById(R.id.thirdPartDetalhesEvento);
-        FrameLayout.LayoutParams vParams = (FrameLayout.LayoutParams) v.getLayoutParams();
+        RelativeLayout.LayoutParams vParams = (RelativeLayout.LayoutParams) v.getLayoutParams();
         boolean terceiraParteEstaAberta = false;
-        if (convertPixelsToDp(vParams.topMargin,getBaseContext()) < 370) //Está aberto
+        if (convertPixelsToDp(vParams.height,getBaseContext()) > 60) //Está aberto
             terceiraParteEstaAberta = true;
 
         //Aumenta ou reduz quadro com informações gerais
@@ -429,7 +441,7 @@ public class evento_atualizado_com_descricao extends AppCompatActivity implement
         if (view.getHeight() < convertDpToPixel((float) 270, getBaseContext())){ // Verifica se está recolhido
             params.height = Math.round(convertDpToPixel((float)270, getBaseContext())); //Abre
             if (terceiraParteEstaAberta)
-                vParams.topMargin = Math.round(convertDpToPixel((float) 475, getBaseContext()));
+                vParams.height = Math.round(convertDpToPixel((float) 60, getBaseContext()));
             ((ImageView) findViewById(R.id.abreFechaFirstPart)).setImageResource(R.drawable.fechar); //Seta imagem "fechar"
         }
         else {
@@ -440,94 +452,72 @@ public class evento_atualizado_com_descricao extends AppCompatActivity implement
 
         //Recolhe retangulo vermelho
         LinearLayout layout = (LinearLayout) findViewById(R.id.retanguloDetalhesEvento);
-        params = (FrameLayout.LayoutParams)layout.getLayoutParams();
+        params = (RelativeLayout.LayoutParams)layout.getLayoutParams();
         if (params.height < convertDpToPixel((float)250, getBaseContext())) // Verifica se está recolhido
             params.height = Math.round(convertDpToPixel((float)250, getBaseContext()));
         else
             params.height = Math.round(convertDpToPixel((float)62.5, getBaseContext()));
         layout.setLayoutParams(params);
-
-        //Aumenta ou reduz mapa
-        View fragment = (View) findViewById(R.id.mapFragment);
-        FrameLayout.LayoutParams fParams = (FrameLayout.LayoutParams)fragment.getLayoutParams();
-        if (fParams.height > convertDpToPixel((float)240, getBaseContext())) {
-            fParams.height = Math.round(convertDpToPixel((float)240, getBaseContext()));
-            fParams.topMargin = Math.round(convertDpToPixel((float)240, getBaseContext()));
-        }
-        else {
-            fParams.height = fParams.height + Math.round(convertDpToPixel((float)195, getBaseContext()));
-            fParams.topMargin = Math.round(convertDpToPixel((float)45, getBaseContext()));
-        }
-        fragment.setLayoutParams(fParams);
     }
 
     private final class ScrollFunction implements View.OnTouchListener{
-        public boolean onTouch(View view, MotionEvent event){
-            final int y = (int) event.getRawY();
-            ViewGroup.LayoutParams firstPartParams;
+        public boolean onTouch(View view, final MotionEvent event){
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) view.getLayoutParams();
+
+            boolean alterou = false;
+            y = event.getRawY();
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_DOWN:
-                    FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) view.getLayoutParams();
-                    _yDelta = y-params.topMargin;
+                    yAnterior = y;
                     break;
                 case MotionEvent.ACTION_UP:
+                    yAnterior = y;
                     break;
                 case MotionEvent.ACTION_POINTER_DOWN:
                     break;
                 case MotionEvent.ACTION_POINTER_UP:
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    ViewGroup.LayoutParams fParams = findViewById(R.id.firstPartDetalhesEvento).getLayoutParams();
-                    FrameLayout.LayoutParams rParams = (FrameLayout.LayoutParams)findViewById(R.id.retanguloDetalhesEvento).getLayoutParams();
-                    FrameLayout.LayoutParams mParams = (FrameLayout.LayoutParams)findViewById(R.id.mapFragment).getLayoutParams();
-                    FrameLayout.LayoutParams lParams = (FrameLayout.LayoutParams) view.getLayoutParams();
-                    //Converte px para dp
-                    float dp = convertPixelsToDp((float)y-_yDelta,getBaseContext());
-                    if (dp > 475) { //Atingiu a base
-                        lParams.topMargin = Math.round(convertDpToPixel((float)475,getBaseContext()));
+                    RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
+
+                    if (lParams.height+(yAnterior-y) < convertDpToPixel((float) 60, getBaseContext())){ //Atingiu a base
+                        lParams.height = (int) convertDpToPixel((float) 60, getBaseContext());
+                        alterou = true;
                     } else
-                        if(dp < 265) { //Atingiu o topo
-                            fParams.height = Math.round(convertDpToPixel((float) 67.5, getBaseContext()));
-                            findViewById(R.id.firstPartDetalhesEvento).setLayoutParams(fParams);
-                            mParams.height = Math.round(convertDpToPixel((float) 435, getBaseContext()));
-                            mParams.topMargin = Math.round(convertDpToPixel((float) 52.5, getBaseContext()));
-                            findViewById(R.id.mapFragment).setLayoutParams(mParams);
-                            rParams.height = Math.round(convertDpToPixel((float) 62.5, getBaseContext()));
-                            findViewById(R.id.retanguloDetalhesEvento).setLayoutParams(rParams);
-                            lParams.topMargin = Math.round(convertDpToPixel((float)265,getBaseContext()));
-                            //Seta imagem "abrir"
-                            ((ImageView) findViewById(R.id.abreFechaFirstPart)).setImageResource(R.drawable.abrir);
+                    if(lParams.height+(yAnterior-y) > convertDpToPixel((float) 270, getBaseContext())) { //Atingiu o topo
+                        lParams.height = (int) convertDpToPixel((float) 270, getBaseContext());
+                        alterou = true;
+                    } else {
+                        if ((lParams.height+(yAnterior-y)) >= convertDpToPixel(60,getBaseContext())
+                                && (lParams.height+(yAnterior-y)) <= convertDpToPixel(270,getBaseContext())) {
+                            lParams.height = (int) (lParams.height + (yAnterior - y));
+                            alterou = true;
                         }
-                        else {
-                            //Detecta direção do scroll
-                            if (lParams.topMargin > (y - _yDelta)) // O scroll é para cima
-                                if (fParams.height <= convertDpToPixel((float)67.5,getBaseContext())) { //Verifica se atingiu o limite
-                                    fParams.height = Math.round(convertDpToPixel((float)67.5,getBaseContext()));
-                                    mParams.height = Math.round(convertDpToPixel((float)435,getBaseContext()));
-                                    mParams.topMargin = Math.round(convertDpToPixel((float)52.5,getBaseContext()));
-                                    rParams.height = Math.round(convertDpToPixel((float)62.5,getBaseContext()));
-                                    findViewById(R.id.firstPartDetalhesEvento).setLayoutParams(fParams);
-                                    findViewById(R.id.mapFragment).setLayoutParams(mParams);
-                                    findViewById(R.id.retanguloDetalhesEvento).setLayoutParams(rParams);
-                                    //Seta imagem "abrir"
-                                    ((ImageView) findViewById(R.id.abreFechaFirstPart)).setImageResource(R.drawable.abrir);
-                                }else {
-                                    int offsetScroll = 22;
-                                    //Move a primeira parte
-                                    fParams.height = fParams.height - offsetScroll;
-                                    findViewById(R.id.firstPartDetalhesEvento).setLayoutParams(fParams);
-                                    //Move retângulo
-                                    rParams.height = rParams.height - offsetScroll;
-                                    findViewById(R.id.retanguloDetalhesEvento).setLayoutParams(rParams);
-                                    //Move Mapa
-                                    mParams.height = mParams.height + offsetScroll;
-                                    mParams.topMargin = mParams.topMargin - offsetScroll;
-                                    findViewById(R.id.mapFragment).setLayoutParams(mParams);
-                                }
-                            //Move terceira parte
-                            lParams.topMargin = y - _yDelta;
+                    }
+                    if (alterou)
+                        view.setLayoutParams(lParams);
+
+                    //Controla a primeira parte, no caso, fecha
+                    if(lParams.height+(yAnterior-y) > convertDpToPixel((float) 80, getBaseContext())){
+                        LinearLayout flayout = (LinearLayout) findViewById(R.id.firstPartDetalhesEvento);
+                        FrameLayout.LayoutParams fparams = (FrameLayout.LayoutParams) flayout.getLayoutParams();
+                        // Verifica se está recolhido
+                        if (view.getHeight() < convertDpToPixel((float) 270, getBaseContext())) {
+                            ((ImageView) findViewById(R.id.abreFechaFirstPart)).setImageResource(R.drawable.abrir); //Seta imagem "abrir"
+                            fparams.height = Math.round(convertDpToPixel((float) 67.5, getBaseContext())); //Fecha
+                            flayout.setLayoutParams(fparams);
                         }
-                    view.setLayoutParams(lParams);
+
+                        LinearLayout rlayout = (LinearLayout) findViewById(R.id.retanguloDetalhesEvento);
+                        RelativeLayout.LayoutParams rparams = (RelativeLayout.LayoutParams) rlayout.getLayoutParams();
+                        // Verifica se está recolhido
+                        if (rparams.height >= convertDpToPixel((float)250, getBaseContext())){
+                            rparams.height = Math.round(convertDpToPixel((float)62.5, getBaseContext()));
+                            rlayout.setLayoutParams(rparams);
+                        }
+                    }
+
+                    yAnterior = y;
                     break;
             }
             return true;

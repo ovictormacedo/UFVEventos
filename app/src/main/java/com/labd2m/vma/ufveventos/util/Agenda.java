@@ -116,9 +116,10 @@ public class Agenda {
             int rows = cr.update(updateUri, values, null, null);
 
             //Remove chave do shared preferences
+            /*
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.remove(""+evento.getId());
-            editor.commit();
+            editor.commit();*/
         }
     }
 

@@ -15,12 +15,15 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -35,6 +38,7 @@ import com.labd2m.vma.ufveventos.R;
 import com.labd2m.vma.ufveventos.model.Categoria;
 import com.labd2m.vma.ufveventos.model.Evento;
 import com.labd2m.vma.ufveventos.model.Local;
+import com.labd2m.vma.ufveventos.model.Programacao;
 import com.labd2m.vma.ufveventos.util.Agenda;
 import com.labd2m.vma.ufveventos.util.Permission;
 import com.google.android.gms.analytics.HitBuilders;
@@ -184,13 +188,12 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
             }else{
                 findViewById(R.id.taxaIngressoLabel).setVisibility(View.VISIBLE);
                 ((TextView) findViewById(R.id.taxaIngresso)).
-                        setText(String.valueOf(evento.getValorinscricao()));
+                        setText("R$"+String.valueOf(evento.getValorinscricao()));
             }
         else {
             ((TextView) findViewById(R.id.taxaIngresso)).
                     setText("Não é necessário realizar inscrição.");
         }
-
 
         //Seta local ou link da inscricao
         if (evento.getTeminscricao() == 1){
@@ -221,43 +224,22 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
         }
 
         //Seta descrição do evento
-        if (evento.getDescricao_evento() != null){
+        if (evento.getDescricao_evento() != ""){
+            findViewById(R.id.descricaoTitulo).setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.descricaoEvento)).
                     setText(evento.getDescricao_evento());
         }
 
-        //Seta programação do evento
-        if (evento.getProgramacao_evento() != null){
-            ((TextView) findViewById(R.id.programacaoEvento)).
-                    setText(evento.getProgramacao_evento());
+        //Seta a programação do evento
+        if (evento.getProgramacoes().size() > 0){
+            List <Programacao> programacoes = new ArrayList<>();
+            programacoes = evento.getProgramacoes();
+            RecyclerView myRecyclerView = (RecyclerView) findViewById(R.id.programacaoEvento);
+            myRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            RecyclerViewProgramacaoAdapter adapter = new RecyclerViewProgramacaoAdapter(getBaseContext(),programacoes);
+            myRecyclerView.setAdapter(adapter);
+            findViewById(R.id.programacaoTitulo).setVisibility(View.VISIBLE);
         }
-
-        /*
-        float altura = (float)(getScreenHeight(getBaseContext())*0.4);
-        RelativeLayout.LayoutParams mParams = (RelativeLayout.LayoutParams)findViewById(R.id.mapFragment).getLayoutParams();
-        mParams.height = (int) convertDpToPixel(altura,getBaseContext());
-        */
-
-        /*
-        //Seta layout da thirdPart
-        FrameLayout.LayoutParams lParams = (FrameLayout.LayoutParams)findViewById(R.id.thirdPartDetalhesEvento)
-                .getLayoutParams();
-        float heightDp = getScreenHeight(getBaseContext());
-
-        //Retorna a relação 1px equivale a quantos dp,
-        // o valor 0.2857143 adotado é o valor do google pixel que foi usado como referência
-        //float dpDoAparelho = getDp(getBaseContext());
-        //float razao = (float) 0.2857143-dpDoAparelho;
-
-        float heightPx = convertDpToPixel(heightDp,getBaseContext());
-
-        thirdPartFechado = (int) (heightPx*0.82);
-        lParams.setMargins(0,thirdPartFechado,0,0);
-        //lParams.bottomMargin = (int) (convertDpToPixel(-250,getBaseContext()));
-        lParams.height = (int) (convertDpToPixel(270,getBaseContext()));
-        findViewById(R.id.thirdPartDetalhesEvento).setLayoutParams(lParams);
-
-        thirdPartAberto = (int) (heightPx*0.44);*/
     }
 
     private void initMap(){
@@ -529,7 +511,6 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
     private final class ScrollFunction implements View.OnTouchListener{
         public boolean onTouch(View view, final MotionEvent event){
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) view.getLayoutParams();
-            ViewGroup.LayoutParams firstPartParams;
 
             boolean alterou = false;
             y = event.getRawY();
@@ -546,6 +527,7 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
                     break;
                 case MotionEvent.ACTION_MOVE:
                     RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
+
                     if (lParams.height+(yAnterior-y) < convertDpToPixel((float) 60, getBaseContext())){ //Atingiu a base
                         lParams.height = (int) convertDpToPixel((float) 60, getBaseContext());
                         alterou = true;
@@ -562,12 +544,34 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
                         }
                     if (alterou)
                         view.setLayoutParams(lParams);
+
+                    //Controla a primeira parte, no caso, fecha
+                    if(lParams.height+(yAnterior-y) > convertDpToPixel((float) 80, getBaseContext())){
+                        LinearLayout flayout = (LinearLayout) findViewById(R.id.firstPartDetalhesEvento);
+                        FrameLayout.LayoutParams fparams = (FrameLayout.LayoutParams) flayout.getLayoutParams();
+                        // Verifica se está recolhido
+                        if (view.getHeight() < convertDpToPixel((float) 270, getBaseContext())) {
+                            ((ImageView) findViewById(R.id.abreFechaFirstPart)).setImageResource(R.drawable.abrir); //Seta imagem "abrir"
+                            fparams.height = Math.round(convertDpToPixel((float) 67.5, getBaseContext())); //Fecha
+                            flayout.setLayoutParams(fparams);
+                        }
+
+                        LinearLayout rlayout = (LinearLayout) findViewById(R.id.retanguloDetalhesEvento);
+                        RelativeLayout.LayoutParams rparams = (RelativeLayout.LayoutParams) rlayout.getLayoutParams();
+                        // Verifica se está recolhido
+                        if (rparams.height >= convertDpToPixel((float)250, getBaseContext())){
+                            rparams.height = Math.round(convertDpToPixel((float)62.5, getBaseContext()));
+                            rlayout.setLayoutParams(rparams);
+                        }
+                    }
+
                     yAnterior = y;
                     break;
             }
             return true;
         }
     }
+
     public static float convertDpToPixel(float dp, Context context){
         Resources resources = context.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();

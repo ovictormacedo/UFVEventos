@@ -15,6 +15,7 @@ import com.labd2m.vma.ufveventos.model.Evento;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.labd2m.vma.ufveventos.model.Local;
+import com.labd2m.vma.ufveventos.model.Programacao;
 import com.labd2m.vma.ufveventos.util.Agenda;
 
 import org.json.JSONArray;
@@ -37,19 +38,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         //Verifica se a mensagem contém notificação
         if (remoteMessage.getNotification() != null || remoteMessage.getData().size() > 0){
             //Recupera dados da notificação
-            String acao="",id="",denominacao="",descricao_evento="",programacao_evento="",
+            String acao="",id="",denominacao="",descricao_evento="",
                     horainicio="",horafim="",datainicio="",datafim="",participantes="",
                     publico="",teminscricao="",valorinscricao="",linklocalinscricao="",mostrarparticipantes="";
             Map<String,String> dados = remoteMessage.getData();
             JSONObject dadosJson = null;
             List<Local> locais = new ArrayList<>();
+            List<Programacao> programacoes = new ArrayList<>();
             try {
                 dadosJson = new JSONObject(dados.get("body"));
                 acao = dadosJson.getString("acao");
                 id = dadosJson.getString("id");
                 denominacao = dadosJson.getString("denominacao");
                 descricao_evento = dadosJson.getString("descricao_evento");
-                programacao_evento = dadosJson.getString("programacao_evento");
                 horainicio = dadosJson.getString("horainicio").substring(0, 5);
                 horafim = dadosJson.getString("horafim").substring(0, 5);
                 datainicio = dadosJson.getString("datainicio");
@@ -64,6 +65,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 mostrarparticipantes = dadosJson.getString("mostrarparticipantes");
                 JSONArray jsonAux = new JSONArray(dadosJson.getString("locais"));
                 int numLocais = jsonAux.length();
+                Log.i("LOCAIS RASTREIO",""+jsonAux);
                 for (int i = 0; i < numLocais; i++) {
                     Local local = new Local(Integer.parseInt(jsonAux.getJSONObject(i).getString("id")),
                             jsonAux.getJSONObject(i).getString("descricao"),
@@ -71,10 +73,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             jsonAux.getJSONObject(i).getString("lng"));
                     locais.add(local);
                 }
+
+                jsonAux = new JSONArray(dadosJson.getString("programacoes"));
+                int num = jsonAux.length();
+                for (int i = 0; i < num; i++) {
+                    Programacao prog = new Programacao(Integer.parseInt(jsonAux.getJSONObject(i).getString("idprog"))  ,
+                            jsonAux.getJSONObject(i).getString("horainicioprog"),
+                            jsonAux.getJSONObject(i).getString("horafimprog"),
+                            jsonAux.getJSONObject(i).getString("datainicioprog"),
+                            jsonAux.getJSONObject(i).getString("datafimprog"),
+                            jsonAux.getJSONObject(i).getString("descricaoprog"));
+                    programacoes.add(prog);
+                }
             }catch(JSONException e){Log.e("JSON ERRO",e.getMessage());}
 
             Evento evento = new Evento(Integer.parseInt(id),denominacao,horainicio,horafim,datainicio,datafim,descricao_evento,
-                    programacao_evento,Integer.parseInt(participantes),publico,null,locais,null,Integer.parseInt(teminscricao),
+                    programacoes,Integer.parseInt(participantes),publico,null,locais,null,Integer.parseInt(teminscricao),
                     Float.parseFloat(valorinscricao),linklocalinscricao,Integer.parseInt(mostrarparticipantes));
 
             Agenda calendar = new Agenda();

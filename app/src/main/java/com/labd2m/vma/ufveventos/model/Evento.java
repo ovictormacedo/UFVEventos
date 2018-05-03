@@ -17,13 +17,16 @@ public class Evento {
     private String datainicio = null;
     private String datafim = null;
     private String descricao_evento = null;
-    private String programacao_evento = null;
     private int participantes = 0;
     private String publico = null;
     private int teminscricao;
     private float valorinscricao;
     private String linklocalinscricao = null;
     private int mostrarparticipantes;
+
+    @SerializedName("programacoes")
+    @Expose
+    private List<Programacao> programacoes = null;
 
     @SerializedName("categorias")
     @Expose
@@ -38,7 +41,7 @@ public class Evento {
     public Evento(){}
 
     public Evento(int id, String denominacao, String horainicio, String horafim, String datainicio,
-                  String datafim, String descricao_evento, String programacao_evento, int participantes,
+                  String datafim, String descricao_evento, List<Programacao> programacoes, int participantes,
                   String publico, List<Categoria> categorias, List<Local> locais, List<Servico> servicos,
                   int teminscricao, float valorinscricao, String linklocalinscricao, int mostrarparticipantes) {
         this.id = id;
@@ -48,7 +51,7 @@ public class Evento {
         this.datainicio = datainicio;
         this.datafim = datafim;
         this.descricao_evento = descricao_evento;
-        this.programacao_evento = programacao_evento;
+        this.programacoes = programacoes;
         this.participantes = participantes;
         this.publico = publico;
         this.categorias = categorias;
@@ -68,12 +71,12 @@ public class Evento {
         this.descricao_evento = descricao_evento;
     }
 
-    public String getProgramacao_evento() {
-        return programacao_evento;
+    public List<Programacao> getProgramacoes() {
+        return this.programacoes;
     }
 
-    public void setProgramacao_evento(String programacao_evento) {
-        this.programacao_evento = programacao_evento;
+    public void setProgramacao_evento(List<Programacao> programacoes) {
+        this.programacoes = programacoes;
     }
 
     public int getTeminscricao() {

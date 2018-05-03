@@ -27,7 +27,6 @@
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintTop_creator="1">
-
         <ProgressBar
             android:id="@+id/progressBarDetalhesEvento"
             style="?android:attr/progressBarStyleSmall"
@@ -43,14 +42,6 @@
             android:max="100"
             android:minHeight="43dp"
             android:minWidth="43dp" />
-        <LinearLayout
-            android:id="@+id/retanguloDetalhesEvento"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:layout_marginTop="-10dp"
-            android:background="@drawable/rectangle_appbar"
-            android:orientation="horizontal">
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/firstPartDetalhesEvento"
@@ -61,7 +52,7 @@
             android:background="@drawable/round_outline"
             android:elevation="1dp"
             android:orientation="vertical"
-            android:weightSum="10"
+            android:weightSum="1"
             tools:ignore="UselessLeaf"
             android:onClick="showHideFirstPart">
 
@@ -107,7 +98,7 @@
                             android:layout_height="wrap_content"
                             android:visibility="invisible"
                             android:id="@+id/taxaIngressoLabel"
-                            android:text="Taxa/Ingresso: R$" />
+                            android:text="Taxa/Ingresso: " />
 
                         <TextView
                             android:id="@+id/taxaIngresso"
@@ -263,87 +254,85 @@
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>
-        <fragment
-            android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:layout_marginTop="240dp"
-            android:name="com.google.android.gms.maps.MapFragment"
-            android:id="@+id/mapFragment"/>
-        <LinearLayout
-            android:id="@+id/thirdPartDetalhesEvento"
-            android:layout_width="match_parent"
-            android:layout_height="270dp"
-            android:layout_marginTop="475dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/round_outline"
-            android:orientation="vertical"
-            android:weightSum="1"
-            tools:ignore="UselessLeaf">
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="45dp"
-                android:layout_marginTop="8dp"
-                android:layout_gravity="center"
-                android:src="@drawable/expandir"/>
-            <ScrollView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="15dp">
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/descricaoTitulo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="20dp"
-                        android:textColor="#000000"
-                        android:text="Descrição"
-                        android:textSize="24dp" />
-                    <TextView
-                        android:id="@+id/descricaoEvento"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="5dp"
-                        android:textColor="#000000"
-                        android:text="" />
-                    <TextView
-                        android:id="@+id/programacaoTitulo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="20dp"
-                        android:textColor="#000000"
-                        android:text="Programação"
-                        android:textSize="24dp" />
-                    <TextView
-                        android:id="@+id/programacaoEvento"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="5dp"
-                        android:textColor="#000000"
-                        android:text="" />
-                </LinearLayout>
-            </ScrollView>
-        </LinearLayout>
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="125dp"
-            android:layout_marginTop="120dp"
-            android:elevation="10dp">
-            <ImageView
-                android:id="@+id/addAgenda"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:src="@drawable/carimbo_cancelado"/>
-        </LinearLayout>
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom">
+            <LinearLayout
+                android:id="@+id/retanguloDetalhesEvento"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:background="@drawable/rectangle_appbar"
+                android:orientation="horizontal">
+            </LinearLayout>
+            <fragment
+                android:id="@+id/mapFragment"
+                android:name="com.google.android.gms.maps.MapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/retanguloDetalhesEvento"
+                android:layout_above="@+id/thirdPartDetalhesEvento"/>
+            <LinearLayout
+                android:id="@+id/thirdPartDetalhesEvento"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/round_outline"
+                android:orientation="vertical"
+                android:weightSum="1"
+                tools:ignore="UselessLeaf">
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/expandir"/>
+                <ScrollView
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="15dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/descricaoTitulo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="20dp"
+                            android:textColor="#000000"
+                            android:text="Descrição"
+                            android:visibility="invisible"
+                            android:textSize="24dp" />
+                        <TextView
+                            android:id="@+id/descricaoEvento"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="5dp"
+                            android:textColor="#000000"
+                            android:text="" />
+                        <TextView
+                            android:id="@+id/programacaoTitulo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="20dp"
+                            android:textColor="#000000"
+                            android:text="Programação"
+                            android:visibility="invisible"
+                            android:textSize="24dp" />
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/programacaoEvento"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp">
+                        </android.support.v7.widget.RecyclerView>
+                    </LinearLayout>
+                </ScrollView>
+            </LinearLayout>
+        </RelativeLayout>
     </FrameLayout>
 </RelativeLayout>

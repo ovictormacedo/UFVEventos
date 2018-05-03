@@ -179,7 +179,7 @@ public class inicial extends AppCompatActivity
             public void onItemClick(Evento item) {
                 Intent it;
                 //Verifica se o evento possui descrição ou programação
-                if (item.getDescricao_evento() == "" && item.getProgramacao_evento() == "")
+                if (item.getDescricao_evento() == "" && item.getProgramacoes().size() == 0)
                     it = new Intent(getBaseContext(),detalhes_evento_sem_descricao.class);
                 else
                     it = new Intent(getBaseContext(),detalhes_evento_com_descricao.class);
