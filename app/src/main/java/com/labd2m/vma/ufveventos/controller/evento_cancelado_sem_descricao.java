@@ -397,9 +397,10 @@ public class evento_cancelado_sem_descricao extends AppCompatActivity implements
             }else{
                 findViewById(R.id.taxaIngressoLabel).setVisibility(View.VISIBLE);
                 ((TextView) findViewById(R.id.taxaIngresso)).
-                        setText(String.valueOf(evento.getValorinscricao()));
+                        setText("R$"+String.valueOf(evento.getValorinscricao()));
             }
         else {
+            findViewById(R.id.taxaIngressoLabel).setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.taxaIngresso)).
                     setText("Não é necessário realizar inscrição.");
         }

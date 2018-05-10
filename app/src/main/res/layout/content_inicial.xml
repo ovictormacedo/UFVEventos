@@ -61,6 +61,7 @@
             android:minHeight="50dp"
             android:minWidth="50dp"
             android:indeterminate="true"
+            android:elevation="2dp"
             android:indeterminateDrawable="@drawable/progress_bar"/>
     </FrameLayout>
 

@@ -532,6 +532,7 @@ public class cadastrar extends AppCompatActivity {
             String dia = ""+day;
             if (day < 10)
                 dia = "0"+day;
+            month += 1;
             String mes = ""+month;
             if (month < 10)
                 mes = "0"+month;

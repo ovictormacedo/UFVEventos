@@ -177,6 +177,7 @@ public class evento_atualizado_com_descricao extends AppCompatActivity implement
                         setText("R$"+String.valueOf(evento.getValorinscricao()));
             }
         else {
+            findViewById(R.id.taxaIngressoLabel).setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.taxaIngresso)).
                     setText("Não é necessário realizar inscrição.");
         }

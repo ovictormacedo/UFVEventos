@@ -90,7 +90,7 @@
                             android:layout_height="wrap_content"
                             android:visibility="invisible"
                             android:id="@+id/taxaIngressoLabel"
-                            android:text="Taxa/Ingresso: R$" />
+                            android:text="Taxa/Ingresso: " />
 
                         <TextView
                             android:id="@+id/taxaIngresso"
