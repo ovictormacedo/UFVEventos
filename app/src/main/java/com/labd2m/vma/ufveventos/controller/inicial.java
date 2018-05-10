@@ -324,6 +324,7 @@ public class inicial extends AppCompatActivity
         if (resultCode == Activity.RESULT_OK) {
             //Limpa lista de eventos
             eventos.clear();
+
             //Cria objeto para acessar a API de dados Siseventos
             RetrofitAPI retrofit = new RetrofitAPI();
             final Api api = retrofit.retrofit().create(Api.class);
@@ -332,12 +333,28 @@ public class inicial extends AppCompatActivity
             myRecyclerView.setLayoutManager(new LinearLayoutManager(this));
             adapter = new RecyclerViewEventosTelaInicialAdapter(getBaseContext(),eventos);
             myRecyclerView.setAdapter(adapter);
+            adapter.setOnEventoTelaInicialClickListener(new OnEventoTelaInicialClickListener() {
+                @Override
+                public void onItemClick(Evento item) {
+                    Intent it;
+                    //Verifica se o evento possui descrição ou programação
+                    if (item.getDescricao_evento() == "" && item.getProgramacoes().size() == 0)
+                        it = new Intent(getBaseContext(),detalhes_evento_sem_descricao.class);
+                    else
+                        it = new Intent(getBaseContext(),detalhes_evento_com_descricao.class);
+
+                    Gson gson = new Gson();
+                    String json = gson.toJson(item);
+                    it.putExtra("evento", json);
+                    startActivity(it);
+                }
+            });
 
             //Inicia barra de carregamento
             final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarTelaInicial);
             progressBar.setVisibility(View.VISIBLE);
 
-            offset = 100;
+            offset = 0;
             limit = 110;
             Observable<List<Evento>> observable = api.getEventosPorUsuario(usuario.getId(),offset,limit);
             observable.subscribeOn(Schedulers.newThread())
@@ -361,8 +378,10 @@ public class inicial extends AppCompatActivity
                             if (response.size() == 0)
                                 Toast.makeText(getBaseContext(),"Não existem eventos no momento.",Toast.LENGTH_SHORT).show();
 
-                            for (int i = 0; i < response.size(); i++)
+                            for (int i = 0; i < response.size(); i++) {
                                 eventos.add(response.get(i));
+                                //eventosSing.addEvento(response.get(i));
+                            }
                             //Atualiza RecyclerView
                             adapter.notifyDataSetChanged();
                             //Encerra barra de carregamento
@@ -413,7 +432,7 @@ public class inicial extends AppCompatActivity
                                             //Copia resultados para a lista de eventos
                                             for (int i = 0; i < response.size(); i++) {
                                                 eventos.add(response.get(i));
-                                                eventosSing.addEvento(response.get(i));
+                                                //eventosSing.addEvento(response.get(i));
                                             }
                                             //Atualiza RecyclerView
                                             adapter.notifyDataSetChanged();
