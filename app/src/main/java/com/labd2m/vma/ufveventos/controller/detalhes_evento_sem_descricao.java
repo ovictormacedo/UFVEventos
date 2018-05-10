@@ -24,6 +24,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -335,7 +336,7 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
         Log.i("EVENTO","EVENTO ATUALIZADO SEM DESC");
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_evento_atualizado_sem_descricao);
+        setContentView(R.layout.activity_detalhes_evento_sem_descricao);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
@@ -349,11 +350,6 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         findViewById(R.id.addAgenda).setOnClickListener(this);
-
-        //Encerra barra de carregamento
-        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarDetalhesEvento);
-        progressBar.setVisibility(View.GONE);
-
 
         //Traça rota
         List<Local> locaisAux = evento.getLocais();
@@ -497,25 +493,12 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
 
         //Recolhe retangulo vermelho
         LinearLayout layout = (LinearLayout) findViewById(R.id.retanguloDetalhesEvento);
-        params = (FrameLayout.LayoutParams)layout.getLayoutParams();
+        params = (RelativeLayout.LayoutParams)layout.getLayoutParams();
         if (params.height < convertDpToPixel((float)250, getBaseContext())) // Verifica se está recolhido
             params.height = Math.round(convertDpToPixel((float)250, getBaseContext()));
         else
             params.height = Math.round(convertDpToPixel((float)62.5, getBaseContext()));
         layout.setLayoutParams(params);
-
-        //Aumenta ou reduz mapa
-        View fragment = (View) findViewById(R.id.mapFragment);
-        FrameLayout.LayoutParams fParams = (FrameLayout.LayoutParams)fragment.getLayoutParams();
-        if (fParams.height > convertDpToPixel((float)295, getBaseContext())) {
-            fParams.height = Math.round(convertDpToPixel((float)295, getBaseContext()));
-            fParams.topMargin = Math.round(convertDpToPixel((float)240, getBaseContext()));
-        }
-        else {
-            fParams.height = fParams.height + Math.round(convertDpToPixel((float)195, getBaseContext()));
-            fParams.topMargin = Math.round(convertDpToPixel((float)45, getBaseContext()));
-        }
-        fragment.setLayoutParams(fParams);
     }
     public static float convertDpToPixel(float dp, Context context){
         Resources resources = context.getResources();

@@ -21,6 +21,8 @@ import com.labd2m.vma.ufveventos.model.Evento;
 import org.json.JSONObject;
 
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import rx.Observable;
 import rx.Observer;
@@ -93,6 +95,12 @@ public class Agenda {
                                     CalendarContract.Calendars._ID + " ASC");
             calCursor.moveToFirst();
             calendar_id = calCursor.getString(0);
+            Pattern pattern = Pattern.compile(".+@.+");
+            do{
+                Matcher matcher = pattern.matcher(calCursor.getString(1));
+                if (matcher.matches())
+                    calendar_id = calCursor.getString(0);
+            }while(calCursor.moveToNext());
         }
 
         int diaInicio = Integer.parseInt(evento.getDataInicio().substring(0,2));
@@ -166,6 +174,12 @@ public class Agenda {
                                     CalendarContract.Calendars._ID + " ASC");
             calCursor.moveToFirst();
             calendar_id = calCursor.getString(0);
+            Pattern pattern = Pattern.compile(".+@.+");
+            do{
+                Matcher matcher = pattern.matcher(calCursor.getString(1));
+                if (matcher.matches())
+                    calendar_id = calCursor.getString(0);
+            }while(calCursor.moveToNext());
         }
 
         int diaInicio = Integer.parseInt(evento.getDataInicio().substring(8,10));
@@ -271,6 +285,12 @@ public class Agenda {
                                     CalendarContract.Calendars._ID + " ASC");
             calCursor.moveToFirst();
             calendar_id = calCursor.getString(0);
+            Pattern pattern = Pattern.compile(".+@.+");
+            do{
+                Matcher matcher = pattern.matcher(calCursor.getString(1));
+                if (matcher.matches())
+                    calendar_id = calCursor.getString(0);
+            }while(calCursor.moveToNext());
         }
 
         int diaInicio = Integer.parseInt(evento.getDataInicio().substring(0,2));

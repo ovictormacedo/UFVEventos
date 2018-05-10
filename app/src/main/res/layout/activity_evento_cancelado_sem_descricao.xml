@@ -15,336 +15,242 @@
         app:popupTheme="@style/ToolbarThemeWhite"
         tools:layout_editor_absoluteY="0dp"
         tools:layout_editor_absoluteX="0dp" />
-    <FrameLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="551dp"
-        android:layout_marginTop="40dp"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1">
 
-        <ProgressBar
-            android:id="@+id/progressBarDetalhesEvento"
-            style="?android:attr/progressBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="150dp"
-            android:layout_gravity="center_horizontal"
-            android:elevation="10dp"
-            android:indeterminate="true"
-            android:indeterminateDrawable="@drawable/progress_bar"
-            android:max="100"
-            android:minHeight="43dp"
-            android:minWidth="43dp" />
+    <LinearLayout
+        android:id="@+id/retanguloDetalhesEvento"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_below="@+id/my_toolbar"
+        android:layout_marginTop="-10dp"
+        android:background="@drawable/rectangle_appbar"
+        android:orientation="horizontal">
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/firstPartDetalhesEvento"
+        android:layout_width="305dp"
+        android:layout_height="270dp"
+        android:layout_below="@+id/my_toolbar"
+        android:layout_centerInParent="true"
+        android:background="@drawable/round_outline"
+        android:elevation="1dp"
+        android:orientation="vertical"
+        android:weightSum="1"
+        tools:ignore="UselessLeaf"
+        android:onClick="showHideFirstPart">
+
         <LinearLayout
-            android:id="@+id/retanguloDetalhesEvento"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:layout_marginTop="-10dp"
-            android:background="@drawable/rectangle_appbar"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/firstPartDetalhesEvento"
-            android:layout_width="305dp"
-            android:layout_height="270dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/round_outline"
-            android:elevation="1dp"
-            android:orientation="vertical"
-            android:weightSum="1"
-            tools:ignore="UselessLeaf"
-            android:onClick="showHideFirstPart">
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tituloEvento"
+                android:layout_width="225dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:textColor="#C75360"
+                android:textSize="24dp" />
 
-                <TextView
-                    android:id="@+id/tituloEvento"
-                    android:layout_width="225dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="20dp"
-                    android:textColor="#C75360"
-                    android:textSize="24dp" />
-
-                <ImageView
-                    android:id="@+id/abreFechaFirstPart"
-                    android:layout_width="37dp"
-                    android:layout_height="37dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/fechar"/>
-            </LinearLayout>
-            <ScrollView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="invisible"
-                            android:id="@+id/taxaIngressoLabel"
-                            android:text="Taxa/Ingresso: R$" />
-
-                        <TextView
-                            android:id="@+id/taxaIngresso"
-                            android:layout_marginLeft="5dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="invisible"
-                            android:id="@+id/localInscricaoLabel"
-                            android:text="Local da inscrição:" />
-
-                        <TextView
-                            android:id="@+id/localInscricao"
-                            android:layout_marginLeft="5dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="invisible"
-                            android:id="@+id/dataLabelEvento"
-                            android:text="Data:" />
-
-                        <TextView
-                            android:id="@+id/dataEvento"
-                            android:layout_marginLeft="5dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="invisible"
-                            android:id="@+id/horarioLabelEvento"
-                            android:text="Horário:" />
-
-                        <TextView
-                            android:id="@+id/horarioEvento"
-                            android:layout_marginLeft="5dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="invisible"
-                            android:id="@+id/localLabelEvento"
-                            android:text="Local:" />
-
-                        <TextView
-                            android:id="@+id/localEvento"
-                            android:layout_marginLeft="5dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="invisible"
-                            android:id="@+id/participantesLabelEvento"
-                            android:text="Participantes:" />
-
-                        <TextView
-                            android:id="@+id/participantesEvento"
-                            android:layout_marginLeft="5dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="invisible"
-                            android:id="@+id/publicoAlvoLabelEvento"
-                            android:text="Público alvo:" />
-
-                        <TextView
-                            android:id="@+id/publicoAlvoEvento"
-                            android:layout_marginLeft="5dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="invisible"
-                            android:id="@+id/categoriaLabelEvento"
-                            android:text="Categoria:" />
-
-                        <TextView
-                            android:id="@+id/categoriaEvento"
-                            android:layout_marginLeft="5dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-                </LinearLayout>
-            </ScrollView>
-        </LinearLayout>
-        <fragment
-            android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:layout_marginTop="240dp"
-            android:name="com.google.android.gms.maps.MapFragment"
-            android:id="@+id/mapFragment"/>
-        <LinearLayout
-            android:id="@+id/thirdPartDetalhesEvento"
-            android:layout_width="match_parent"
-            android:layout_height="270dp"
-            android:layout_marginTop="475dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/round_outline"
-            android:orientation="vertical"
-            android:weightSum="1"
-            tools:ignore="UselessLeaf">
             <ImageView
-                android:layout_width="100dp"
-                android:layout_height="45dp"
-                android:layout_marginTop="8dp"
-                android:layout_gravity="center"
-                android:src="@drawable/expandir"/>
-            <ScrollView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="15dp">
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/descricaoTitulo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="20dp"
-                        android:textColor="#000000"
-                        android:text="Descrição"
-                        android:textSize="24dp" />
-                    <TextView
-                        android:id="@+id/descricaoEvento"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="5dp"
-                        android:textColor="#000000"
-                        android:text="" />
-                    <TextView
-                        android:id="@+id/programacaoTitulo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="20dp"
-                        android:textColor="#000000"
-                        android:text="Programação"
-                        android:textSize="24dp" />
-                    <TextView
-                        android:id="@+id/programacaoEvento"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="5dp"
-                        android:textColor="#000000"
-                        android:text="" />
-                </LinearLayout>
-            </ScrollView>
+                android:id="@+id/abreFechaFirstPart"
+                android:layout_width="37dp"
+                android:layout_height="37dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/fechar"/>
         </LinearLayout>
-        <LinearLayout
+        <ScrollView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="125dp"
-            android:layout_marginTop="120dp"
-            android:elevation="10dp">
-            <ImageView
-                android:id="@+id/addAgenda"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:src="@drawable/carimbo_cancelado"/>
-        </LinearLayout>
-    </FrameLayout>
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="invisible"
+                        android:id="@+id/taxaIngressoLabel"
+                        android:text="Taxa/Ingresso: R$" />
+
+                    <TextView
+                        android:id="@+id/taxaIngresso"
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="invisible"
+                        android:id="@+id/localInscricaoLabel"
+                        android:text="Local da inscrição:" />
+
+                    <TextView
+                        android:id="@+id/localInscricao"
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="invisible"
+                        android:id="@+id/dataLabelEvento"
+                        android:text="Data:" />
+
+                    <TextView
+                        android:id="@+id/dataEvento"
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="invisible"
+                        android:id="@+id/horarioLabelEvento"
+                        android:text="Horário:" />
+
+                    <TextView
+                        android:id="@+id/horarioEvento"
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="invisible"
+                        android:id="@+id/localLabelEvento"
+                        android:text="Local:" />
+
+                    <TextView
+                        android:id="@+id/localEvento"
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="invisible"
+                        android:id="@+id/participantesLabelEvento"
+                        android:text="Participantes:" />
+
+                    <TextView
+                        android:id="@+id/participantesEvento"
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="invisible"
+                        android:id="@+id/publicoAlvoLabelEvento"
+                        android:text="Público alvo:" />
+
+                    <TextView
+                        android:id="@+id/publicoAlvoEvento"
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="invisible"
+                        android:id="@+id/categoriaLabelEvento"
+                        android:text="Categoria:" />
+
+                    <TextView
+                        android:id="@+id/categoriaEvento"
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/carimbo_cancelado"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_below="@+id/firstPartDetalhesEvento"
+        android:layout_centerInParent="true"
+        android:src="@drawable/carimbo_cancelado"
+        android:elevation="1dp"/>
+
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/retanguloDetalhesEvento"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:id="@+id/mapFragment"/>
 </RelativeLayout>
