@@ -34,7 +34,7 @@ public class RetrofitAPI {
                 .create();
 
         Retrofit retrofit = new retrofit2.Retrofit.Builder()
-                .baseUrl("http://meettest.esy.es/siseventos2/esqueciasenha.php/")
+                .baseUrl("http://www.siseventos.ufv.br/esqueciasenha.php/")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
