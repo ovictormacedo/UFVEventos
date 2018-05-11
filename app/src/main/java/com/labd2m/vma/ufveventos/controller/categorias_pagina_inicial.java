@@ -105,7 +105,7 @@ public class categorias_pagina_inicial extends AppCompatActivity
         adapter.setCategoriaClickListener(new OnCategoriaClickListener() {
             @Override
             public void onItemClick(Categoria item) {
-                Toast.makeText(categorias_pagina_inicial.this, item.getNome(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(categorias_pagina_inicial.this, item.getNome(), Toast.LENGTH_LONG).show();
             }
         });
 

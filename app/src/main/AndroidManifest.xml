@@ -70,6 +70,7 @@
         <activity
             android:name=".controller.inicial"
             android:label="@string/title_activity_inicial"
+            android:launchMode="singleTop"
             android:theme="@style/NoAction" />
         <activity
             android:name=".controller.categorias_pagina_inicial"

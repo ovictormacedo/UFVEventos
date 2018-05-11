@@ -69,7 +69,7 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
     private Marker mCurrentPosition = null;
     private ArrayList<LatLng> traceOfMe = null;
     private Polyline mPolyline = null;
-    private LatLng mSourceLatLng = null;
+    private LatLng mSourceLatLng = new LatLng(-20.7661678,-20.7661678);
     private LatLng mDestinationLatLng;
     public Evento evento;
 
@@ -105,9 +105,8 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
 
         if (isProviderAvailable() && (provider != null)) {
             locateCurrentPosition();
+            traceMe(mSourceLatLng,mDestinationLatLng);
         }
-
-        traceMe(mSourceLatLng,mDestinationLatLng);
     }
     private void locateCurrentPosition() {
         int status = getPackageManager().checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION,
