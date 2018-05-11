@@ -54,32 +54,39 @@
         <activity
             android:name=".controller.cadastrar"
             android:label="Cadastro"
+            android:screenOrientation="portrait"
             android:theme="@style/NoAction" />
         <activity
             android:name=".controller.login"
             android:label="@string/title_activity_login"
+            android:screenOrientation="portrait"
             android:theme="@style/NoAction"></activity>
         <activity
             android:name=".controller.editar_perfil"
             android:label="@string/title_activity_editar_perfil"
+            android:screenOrientation="portrait"
             android:theme="@style/NoAction" />
         <activity
             android:name=".controller.notificacoes"
             android:label="@string/title_activity_notificacoes"
+            android:screenOrientation="portrait"
             android:theme="@style/NoAction" />
         <activity
             android:name=".controller.inicial"
             android:label="@string/title_activity_inicial"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/NoAction" />
         <activity
             android:name=".controller.categorias_pagina_inicial"
             android:label="@string/title_activity_categorias_pagina_inicial"
+            android:screenOrientation="portrait"
             android:theme="@style/NoAction" />
         <activity
             android:name=".controller.detalhes_evento_com_descricao"
             android:label="Evento"
             android:parentActivityName=".controller.inicial"
+            android:screenOrientation="portrait"
             android:theme="@style/NoAction">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
@@ -91,6 +98,7 @@
             android:name=".controller.detalhes_evento_sem_descricao"
             android:label="Evento"
             android:parentActivityName=".controller.inicial"
+            android:screenOrientation="portrait"
             android:theme="@style/NoAction">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
@@ -129,6 +137,7 @@
         <activity
             android:name=".controller.sobre"
             android:parentActivityName=".controller.inicial"
+            android:screenOrientation="portrait"
             android:theme="@style/NoAction">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
@@ -139,22 +148,27 @@
 
         <activity android:name=".controller.evento_cancelado"
             android:label="Evento Cancelado"
+            android:screenOrientation="portrait"
             android:theme="@style/NoAction"/>
 
         <activity android:name=".controller.evento_atualizado_com_descricao"
             android:label="Evento Atualizado"
+            android:screenOrientation="portrait"
             android:theme="@style/NoAction"/>
 
         <activity android:name=".controller.evento_atualizado_sem_descricao"
             android:label="Evento Atualizado"
+            android:screenOrientation="portrait"
             android:theme="@style/NoAction"/>
 
         <activity android:name=".controller.evento_cancelado_com_descricao"
             android:label="Evento Cancelado"
+            android:screenOrientation="portrait"
             android:theme="@style/NoAction"/>
 
         <activity android:name=".controller.evento_cancelado_sem_descricao"
             android:label="Evento Cancelado"
+            android:screenOrientation="portrait"
             android:theme="@style/NoAction"/>
     </application>
 

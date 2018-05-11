@@ -19,7 +19,8 @@ public class RetrofitAPI {
                 .create();
 
         Retrofit retrofit = new retrofit2.Retrofit.Builder()
-                .baseUrl("http://meettest.esy.es/API/api.php/")
+                //.baseUrl("http://meettest.esy.es/API/api.php/")
+                .baseUrl("http://www.siseventos.ufv.br/API/api.php/")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
