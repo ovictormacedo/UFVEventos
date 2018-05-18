@@ -356,6 +356,10 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
         double lngDest = Double.parseDouble(locaisAux.get(0).getLongitude());
         mDestinationLatLng = new LatLng(latDest, lngDest);
 
+        //Requisita permissão para mapas
+        Permission permission = new Permission();
+        permission.requestPermissionMaps(detalhes_evento_sem_descricao.this,this);
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED)
             if (googleServicesAvailable()){

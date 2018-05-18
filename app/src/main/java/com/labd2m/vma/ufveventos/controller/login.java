@@ -174,9 +174,9 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                                 json.put("googleId", user.getUid());
                             }catch(Exception e){Toast.makeText(getBaseContext(),e.getMessage(), Toast.LENGTH_SHORT).show();}
 
-                            //TODO
-                            Log.i("DEBUG 1","DEBUG 1 " + user.getDisplayName());
-                            Log.i("DEBUG 1","DEBUG 1 " + user.getPhotoUrl());
+                            Log.i("DEBUG 1",""+user.getDisplayName());
+                            Log.i("DEBUG 1",""+user.getEmail());
+                            Log.i("DEBUG 1",""+user.getUid());
 
                             //Faz requisição ao servidor
                             Observable<Integer> observable =  api.setUsuarioGoogle(json);
@@ -189,6 +189,8 @@ public class login extends AppCompatActivity implements View.OnClickListener {
 
                                         @Override
                                         public void onError(Throwable e){
+                                            Log.i("ERRO LOGIN",e.getMessage());
+                                            e.getStackTrace();
                                             if (e instanceof HttpException)
                                                 Toast.makeText(getBaseContext(),"Já existe uma conta com este e-mail cadastrado",Toast.LENGTH_LONG).show();
                                             else {
@@ -248,7 +250,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
 
                                                             @Override
                                                             public void onError(Throwable e) {
-                                                                Log.e("Erro cadastro:",e.getMessage());
+                                                                Log.e("Erro cadastro disp:",e.getMessage());
                                                                 //Encerra barra de carregamento
                                                                 progressBar.setVisibility(View.GONE);
 
@@ -287,7 +289,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
 
                                                                                 @Override
                                                                                 public void onError(Throwable e) {
-                                                                                    Log.e("Erro cadastro:",e.getMessage());
+                                                                                    Log.e("Erro notificacoes:",e.getMessage());
                                                                                     //Encerra barra de carregamento
                                                                                     progressBar.setVisibility(View.GONE);
 
@@ -359,7 +361,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
 
                                                                 @Override
                                                                 public void onError(Throwable e) {
-                                                                    Log.e("Erro cadastro:",e.getMessage());
+                                                                    Log.e("Erro get agenda:",e.getMessage());
                                                                     //Encerra barra de carregamento
                                                                     progressBar.setVisibility(View.GONE);
 

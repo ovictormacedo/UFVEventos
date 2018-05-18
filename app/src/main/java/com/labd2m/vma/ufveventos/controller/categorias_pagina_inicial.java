@@ -46,7 +46,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class categorias_pagina_inicial extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     private RecyclerView myRecyclerView;
     private RecyclerViewCategoriasAdapter adapter;
@@ -55,6 +55,7 @@ public class categorias_pagina_inicial extends AppCompatActivity
     GoogleSignInOptions gso;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
+    private List<String> categorias_preferencias;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +72,8 @@ public class categorias_pagina_inicial extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        categorias_preferencias = new ArrayList();
 
         //Google Analytics
         MyApplication application = (MyApplication) getApplication();
@@ -100,7 +103,7 @@ public class categorias_pagina_inicial extends AppCompatActivity
         categorias = new ArrayList<>();
         myRecyclerView = (RecyclerView) findViewById(R.id.lista_categorias);
         myRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new RecyclerViewCategoriasAdapter(getBaseContext(),categorias);
+        adapter = new RecyclerViewCategoriasAdapter(getBaseContext(),categorias,categorias_preferencias);
         myRecyclerView.setAdapter(adapter);
         adapter.setCategoriaClickListener(new OnCategoriaClickListener() {
             @Override
@@ -153,35 +156,13 @@ public class categorias_pagina_inicial extends AppCompatActivity
 
                                     @Override
                                     public void onNext(final List<Categoria> response) {
+                                        categorias_preferencias.clear();
+                                        for (int j = 0; j < response.size(); j++)
+                                            categorias_preferencias.add(""+response.get(j).getId());
                                         //Atualiza RecyclerView
                                         adapter.notifyDataSetChanged();
-                                        myRecyclerView.post(new Runnable(){
-                                            @Override
-                                            public void run(){
-                                                final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) myRecyclerView
-                                                        .getLayoutManager();
-
-                                                //Varre todas as views para setar as que já são preferências do usuário
-                                                int itemCount = linearLayoutManager.getItemCount();
-                                                for (int i = 0; i < itemCount; i++) {
-                                                    View view = linearLayoutManager.getChildAt(i);
-                                                    try{
-                                                        String nomeCategoria = ((TextView) view.findViewById(R.id.nomeCategoriaRow))
-                                                                .getText().toString();
-
-                                                        for (int j = 0; j < response.size(); j++) {
-                                                            if (response.get(j).getNome().equals(nomeCategoria)) {
-                                                                //Seta CheckBox como checked
-                                                                CheckBox checkBox = ((CheckBox) view.findViewById(R.id.checkBoxCategoriaRow));
-                                                                checkBox.setChecked(true);
-                                                            }
-                                                        }
-                                                    }catch(Exception e){Log.e("ERRO",""+e.getMessage());}
-                                                }
-                                                //Encerra barra de carregamento
-                                                progressBar.setVisibility(View.GONE);
-                                            }
-                                        });
+                                        //Encerra barra de carregamento
+                                        progressBar.setVisibility(View.GONE);
                                     }
                                 });
                     }
@@ -189,23 +170,10 @@ public class categorias_pagina_inicial extends AppCompatActivity
     }
 
     public void escolher_categorias(View view){
-        final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) myRecyclerView
-                .getLayoutManager();
-
-        //Varre todas as views para setar as que já são preferências do usuário
-        int itemCount = linearLayoutManager.getItemCount();
-        List<String> categorias = new ArrayList();
-        for (int i = 0; i < itemCount; i++) {
-            View v = linearLayoutManager.getChildAt(i);
-            CheckBox cb = (CheckBox) v.findViewById(R.id.checkBoxCategoriaRow);
-            if (cb.isChecked()){
-                String id = ((TextView) v.findViewById(R.id.idCategoriaRow)).getText().toString();
-                categorias.add(id);
-            }
-        }
-        JSONArray json = new JSONArray(categorias);
+        JSONArray json = new JSONArray(categorias_preferencias);
         String aux = json.toString();
         String data = "{\"categorias\":"+aux+"}";
+        Log.i("CAT PREF ",data);
 
         //Inicia barra de carregamento
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarCategorias);
