@@ -1,5 +1,6 @@
 package com.labd2m.vma.ufveventos.controller;
 
+import com.google.gson.JsonObject;
 import com.labd2m.vma.ufveventos.model.Categoria;
 import com.labd2m.vma.ufveventos.model.Dispositivo;
 import com.labd2m.vma.ufveventos.model.Evento;
@@ -26,8 +27,9 @@ import rx.Observable;
 public interface Api{
     //Retorna agenda do dispositivo
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
-    @GET("calendar/token/{token}")
-    Observable<Object> getCalendar(@Path("token") String token);
+    @FormUrlEncoded
+    @POST("getcalendar")
+    Observable<Object> getCalendar(@Field("data") JSONObject data);
 
     //Retorna dados do evento
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
@@ -129,14 +131,14 @@ public interface Api{
     //Atualiza a opção do usuário receber notificções
     @FormUrlEncoded
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
-    @PUT("notificacoes/{idUsuario}/dispositivo/{token}")
-    Observable<Void> updateNotificacoes(@Field("data") JSONObject data,@Path("idUsuario") String idUsuario,@Path("token") String token);
+    @PUT("notificacoes")
+    Observable<Void> updateNotificacoes(@Field("data") JSONObject data);
 
     //Atualiza a opção do usuário adicionar eventos que chegam via notificação automaticamente à agenda
     @FormUrlEncoded
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
-    @PUT("agenda/{idUsuario}/dispositivo/{token}")
-    Observable<Void> updateAgenda(@Field("data") JSONObject data,@Path("idUsuario") String idUsuario,@Path("token") String token);
+    @PUT("agenda")
+    Observable<Void> updateAgenda(@Field("data") JSONObject data);
 
     //Atualiza preferências de categoria do usuário
     @FormUrlEncoded
@@ -158,6 +160,7 @@ public interface Api{
 
     //Adiciona a agenda do usuário
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
-    @DELETE("calendar/token/{token}/usuario/{usuario}/agenda/{agenda}")
-    Observable<Void> deleteAgenda(@Path("token") String token,@Path("usuario") String usuario,@Path("agenda") String agenda);
+    @FormUrlEncoded
+    @POST("deletecalendar")
+    Observable<Void> deleteAgenda(@Field("data") JSONObject data);
 }

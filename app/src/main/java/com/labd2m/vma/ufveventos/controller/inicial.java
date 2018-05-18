@@ -19,6 +19,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.google.gson.JsonObject;
 import com.labd2m.vma.ufveventos.R;
 import com.labd2m.vma.ufveventos.model.Evento;
 import com.labd2m.vma.ufveventos.model.EventosSingleton;
@@ -119,8 +121,15 @@ public class inicial extends AppCompatActivity
                 usuario.setToken(sharedPref2.getString("firebasetoken","default"));
         }
 
+        //Cria json object
+        JSONObject json = new JSONObject();
+        try {
+            json.put("token",usuario.getToken());
+        }catch(Exception e){Toast.makeText(getBaseContext(),e.getMessage(),Toast.LENGTH_SHORT).show();};
+
+        Log.i("Calendar","chamando get calendar");
         //Busca dados armazenados na agenda do usuário no servidor
-        Observable<Object> observableCalendar = api.getCalendar(usuario.getToken());
+        Observable<Object> observableCalendar = api.getCalendar(json);
         observableCalendar.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Object>() {
@@ -130,7 +139,7 @@ public class inicial extends AppCompatActivity
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.i("Retrofit error", "Erro:" + e.getMessage());
+                        Log.i("Retrofit error calendar", "Erro:" + e.getMessage());
                         e.printStackTrace();
                     }
 
@@ -225,7 +234,7 @@ public class inicial extends AppCompatActivity
                         public void onError(Throwable e) {
                             //Encerra barra de carregamento
                             progressBar.setVisibility(View.GONE);
-                            Log.i("Retrofit error", "Erro:" + e.getMessage());
+                            Log.i("Retrofit error eventos4", "Erro:" + e.getMessage());
                             e.printStackTrace();
                             Toast.makeText(getBaseContext(), "Não foi possível carregar os eventos.", Toast.LENGTH_SHORT).show();
                         }
@@ -289,7 +298,7 @@ public class inicial extends AppCompatActivity
                                         public void onError(Throwable e) {
                                             //Encerra barra de carregamento
                                             progressBar.setVisibility(View.GONE);
-                                            Log.i("Retrofit error", "Erro:" + e.getMessage());
+                                            Log.i("Retrofit error eventos1", "Erro:" + e.getMessage());
                                             Toast.makeText(getBaseContext(), "Não foi possível carregar os eventos.", Toast.LENGTH_SHORT).show();
                                         }
 
@@ -368,7 +377,7 @@ public class inicial extends AppCompatActivity
                         public void onError(Throwable e) {
                             //Encerra barra de carregamento
                             progressBar.setVisibility(View.GONE);
-                            Log.i("Retrofit error", "Erro:" + e.getMessage());
+                            Log.i("Retrofit error eventos2", "Erro:" + e.getMessage());
                             Toast.makeText(getBaseContext(), "Não foi possível carregar os eventos.", Toast.LENGTH_SHORT).show();
                         }
 
@@ -423,7 +432,7 @@ public class inicial extends AppCompatActivity
                                         public void onError(Throwable e) {
                                             //Encerra barra de carregamento
                                             progressBar.setVisibility(View.GONE);
-                                            Log.i("Retrofit error", "Erro:" + e.getMessage());
+                                            Log.i("Retrofit error eventos3", "Erro:" + e.getMessage());
                                             Toast.makeText(getBaseContext(), "Não foi possível carregar os eventos.", Toast.LENGTH_SHORT).show();
                                         }
 

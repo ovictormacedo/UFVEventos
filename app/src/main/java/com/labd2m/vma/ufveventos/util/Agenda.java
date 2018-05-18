@@ -50,7 +50,16 @@ public class Agenda {
             String token = sharedPref.getString("firebasetoken", "falso");
             RetrofitAPI retrofit = new RetrofitAPI();
             final Api api = retrofit.retrofit().create(Api.class);
-            Observable<Void> observable = api.deleteAgenda(token, idUsuario, "" + eventID);
+
+            //Cria json object
+            JSONObject json = new JSONObject();
+            try {
+                json.put("token",token);
+                json.put("idUsuario",idUsuario);
+                json.put("agenda","" + eventID);
+            }catch(Exception e){Toast.makeText(context,e.getMessage(),Toast.LENGTH_SHORT).show();};
+
+            Observable<Void> observable = api.deleteAgenda(json);
             observable.subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<Void>() {

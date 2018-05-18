@@ -161,7 +161,7 @@ public class notificacoes extends AppCompatActivity
                 progressBar.setVisibility(View.VISIBLE);
 
                 //Faz requisição ao servidor
-                Observable<Void> observable =  api.updateAgenda(json,usuario.getId(),token);
+                Observable<Void> observable =  api.updateAgenda(json);
                 //Intercepta a resposta da requisição
                 observable.subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -224,15 +224,19 @@ public class notificacoes extends AppCompatActivity
                 //Cria json object
                 JSONObject json = new JSONObject();
                 try {
-                    json.put("notifcacoes",valor);
+                    json.put("notificacoes",valor);
+                    json.put("token",token);
+                    json.put("idUsuario",usuario.getId());
                 }catch(Exception e){Toast.makeText(getBaseContext(),e.getMessage(),Toast.LENGTH_SHORT).show();};
 
                 //Inicia barra de carregamento
                 final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarCategorias);
                 progressBar.setVisibility(View.VISIBLE);
 
+                Log.i("NOTIFICACOES",""+json+" - "+usuario.getId()+" - "+token);
                 //Faz requisição ao servidor
-                Observable<Void> observable =  api.updateNotificacoes(json,usuario.getId(),token);
+                //Observable<Void> observable =  api.updateNotificacoes(json,usuario.getId(),token);
+                Observable<Void> observable =  api.updateNotificacoes(json);
                 //Intercepta a resposta da requisição
                 observable.subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())

@@ -133,7 +133,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 notificationIntent.putExtra("acao",acao);
                 PendingIntent broadcast = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.SECOND, 5); //Envia a notificação num horário agendado
+                cal.add(Calendar.SECOND, 7200); //Envia a notificação num horário agendado
                 alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
                 //Evento cancelado
             }else if (notificacoes.equals("1") && acao.equals("cancelado")) {
@@ -149,7 +149,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     notificationIntent.addCategory("android.intent.category.DEFAULT");
                     PendingIntent broadcast = PendingIntent.getBroadcast(this, 1, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                     Calendar cal = Calendar.getInstance();
-                    cal.add(Calendar.SECOND, 1); //Envia notificação imediatamente
+                    cal.add(Calendar.SECOND, 7200);
                     alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
 
                     //Recupera id do evento
@@ -183,7 +183,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         notificationIntent.addCategory("android.intent.category.DEFAULT");
                         PendingIntent broadcast = PendingIntent.getBroadcast(this, 2, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                         Calendar cal = Calendar.getInstance();
-                        cal.add(Calendar.SECOND, 1); //Envia notificação imediatamente
+                        cal.add(Calendar.SECOND, 7200); //Envia notificação imediatamente
                         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
 
                         //Recupera id do evento
