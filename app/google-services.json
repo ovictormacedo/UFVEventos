@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "224128381554-3n24b8107nop7u79o76a5h76kds09jg4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.vma.ufveventos",
+            "certificate_hash": "465fe84de34f9678d38728fe49e45b7bb911b398"
+          }
+        },
+        {
           "client_id": "224128381554-jc3n7krg0muml4097ktf5d8k5j51jqa9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -58,6 +66,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "224128381554-o3793khn1n1fkc725d37fra5bbkfumn6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.labd2m.vma.ufveventos",
+            "certificate_hash": "465fe84de34f9678d38728fe49e45b7bb911b398"
+          }
+        },
         {
           "client_id": "224128381554-5sb2v61c46j0cum0ue1rjs3188en19m0.apps.googleusercontent.com",
           "client_type": 1,

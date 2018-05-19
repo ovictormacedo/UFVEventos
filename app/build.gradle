@@ -6,8 +6,8 @@ android {
     defaultConfig {
         applicationId "com.labd2m.vma.ufveventos"
         minSdkVersion 17
-        targetSdkVersion 25
-        versionCode 1
+        targetSdkVersion 26
+        versionCode 4
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -17,6 +17,8 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    productFlavors {
     }
 }
 
