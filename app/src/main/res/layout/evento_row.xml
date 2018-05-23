@@ -16,6 +16,8 @@ cardview:cardUseCompatPadding="true">
         android:id="@+id/circuloEventoRow"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="3dp"
         android:background="@drawable/circle">
         <TextView
             android:id="@+id/letraEventoRow"
