@@ -385,8 +385,10 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
 
         //Seta data do evento
         if (evento.getDataInicio() != null && evento.getDataFim() != null) {
-            String dataInicio = evento.getDataInicio();
-            String dataFim = evento.getDataFim();
+            String aux = evento.getDataInicio();
+            String dataInicio = aux.substring(8, 10) + "/" + aux.substring(5, 7) + "/" + aux.substring(0, 4);
+            aux = evento.getDataFim();
+            String dataFim = aux.substring(8, 10) + "/" + aux.substring(5, 7) + "/" + aux.substring(0, 4);
             findViewById(R.id.dataLabelEvento).setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.dataEvento)).
                     setText(dataInicio + " à " + dataFim);
@@ -426,9 +428,10 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
                 ((TextView) findViewById(R.id.taxaIngresso)).
                         setText("Gratuito");
             }else{
+                String valor = String.format( "%.2f",evento.getValorinscricao());
                 findViewById(R.id.taxaIngressoLabel).setVisibility(View.VISIBLE);
                 ((TextView) findViewById(R.id.taxaIngresso)).
-                        setText("R$"+String.valueOf(evento.getValorinscricao()));
+                        setText("R$"+valor);
             }
         else {
             findViewById(R.id.taxaIngressoLabel).setVisibility(View.VISIBLE);

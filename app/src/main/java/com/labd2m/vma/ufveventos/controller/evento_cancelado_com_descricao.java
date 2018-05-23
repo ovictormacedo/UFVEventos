@@ -168,9 +168,10 @@ public class evento_cancelado_com_descricao extends AppCompatActivity implements
                 ((TextView) findViewById(R.id.taxaIngresso)).
                         setText("Gratuito");
             }else{
+                String valor = String.format( "%.2f",evento.getValorinscricao());
                 findViewById(R.id.taxaIngressoLabel).setVisibility(View.VISIBLE);
                 ((TextView) findViewById(R.id.taxaIngresso)).
-                        setText("R$"+String.valueOf(evento.getValorinscricao()));
+                        setText("R$"+valor);
             }
         else {
             findViewById(R.id.taxaIngressoLabel).setVisibility(View.VISIBLE);

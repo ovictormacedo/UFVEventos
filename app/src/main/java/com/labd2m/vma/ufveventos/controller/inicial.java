@@ -3,6 +3,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -181,7 +185,7 @@ public class inicial extends AppCompatActivity
         eventos = new ArrayList<>();
         myRecyclerView = (RecyclerView) findViewById(R.id.lista_eventos);
         myRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new RecyclerViewEventosTelaInicialAdapter(getBaseContext(),eventos);
+        adapter = new RecyclerViewEventosTelaInicialAdapter(getBaseContext(),eventos,getResources());
         myRecyclerView.setAdapter(adapter);
         adapter.setOnEventoTelaInicialClickListener(new OnEventoTelaInicialClickListener() {
             @Override
@@ -340,7 +344,7 @@ public class inicial extends AppCompatActivity
 
             myRecyclerView = (RecyclerView) findViewById(R.id.lista_eventos);
             myRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-            adapter = new RecyclerViewEventosTelaInicialAdapter(getBaseContext(),eventos);
+            adapter = new RecyclerViewEventosTelaInicialAdapter(getBaseContext(),eventos,getResources());
             myRecyclerView.setAdapter(adapter);
             adapter.setOnEventoTelaInicialClickListener(new OnEventoTelaInicialClickListener() {
                 @Override

@@ -393,9 +393,10 @@ public class evento_atualizado_sem_descricao extends AppCompatActivity implement
                 ((TextView) findViewById(R.id.taxaIngresso)).
                         setText("Gratuito");
             }else{
+                String valor = String.format( "%.2f",evento.getValorinscricao());
                 findViewById(R.id.taxaIngressoLabel).setVisibility(View.VISIBLE);
                 ((TextView) findViewById(R.id.taxaIngresso)).
-                        setText("R$"+String.valueOf(evento.getValorinscricao()));
+                        setText("R$"+valor);
             }
         else {
             findViewById(R.id.taxaIngressoLabel).setVisibility(View.VISIBLE);

@@ -1,10 +1,16 @@
 package com.labd2m.vma.ufveventos.controller;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.labd2m.vma.ufveventos.R;
@@ -21,10 +27,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class RecyclerViewEventosTelaInicialAdapter extends RecyclerView.Adapter<RecyclerViewEventosTelaInicialAdapter.CustomViewHolder> {
     private List<Evento> eventos;
     private Context mContext;
+    private Resources resources;
 
-    public RecyclerViewEventosTelaInicialAdapter(Context context, List<Evento> eventos) {
+    public RecyclerViewEventosTelaInicialAdapter(Context context, List<Evento> eventos,Resources resources) {
         this.eventos = eventos;
         this.mContext = context;
+        this.resources = resources;
     }
 
     @Override
@@ -41,85 +49,112 @@ public class RecyclerViewEventosTelaInicialAdapter extends RecyclerView.Adapter<
         char primeiraLetra = evento.getDenominacao().toLowerCase().charAt(0);
         switch (primeiraLetra){
             case 'a':
-                customViewHolder.imagem.setImageResource(R.drawable.a);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.a));
+                customViewHolder.letra.setText("A");
                 break;
             case 'b':
-                customViewHolder.imagem.setImageResource(R.drawable.b);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.b));
+                customViewHolder.letra.setText("B");
                 break;
             case 'c':
-                customViewHolder.imagem.setImageResource(R.drawable.c);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.c));
+                customViewHolder.letra.setText("C");
                 break;
             case 'd':
-                customViewHolder.imagem.setImageResource(R.drawable.d);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.d));
+                customViewHolder.letra.setText("D");
                 break;
             case 'e':
-                customViewHolder.imagem.setImageResource(R.drawable.e);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.e));
+                customViewHolder.letra.setText("E");
                 break;
             case 'f':
-                customViewHolder.imagem.setImageResource(R.drawable.f);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.f));
+                customViewHolder.letra.setText("F");
                 break;
             case 'g':
-                customViewHolder.imagem.setImageResource(R.drawable.g);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.g));
+                customViewHolder.letra.setText("G");
                 break;
             case 'h':
-                customViewHolder.imagem.setImageResource(R.drawable.h);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.h));
+                customViewHolder.letra.setText("H");
                 break;
             case 'i':
-                customViewHolder.imagem.setImageResource(R.drawable.i);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.i));
+                customViewHolder.letra.setText("I");
                 break;
             case 'j':
-                customViewHolder.imagem.setImageResource(R.drawable.j);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.j));
+                customViewHolder.letra.setText("J");
                 break;
             case 'k':
-                customViewHolder.imagem.setImageResource(R.drawable.k);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.k));
+                customViewHolder.letra.setText("K");
                 break;
             case 'l':
-                customViewHolder.imagem.setImageResource(R.drawable.l);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.l));
+                customViewHolder.letra.setText("L");
                 break;
             case 'm':
-                customViewHolder.imagem.setImageResource(R.drawable.m);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.m));
+                customViewHolder.letra.setText("M");
                 break;
             case 'n':
-                customViewHolder.imagem.setImageResource(R.drawable.n);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.n));
+                customViewHolder.letra.setText("N");
                 break;
             case 'o':
-                customViewHolder.imagem.setImageResource(R.drawable.o);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.o));
+                customViewHolder.letra.setText("O");
                 break;
             case 'p':
-                customViewHolder.imagem.setImageResource(R.drawable.p);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.p));
+                customViewHolder.letra.setText("P");
                 break;
             case 'q':
-                customViewHolder.imagem.setImageResource(R.drawable.q);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.q));
+                customViewHolder.letra.setText("Q");
                 break;
             case 'r':
-                customViewHolder.imagem.setImageResource(R.drawable.r);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.r));
+                customViewHolder.letra.setText("R");
                 break;
             case 's':
-                customViewHolder.imagem.setImageResource(R.drawable.s);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.s));
+                customViewHolder.letra.setText("S");
                 break;
             case 't':
-                customViewHolder.imagem.setImageResource(R.drawable.t);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.t));
+                customViewHolder.letra.setText("T");
                 break;
             case 'u':
-                customViewHolder.imagem.setImageResource(R.drawable.u);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.u));
+                customViewHolder.letra.setText("U");
                 break;
             case 'v':
-                customViewHolder.imagem.setImageResource(R.drawable.v);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.v));
+                customViewHolder.letra.setText("V");
                 break;
             case 'w':
-                customViewHolder.imagem.setImageResource(R.drawable.w);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.w));
+                customViewHolder.letra.setText("W");
                 break;
             case 'x':
-                customViewHolder.imagem.setImageResource(R.drawable.x);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.x));
+                customViewHolder.letra.setText("X");
                 break;
             case 'y':
-                customViewHolder.imagem.setImageResource(R.drawable.y);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.y));
+                customViewHolder.letra.setText("Y");
                 break;
             case 'z':
-                customViewHolder.imagem.setImageResource(R.drawable.b);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.z));
+                customViewHolder.letra.setText("Z");
                 break;
             default:
-                customViewHolder.imagem.setImageResource(R.drawable.outros);
+                ((GradientDrawable) customViewHolder.circulo.getBackground()).setColor(resources.getColor(R.color.outros));
+                customViewHolder.letra.setText("");
                 break;
         }
 
@@ -148,12 +183,13 @@ public class RecyclerViewEventosTelaInicialAdapter extends RecyclerView.Adapter<
     }
 
     class CustomViewHolder extends RecyclerView.ViewHolder {
-        protected CircleImageView imagem;
-        protected TextView denominacao,horario,data;
+        protected RelativeLayout circulo;
+        protected TextView denominacao,horario,data,letra;
 
         public CustomViewHolder(View view) {
             super(view);
-            this.imagem = (CircleImageView) view.findViewById(R.id.imagemEventoRow);
+            this.circulo = (RelativeLayout) view.findViewById(R.id.circuloEventoRow);
+            this.letra = (TextView) view.findViewById(R.id.letraEventoRow);
             this.denominacao = (TextView) view.findViewById(R.id.denominacaoEventoRow);
             this.horario = (TextView) view.findViewById(R.id.horarioEventoRow);
             this.data = (TextView) view.findViewById(R.id.dataEventoRow);
