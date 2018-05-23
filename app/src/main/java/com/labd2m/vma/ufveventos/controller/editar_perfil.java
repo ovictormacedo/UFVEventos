@@ -265,7 +265,9 @@ public class editar_perfil extends AppCompatActivity
             editor.commit();
 
             Intent it = new Intent(getBaseContext(),login.class);
+            it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(it);
+            finish();
         }
 
 

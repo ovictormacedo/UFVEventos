@@ -12,16 +12,15 @@
         android:background="@color/red"
         android:elevation="0dp"
         android:theme="@style/ToolbarThemeWhite"
-        app:popupTheme="@style/ToolbarThemeWhite"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="0dp" />
+        app:popupTheme="@style/ToolbarThemeWhite" />
     <ImageView
         android:id="@+id/addAgenda"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:src="@drawable/calendar"
-        android:layout_marginLeft="310dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"
         android:elevation="10dp"/>
 
         <LinearLayout

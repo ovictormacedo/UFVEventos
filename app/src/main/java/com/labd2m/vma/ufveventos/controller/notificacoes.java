@@ -441,7 +441,9 @@ public class notificacoes extends AppCompatActivity
                     });
 
             Intent it = new Intent(getBaseContext(),login.class);
+            it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(it);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

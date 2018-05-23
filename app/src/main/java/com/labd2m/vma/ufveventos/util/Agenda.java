@@ -21,6 +21,7 @@ import com.labd2m.vma.ufveventos.model.Evento;
 import org.json.JSONObject;
 
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -232,6 +233,14 @@ public class Agenda {
 
         long eventID = Long.parseLong(uri.getLastPathSegment());
 
+        values = new ContentValues();
+        values.put(CalendarContract.Reminders.MINUTES, TimeUnit.MINUTES.convert(1, TimeUnit.HOURS));
+        values.put(CalendarContract.Reminders.EVENT_ID, eventID);
+        values.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
+        try{
+            uri = cr.insert(CalendarContract.Reminders.CONTENT_URI, values);
+        }catch (SecurityException e){}
+
         //Grava id do evento
         SharedPreferences sharedPref = context.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0agenda",
                 Context.MODE_PRIVATE);
@@ -336,13 +345,21 @@ public class Agenda {
         values.put(CalendarContract.Events.EVENT_LOCATION, local);
         values.put(CalendarContract.Events.GUESTS_CAN_INVITE_OTHERS, "1");
         values.put(CalendarContract.Events.GUESTS_CAN_SEE_GUESTS, "1");
-
+        values.put(CalendarContract.Events.HAS_ALARM, 1);
         Uri uri = null;
         try {
             uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
         }catch (SecurityException e){}
 
         long eventID = Long.parseLong(uri.getLastPathSegment());
+
+        values = new ContentValues();
+        values.put(CalendarContract.Reminders.MINUTES, TimeUnit.MINUTES.convert(1, TimeUnit.HOURS));
+        values.put(CalendarContract.Reminders.EVENT_ID, eventID);
+        values.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
+        try{
+            uri = cr.insert(CalendarContract.Reminders.CONTENT_URI, values);
+        }catch (SecurityException e){}
 
         //Grava id do evento
         SharedPreferences sharedPref = context.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0agenda",
