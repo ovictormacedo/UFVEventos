@@ -8,6 +8,19 @@
     tools:context="com.labd2m.vma.ufveventos.controller.inicial"
     tools:showIn="@layout/app_bar_inicial">
 
+    <ProgressBar
+        android:id="@+id/progressBarTelaInicial"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="80dp"
+        android:minHeight="50dp"
+        android:minWidth="50dp"
+        android:elevation="10dp"
+        android:indeterminateDrawable="@drawable/progress_bar"/>
+
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
@@ -15,7 +28,6 @@
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="0dp"
         android:background="#ffffff">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -23,6 +35,7 @@
             android:background="@drawable/rectangle_appbar">
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/buttonLayout"
             android:layout_width="270dp"
             android:layout_height="60dp"
             android:layout_marginTop="15dp"
@@ -49,20 +62,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="78dp">
         </android.support.v7.widget.RecyclerView>
-        <ProgressBar
-            android:id="@+id/progressBarTelaInicial"
-            style="?android:attr/progressBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:max="100"
-            android:minHeight="50dp"
-            android:minWidth="50dp"
-            android:indeterminate="true"
-            android:elevation="2dp"
-            android:indeterminateDrawable="@drawable/progress_bar"/>
     </FrameLayout>
 
 </RelativeLayout>

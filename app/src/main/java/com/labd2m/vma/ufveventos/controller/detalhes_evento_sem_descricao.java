@@ -90,7 +90,9 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
                     == PackageManager.PERMISSION_GRANTED) {
                 Agenda agenda = new Agenda();
+                Log.i("Agenda","Chama método");
                 agenda.addEvent(evento, getBaseContext(), getContentResolver(), getParent());
+                Log.i("Agenda","Sai do método");
                 Toast.makeText(getBaseContext(), "Evento adicionado à agenda.", Toast.LENGTH_LONG).show();
             }
         }

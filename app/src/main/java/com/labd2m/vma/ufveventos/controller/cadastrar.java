@@ -134,12 +134,16 @@ public class cadastrar extends AppCompatActivity {
 
                         @Override
                         public void onError(Throwable e){
+                            Log.i("ERRO CADASTRO",e.getMessage());
+                            Toast.makeText(getBaseContext(),"Já existe uma conta com este e-mail cadastrado",Toast.LENGTH_LONG).show();
+                            /*
                             if (e instanceof HttpException)
                                 Toast.makeText(getBaseContext(),"Já existe uma conta com este e-mail cadastrado",Toast.LENGTH_LONG).show();
                             else {
                                 Toast.makeText(getBaseContext(), "Não foi possível realizar o cadastro, " +
                                         "tente novamente em instantes.", Toast.LENGTH_LONG).show();
                             }
+                            */
                             //Esconde barra de carregamento
                             progressBar.setVisibility(View.GONE);
                         }

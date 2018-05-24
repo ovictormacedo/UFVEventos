@@ -165,7 +165,6 @@ public class Agenda {
         permission.requestPermissionCalendar(activity, context);
 
         ContentResolver contentResolver = context.getContentResolver();
-
         String[] projection =
                 new String[]{
                         CalendarContract.Calendars._ID,
@@ -173,7 +172,7 @@ public class Agenda {
                         CalendarContract.Calendars.ACCOUNT_NAME,
                         CalendarContract.Calendars.ACCOUNT_TYPE};
         String calendar_id = "";
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR)
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALENDAR)
                 == PackageManager.PERMISSION_GRANTED){
             Cursor calCursor =
                     context.getContentResolver().
@@ -182,16 +181,18 @@ public class Agenda {
                                     CalendarContract.Calendars.VISIBLE + " = 1",
                                     null,
                                     CalendarContract.Calendars._ID + " ASC");
-            calCursor.moveToFirst();
-            calendar_id = calCursor.getString(0);
-            Pattern pattern = Pattern.compile(".+@.+");
-            do{
+            try {
+                calCursor.moveToFirst();
+                int index = calCursor.getColumnIndex(CalendarContract.Calendars._ID);
+                calendar_id = calCursor.getString(index);
+                Pattern pattern = Pattern.compile(".+@.+");
+            do {
                 Matcher matcher = pattern.matcher(calCursor.getString(1));
                 if (matcher.matches())
                     calendar_id = calCursor.getString(0);
             }while(calCursor.moveToNext());
+            }catch (Exception e){Log.i("AGENDA", e.getMessage());}
         }
-
         int diaInicio = Integer.parseInt(evento.getDataInicio().substring(8,10));
         int mesInicio = Integer.parseInt(evento.getDataInicio().substring(5,7));
         int anoInicio = Integer.parseInt(evento.getDataInicio().substring(0,4));
@@ -211,7 +212,7 @@ public class Agenda {
 
         java.util.Calendar endTime = java.util.Calendar.getInstance();
         endTime.set(anoFim,mesFim-1,diaFim,horaFim,minutoFim);
-
+        Log.i("AGENDA","3");
         ContentValues values = new ContentValues();
         TimeZone timeZone = TimeZone.getDefault();
         values.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone.getID());
@@ -225,21 +226,20 @@ public class Agenda {
         values.put(CalendarContract.Events.EVENT_LOCATION, local);
         values.put(CalendarContract.Events.GUESTS_CAN_INVITE_OTHERS, "1");
         values.put(CalendarContract.Events.GUESTS_CAN_SEE_GUESTS, "1");
-
+        Log.i("AGENDA","4");
         Uri uri = null;
         try {
             uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
-        }catch (SecurityException e){}
+        }catch (SecurityException e){Log.i("ERRO ALARM",e.getMessage());}
 
         long eventID = Long.parseLong(uri.getLastPathSegment());
-
-        values = new ContentValues();
-        values.put(CalendarContract.Reminders.MINUTES, TimeUnit.MINUTES.convert(1, TimeUnit.HOURS));
-        values.put(CalendarContract.Reminders.EVENT_ID, eventID);
-        values.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
         try{
+            values = new ContentValues();
+            values.put(CalendarContract.Reminders.MINUTES, TimeUnit.MINUTES.convert(1, TimeUnit.HOURS));
+            values.put(CalendarContract.Reminders.EVENT_ID, eventID);
+            values.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
             uri = cr.insert(CalendarContract.Reminders.CONTENT_URI, values);
-        }catch (SecurityException e){}
+        }catch (SecurityException e){Log.i("ERRO ALARM",e.getMessage());}
 
         //Grava id do evento
         SharedPreferences sharedPref = context.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0agenda",

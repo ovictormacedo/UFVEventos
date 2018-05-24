@@ -37,6 +37,7 @@
                 android:textColor="@color/black"
                 android:text="UFV Eventos"/>
             <TextView
+                android:id="@+id/versao"
                 android:layout_width="150dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center_horizontal"

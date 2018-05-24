@@ -79,6 +79,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "224128381554-bufsf77ed7ch0aq1n0v1fe5fqjd35tfl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.labd2m.vma.ufveventos",
+            "certificate_hash": "0774eb95ab7574feaf6b953ddd96687dbc1eb0af"
+          }
+        },
+        {
           "client_id": "224128381554-3hggn917j7rvt0hjtddm55kkeqtk2rd4.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

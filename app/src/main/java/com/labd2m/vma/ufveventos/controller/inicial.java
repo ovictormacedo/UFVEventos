@@ -89,6 +89,10 @@ public class inicial extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        //Inicia barra de carregamento
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarTelaInicial);
+        progressBar.setProgress(View.VISIBLE);
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -97,10 +101,12 @@ public class inicial extends AppCompatActivity
         final Api api = retrofit.retrofit().create(Api.class);
 
         //Google Analytics
-        MyApplication application = (MyApplication) getApplication();
-        Tracker mTracker = application.getDefaultTracker();
-        mTracker.setScreenName("inicial");
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        try {
+            MyApplication application = (MyApplication) getApplication();
+            Tracker mTracker = application.getDefaultTracker();
+            mTracker.setScreenName("inicial");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        }catch (Exception e){}
 
         /*O usuário acontece de estar vazio na situação em que o usuário
         clica na notificação de novos eventos, neste caso, recupera os dados
@@ -217,10 +223,6 @@ public class inicial extends AppCompatActivity
 
         //Start initialize_auth]
         mAuth = FirebaseAuth.getInstance();
-
-        //Inicia barra de carregamento
-        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarTelaInicial);
-        progressBar.setProgress(View.VISIBLE);
 
         //Verifica se a lista possui algum evento
         if (eventosSing.tamanho() == 0) {

@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -71,6 +72,10 @@ public class login extends AppCompatActivity implements View.OnClickListener {
         Tracker mTracker = application.getDefaultTracker();
         mTracker.setScreenName("login");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
+        ((Button) findViewById(R.id.button)).setFocusable(true);
+        ((Button) findViewById(R.id.button)).setFocusableInTouchMode(true);
+        ((Button) findViewById(R.id.button)).requestFocus();
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.

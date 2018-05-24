@@ -1,9 +1,11 @@
 package com.labd2m.vma.ufveventos.controller;
 
+import android.content.pm.PackageInfo;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
 
 import com.labd2m.vma.ufveventos.R;
 import com.google.android.gms.analytics.HitBuilders;
@@ -26,5 +28,16 @@ public class sobre extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(),0);
+            String versao = pInfo.versionName;
+            ((TextView) findViewById(R.id.versao)).setText("Versão "+versao);
+        }catch(Exception e){}
     }
 }
