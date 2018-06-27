@@ -47,6 +47,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             List<Programacao> programacoes = new ArrayList<>();
             try {
                 dadosJson = new JSONObject(dados.get("body"));
+                Log.i("DADOS NOT",""+dadosJson);
                 acao = dadosJson.getString("acao");
                 id = dadosJson.getString("id");
                 denominacao = dadosJson.getString("denominacao");
@@ -133,7 +134,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 notificationIntent.putExtra("acao",acao);
                 PendingIntent broadcast = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.SECOND, 7200); //Envia a notificação num horário agendado
+                cal.add(Calendar.SECOND, 1); //Envia a notificação num horário agendado
                 alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
                 //Evento cancelado
             }else if (notificacoes.equals("1") && acao.equals("cancelado")) {
@@ -149,7 +150,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     notificationIntent.addCategory("android.intent.category.DEFAULT");
                     PendingIntent broadcast = PendingIntent.getBroadcast(this, 1, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                     Calendar cal = Calendar.getInstance();
-                    cal.add(Calendar.SECOND, 7200);
+                    cal.add(Calendar.SECOND, 1);
                     alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
 
                     //Recupera id do evento
@@ -159,11 +160,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     if (eventID != -1)
                         calendar.deleteEventNotification(evento,getBaseContext(),getContentResolver());
                     }else if (notificacoes.equals("1") && acao.equals("atualizado")) {
+                        Log.i("NOTI","Evento atualizado");
                         //Evento atualizado
                         /*Cancela notificação já agendada, a fim de impedir que o app
                         inunde o celular de notificações de novos eventos*/
+
                         Context ctx = getApplicationContext();
                         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
                         Intent cancelServiceIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
                         PendingIntent cancelServicePendingIntent = PendingIntent.getBroadcast(
                                 ctx,
@@ -177,15 +181,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
                         Gson gson = new Gson();
                         String json = gson.toJson(evento);
+                        Log.i("log json",json);
                         notificationIntent.putExtra("evento", json);
                         notificationIntent.putExtra("acao", acao);
 
                         notificationIntent.addCategory("android.intent.category.DEFAULT");
                         PendingIntent broadcast = PendingIntent.getBroadcast(this, 2, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                         Calendar cal = Calendar.getInstance();
-                        cal.add(Calendar.SECOND, 7200); //Envia notificação imediatamente
+                        cal.add(Calendar.SECOND, 1); //Envia notificação imediatamente
                         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
-
+                        Log.i("NOTI","Evento atualizado 2");
                         //Recupera id do evento
                         sharedPref = ctx.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0agenda",
                                 Context.MODE_PRIVATE);

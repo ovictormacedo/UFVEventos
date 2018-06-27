@@ -12,6 +12,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.labd2m.vma.ufveventos.R;
@@ -24,6 +25,7 @@ import com.labd2m.vma.ufveventos.model.Evento;
 public class NotificationReceiver extends BroadcastReceiver{
     @Override
     public void onReceive(final Context context, Intent it){
+        Log.i("Not receiver","3");
         String eventoJson = it.getStringExtra("evento");
         Gson gson = new Gson();
         Evento evento = gson.fromJson(eventoJson, Evento.class);
@@ -86,6 +88,7 @@ public class NotificationReceiver extends BroadcastReceiver{
                     NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                     notificationManager.notify(0, notification);
                 } else if (acao.equals("atualizado")) { //Evento atualizado
+                        Log.i("Not receiver","1");
                         String descricao = evento.getDescricao_evento();
                         Intent notificationIntent = null;
                         if (!descricao.equals(""))
@@ -119,8 +122,10 @@ public class NotificationReceiver extends BroadcastReceiver{
 
                         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                         notificationManager.notify(2, notification);
+                        Log.i("Not receiver","2");
                     }
         } catch(Exception e) {
+            Log.i("Erro not receiver",e.getMessage());
             e.printStackTrace();
         }
     }

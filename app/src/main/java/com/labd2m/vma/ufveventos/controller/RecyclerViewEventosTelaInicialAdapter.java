@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.labd2m.vma.ufveventos.R;
 import com.labd2m.vma.ufveventos.model.Evento;
+import com.labd2m.vma.ufveventos.util.FormatStrings;
 
 import java.util.List;
 
@@ -160,7 +161,8 @@ public class RecyclerViewEventosTelaInicialAdapter extends RecyclerView.Adapter<
 
 
         //Seta denominação do evento
-        customViewHolder.denominacao.setText(evento.getDenominacao());
+        FormatStrings fs = new FormatStrings();
+        customViewHolder.denominacao.setText(fs.cortaTituloEvento(evento.getDenominacao()));
         //Seta data do evento
         String data = evento.getDataInicio().substring(8,10)+"/"+evento.getDataInicio().substring(5,7);
         customViewHolder.data.setText(data);
