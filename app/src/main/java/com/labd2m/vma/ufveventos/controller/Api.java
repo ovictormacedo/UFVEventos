@@ -25,141 +25,132 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 public interface Api{
-    //Retorna agenda do dispositivo
+    String auth = "Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0";
+
     @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @GET("evento/categoria/personalizado/idusuario/{idUsuario}/indexinicial/{offset}/indexfinal/{limit}")
+    Observable<List<Evento>> getEventosPorUsuario(@Path("idUsuario") String idUsuario,
+                                                  @Path("offset") int offset, @Path("limit") int limit);
+
+    //Retorna agenda do dispositivo
+    @Headers(auth)
     @FormUrlEncoded
     @POST("getcalendar")
     Observable<Object> getCalendar(@Field("data") JSONObject data);
 
     //Retorna dados do evento
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @GET("evento/{idEvento}")
     Observable<Evento> getEvento(@Path("idEvento") int idEvento);
 
     //Testado
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @GET("evento/indexinicial/{offset}/indexfinal/{limit}")
     Observable<List<Evento>> getEventos(@Path("offset") int offset, @Path("limit") int limit);
 
-    //Não testado
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
-    @GET("evento/categoria/{idCategoria}/indexinicial/{offset}/indexfinal/{limit}")
-    Observable<List<Evento>> getEventosPorCategoria(@Path("idCategoria") String idCategoria,
-                                                    @Path("offset") int offset, @Path("limit") int limit);
-    //Não testado
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
-    @GET("evento/categoria/personalizado/idusuario/{idUsuario}/indexinicial/{offset}/indexfinal/{limit}")
-    Observable<List<Evento>> getEventosPorUsuario(@Path("idUsuario") String idUsuario,
-                                                  @Path("offset") int offset, @Path("limit") int limit);
-    //Não testado
-    //a senha deve ser passada utilizando MD5
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
-    @GET("usuario/{idUsuario}")
-    Observable<String> getUsuario(@Header("a") String password, @Path("idUsuario") String idUsuario);
-
     //Retorna categorias de evento que o usuário deseja receber notificacoes
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @GET("preferencias_notificacoes/{idUsuario}")
     Observable<List<Categoria>> getPreferenciasDeNotificacoes(@Path("idUsuario") String idUsuario);
 
     //Retorna categorias de evento preferidas do usuário
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @GET("preferencias_categorias/{idUsuario}")
     Observable<List<Categoria>> getPreferenciasDeCategorias(@Path("idUsuario") String idUsuario);
 
     //Retorna categorias de evento
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @GET("categoria")
     Observable<List<Categoria>> getCategorias();
 
     //Não testado
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @GET("dispositivos/{idUsuario}")
     Observable<Usuario> getDispositivos(@Path("idUsuario") String idUsuario);
 
     //Recupera senha
     @FormUrlEncoded
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @POST("email")
     Observable<Void> recuperaSenha(@Field("data") JSONObject data);
 
     //Autentica usuário
     @FormUrlEncoded
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @POST("usuario_auth")
     Observable<Usuario> authUsuario(@Field("data") JSONObject data);
 
     //Cria novo usuário
     @FormUrlEncoded
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @POST("usuario")
     Observable<Integer> setUsuario(@Field("data") JSONObject data);
 
     //Cria novo usuário google
     @FormUrlEncoded
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @POST("usuario_google")
     Observable<Integer> setUsuarioGoogle(@Field("data") JSONObject data);
 
     //Cadastra novo dispositivo do usuário
     @FormUrlEncoded
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @POST("dispositivos")
     Observable<Void> setDispositivo(@Field("data") JSONObject data);
 
     @FormUrlEncoded
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @POST("agenda_notificacoes")
     Observable<Dispositivo> getAgendaNotificacoes(@Field("data") JSONObject data);
 
     @FormUrlEncoded
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @POST("agenda")
     Observable<Void> setAgenda(@Field("data") JSONObject data);
 
     @FormUrlEncoded
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @POST("notificacoes")
     Observable<Void> setNotificacoes(@Field("data") JSONObject data);
 
     //Atualiza dados do cadastro do usuário
     @FormUrlEncoded
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @PUT("usuario/{idUsuario}")
     Observable<Void> updateUsuario(@Field("data") JSONObject data,@Path("idUsuario") String idUsuario);
 
     //Atualiza a opção do usuário receber notificções
     @FormUrlEncoded
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @PUT("notificacoes")
     Observable<Void> updateNotificacoes(@Field("data") JSONObject data);
 
     //Atualiza a opção do usuário adicionar eventos que chegam via notificação automaticamente à agenda
     @FormUrlEncoded
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @PUT("agenda")
     Observable<Void> updateAgenda(@Field("data") JSONObject data);
 
     //Atualiza preferências de categoria do usuário
     @FormUrlEncoded
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @PUT("preferencias_categorias/{idUsuario}")
     Observable<Void> updatePreferenciasCategorias(@Field("data") String data,@Path("idUsuario") String idUsuario);
 
     //Atualiza preferências de categoria do usuário
     @FormUrlEncoded
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @PUT("preferencias_notificacoes/{idUsuario}")
     Observable<Void> updatePreferenciasNotificacoes(@Field("data") String data,@Path("idUsuario") String idUsuario);
 
     //Adiciona a agenda do usuário
     @FormUrlEncoded
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @POST("calendar/{token}")
     Observable<Void> addAgenda(@Field("data") JSONObject data);
 
     //Adiciona a agenda do usuário
-    @Headers("Authorization:Basic 45dfd94be4b30d5844d2bcca2d997db0")
+    @Headers(auth)
     @FormUrlEncoded
     @POST("deletecalendar")
     Observable<Void> deleteAgenda(@Field("data") JSONObject data);

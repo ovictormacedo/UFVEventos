@@ -84,7 +84,6 @@ public class editar_perfil extends AppCompatActivity
         UsuarioSingleton usuario = UsuarioSingleton.getInstance();
         ((EditText) findViewById(R.id.nomeEditarPerfil)).setText(usuario.getNome());
         ((EditText) findViewById(R.id.emailEditarPerfil)).setText(usuario.getEmail());
-        //((EditText) findViewById(R.id.senhaEditarPerfil)).setText(usuario.getSenha());
         if (!usuario.getNascimento().isEmpty()) {
             String data = usuario.getNascimento().substring(8, 10) + "/" + usuario.getNascimento().substring(5,7)
                     +"/"+usuario.getNascimento().substring(0,4);
@@ -199,7 +198,6 @@ public class editar_perfil extends AppCompatActivity
                         public void onError(Throwable e){
                             //Esconde barra de carregamento
                             progressBar.setVisibility(View.GONE);
-                            Log.i("Login error",e.getMessage());
                             Toast.makeText(getBaseContext(),"Não foi possível atualizar o cadastro, " +
                                             "tente novamente em instantes.", Toast.LENGTH_LONG).show();
                         }

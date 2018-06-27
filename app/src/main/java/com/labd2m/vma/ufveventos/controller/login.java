@@ -39,6 +39,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.labd2m.vma.ufveventos.util.SharedPref;
+
 import org.json.JSONObject;
 
 import okhttp3.ResponseBody;
@@ -56,13 +58,12 @@ public class login extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
     private ProgressBar progressBar;
+    SharedPref sharedPrefUtil = new SharedPref();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        Log.i("DEBUG-----","CHEGOU NA TELA DE LOGIN");
 
         progressBar = (ProgressBar) findViewById(R.id.progressBarLogin);
         progressBar.setVisibility(View.GONE);
@@ -94,7 +95,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
 
-        sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
+        sharedPref = this.getSharedPreferences(sharedPrefUtil.getKey(), Context.MODE_PRIVATE);
         //Verifica se o usuário está logado
         if (sharedPref.getBoolean("logado",false)) {
             //Popula o singleton do usuário logado com os dados
@@ -179,10 +180,6 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                                 json.put("googleId", user.getUid());
                             }catch(Exception e){Toast.makeText(getBaseContext(),e.getMessage(), Toast.LENGTH_SHORT).show();}
 
-                            Log.i("DEBUG 1",""+user.getDisplayName());
-                            Log.i("DEBUG 1",""+user.getEmail());
-                            Log.i("DEBUG 1",""+user.getUid());
-
                             //Faz requisição ao servidor
                             Observable<Integer> observable =  api.setUsuarioGoogle(json);
                             //Intercepta a resposta da requisição
@@ -225,7 +222,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                                             final UsuarioSingleton usuario = UsuarioSingleton.getInstance();
                                             //Verifica se o usuário possui um token para este dispositivo
                                             sharedPref = getBaseContext().
-                                                    getSharedPreferences("UFVEVENTOS" + idUsuario, Context.MODE_PRIVATE);
+                                                    getSharedPreferences(sharedPrefUtil.getUserKey(""+idUsuario), Context.MODE_PRIVATE);
                                             String token = sharedPref.getString("firebasetoken", "falso");
                                             if (token.equals("falso")){
                                                 //Requisita token FCM
@@ -271,7 +268,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
 
                                                                 //Recupera informações da agenda e notificações
                                                                 final UsuarioSingleton usuario = UsuarioSingleton.getInstance();
-                                                                sharedPref = getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0",
+                                                                sharedPref = getSharedPreferences(sharedPrefUtil.getKey(),
                                                                         Context.MODE_PRIVATE);
                                                                 String agenda = sharedPref.getString("agenda", "default");
                                                                 String notificacoes = sharedPref.getString("notificacoes", "default");
@@ -310,7 +307,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                                                                                         usuario.setAgenda(response.getAgenda());
                                                                                         usuario.setNotificacoes(response.getNotificacoes());
                                                                                         sharedPref = getBaseContext().
-                                                                                                getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
+                                                                                                getSharedPreferences(sharedPrefUtil.getKey(), Context.MODE_PRIVATE);
                                                                                         SharedPreferences.Editor editor = sharedPref.edit();
                                                                                         editor.putString("agenda",usuario.getAgenda());
                                                                                         editor.putString("notificacoes",usuario.getNotificacoes());
@@ -343,7 +340,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                                                 usuario.setToken(token);
 
                                                 //Recupera informações da agenda e notificações
-                                                sharedPref = getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0",
+                                                sharedPref = getSharedPreferences(sharedPrefUtil.getKey(),
                                                         Context.MODE_PRIVATE);
                                                 String agenda = sharedPref.getString("agenda", "default");
                                                 String notificacoes = sharedPref.getString("notificacoes", "default");
@@ -382,7 +379,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                                                                         usuario.setAgenda(response.getAgenda());
                                                                         usuario.setNotificacoes(response.getNotificacoes());
                                                                         sharedPref = getBaseContext().
-                                                                                getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
+                                                                                getSharedPreferences(sharedPrefUtil.getKey(), Context.MODE_PRIVATE);
                                                                         SharedPreferences.Editor editor = sharedPref.edit();
                                                                         editor.putString("agenda",usuario.getAgenda());
                                                                         editor.putString("notificacoes",usuario.getNotificacoes());
@@ -423,7 +420,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
 
     private void updateUsuario(FirebaseUser currentUser, String id){
         if (currentUser != null) {
-            sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
+            sharedPref = this.getSharedPreferences(sharedPrefUtil.getKey(), Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean("logado", true);
             editor.putString("id", id);
@@ -491,14 +488,12 @@ public class login extends AppCompatActivity implements View.OnClickListener {
     }
 
     public void entrar(View view){
-        sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
+        sharedPref = this.getSharedPreferences(sharedPrefUtil.getKey(), Context.MODE_PRIVATE);
         //Valida dados de login
         boolean valido = true;
         valido = validaEditText("emailmatriculaErroLogin","emailmatriculaLogin","O campo não pode ficar vazio.");
         valido = validaEditText("senhaErroLogin","senhaLogin","O campo não pode ficar vazio.");
-        Log.i("Login","Botão de login clicado");
         if (valido) {
-            Log.i("Login","Botão de login clicado - campos válidos");
             //Cria objeto para acessar a API de dados Siseventos
             RetrofitAPI retrofit = new RetrofitAPI();
             final Api api = retrofit.retrofit().create(Api.class);
@@ -529,7 +524,6 @@ public class login extends AppCompatActivity implements View.OnClickListener {
 
                         @Override
                         public void onError(Throwable e) {
-                            Log.i("Login",e.getMessage());
                             if (e instanceof HttpException) {
                                 ResponseBody aux = ((HttpException) e).response().errorBody();
                                 try {
@@ -559,7 +553,6 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                                                 getColor(R.color.EditText), PorterDuff.Mode.SRC_ATOP);
                                         ((TextView) findViewById(R.id.senhaErroLogin)).setText("");
                                     }
-                                    Log.i("Retrofit error", "Erro:" + e.getMessage());
                                 }catch(Exception t){}
                             }
                             progressBar.setVisibility(View.GONE);
@@ -567,7 +560,6 @@ public class login extends AppCompatActivity implements View.OnClickListener {
 
                         @Override
                         public void onNext(Usuario response) {
-                            Log.i("Login","Usuário autenticado");
                             //Registra login do usuário
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putBoolean("logado", true);
@@ -595,7 +587,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                             //Cadastra token do dispositivo (se necessário) para receber notificações
                             //Verifica se o usuário possui um token para este dispositivo
                             sharedPref = getBaseContext().
-                                    getSharedPreferences("UFVEVENTOS" + response.getId(), Context.MODE_PRIVATE);
+                                    getSharedPreferences(sharedPrefUtil.getUserKey(response.getId()), Context.MODE_PRIVATE);
                             String token = sharedPref.getString("firebasetoken", "falso");
                             if (token.equals("falso")){
                                 //Requisita token FCM
@@ -637,7 +629,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                                             public void onNext(Void response) {
                                                 //Recupera informações da agenda e notificações
                                                 final UsuarioSingleton usuario = UsuarioSingleton.getInstance();
-                                                sharedPref = getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0",
+                                                sharedPref = getSharedPreferences(sharedPrefUtil.getKey(),
                                                         Context.MODE_PRIVATE);
                                                 String agenda = sharedPref.getString("agenda", "default");
                                                 String notificacoes = sharedPref.getString("notificacoes", "default");
@@ -676,7 +668,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                                                                         usuario.setAgenda(response.getAgenda());
                                                                         usuario.setNotificacoes(response.getNotificacoes());
                                                                         sharedPref = getBaseContext().
-                                                                                getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
+                                                                                getSharedPreferences(sharedPrefUtil.getKey(), Context.MODE_PRIVATE);
                                                                         SharedPreferences.Editor editor = sharedPref.edit();
                                                                         editor.putString("agenda",usuario.getAgenda());
                                                                         editor.putString("notificacoes",usuario.getNotificacoes());
@@ -709,7 +701,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                                 usuario.setToken(token);
 
                                 //Recupera informações da agenda e notificações
-                                sharedPref = getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0",
+                                sharedPref = getSharedPreferences(sharedPrefUtil.getKey(),
                                         Context.MODE_PRIVATE);
                                 String agenda = sharedPref.getString("agenda", "default");
                                 String notificacoes = sharedPref.getString("notificacoes", "default");
@@ -748,7 +740,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                                                         usuario.setAgenda(response.getAgenda());
                                                         usuario.setNotificacoes(response.getNotificacoes());
                                                         sharedPref = getBaseContext().
-                                                                getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
+                                                                getSharedPreferences(sharedPrefUtil.getKey(), Context.MODE_PRIVATE);
                                                         SharedPreferences.Editor editor = sharedPref.edit();
                                                         editor.putString("agenda",usuario.getAgenda());
                                                         editor.putString("notificacoes",usuario.getNotificacoes());
@@ -825,12 +817,10 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.i("DEGUB___","PERMISSÃO DADA");
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
 
                 } else {
-                    Log.i("DEGUB___","PERMISSÃO NEGADA");
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }

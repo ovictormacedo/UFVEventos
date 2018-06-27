@@ -29,6 +29,7 @@ import com.labd2m.vma.ufveventos.util.Seguranca;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.labd2m.vma.ufveventos.util.SharedPref;
 
 import org.json.JSONObject;
 
@@ -42,6 +43,7 @@ import rx.schedulers.Schedulers;
 
 public class cadastrar extends AppCompatActivity {
     SharedPreferences sharedPref;
+    SharedPref sharedPrefUtil = new SharedPref();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +136,6 @@ public class cadastrar extends AppCompatActivity {
 
                         @Override
                         public void onError(Throwable e){
-                            Log.i("ERRO CADASTRO",e.getMessage());
                             Toast.makeText(getBaseContext(),"Já existe uma conta com este e-mail cadastrado",Toast.LENGTH_LONG).show();
                             /*
                             if (e instanceof HttpException)
@@ -193,7 +194,7 @@ public class cadastrar extends AppCompatActivity {
 
                                             //Atualiza shared preferences
                                             sharedPref = getBaseContext().
-                                                    getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
+                                                    getSharedPreferences(sharedPrefUtil.getKey(), Context.MODE_PRIVATE);
                                             SharedPreferences.Editor editor = sharedPref.edit();
                                             editor.remove("logado");
                                             editor.putBoolean("logado", true);
@@ -216,7 +217,7 @@ public class cadastrar extends AppCompatActivity {
                                             //Cadastra token do dispositivo (se necessário) para receber notificações
                                             //Verifica se o usuário possui um token para este dispositivo
                                             sharedPref = getBaseContext().
-                                                    getSharedPreferences("UFVEVENTOS" + response.getId(), Context.MODE_PRIVATE);
+                                                    getSharedPreferences(sharedPrefUtil.getUserKey(response.getId()), Context.MODE_PRIVATE);
                                             String token = sharedPref.getString("firebasetoken", "falso");
                                             if (token.equals("falso")){
                                                 //Requisita token FCM
@@ -245,7 +246,6 @@ public class cadastrar extends AppCompatActivity {
 
                                                             @Override
                                                             public void onError(Throwable e) {
-                                                                Log.e("Erro cadastro:",e.getMessage());
                                                                 //Encerra barra de carregamento
                                                                 progressBar.setVisibility(View.GONE);
 
@@ -258,7 +258,7 @@ public class cadastrar extends AppCompatActivity {
                                                             public void onNext(Void response) {
                                                                 //Recupera informações da agenda e notificações
                                                                 final UsuarioSingleton usuario = UsuarioSingleton.getInstance();
-                                                                sharedPref = getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0",
+                                                                sharedPref = getSharedPreferences(sharedPrefUtil.getKey(),
                                                                         Context.MODE_PRIVATE);
                                                                 String agenda = sharedPref.getString("agenda", "default");
                                                                 String notificacoes = sharedPref.getString("notificacoes", "default");
@@ -281,7 +281,6 @@ public class cadastrar extends AppCompatActivity {
 
                                                                                 @Override
                                                                                 public void onError(Throwable e) {
-                                                                                    Log.e("Erro cadastro:",e.getMessage());
                                                                                     //Encerra barra de carregamento
                                                                                     progressBar.setVisibility(View.GONE);
 
@@ -297,7 +296,7 @@ public class cadastrar extends AppCompatActivity {
                                                                                         usuario.setAgenda(response.getAgenda());
                                                                                         usuario.setNotificacoes(response.getNotificacoes());
                                                                                         sharedPref = getBaseContext().
-                                                                                                getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
+                                                                                                getSharedPreferences(sharedPrefUtil.getKey(), Context.MODE_PRIVATE);
                                                                                         SharedPreferences.Editor editor = sharedPref.edit();
                                                                                         editor.putString("agenda",usuario.getAgenda());
                                                                                         editor.putString("notificacoes",usuario.getNotificacoes());
@@ -330,7 +329,7 @@ public class cadastrar extends AppCompatActivity {
                                                 usuario.setToken(token);
 
                                                 //Recupera informações da agenda e notificações
-                                                sharedPref = getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0",
+                                                sharedPref = getSharedPreferences(sharedPrefUtil.getKey(),
                                                         Context.MODE_PRIVATE);
                                                 String agenda = sharedPref.getString("agenda", "default");
                                                 String notificacoes = sharedPref.getString("notificacoes", "default");
@@ -353,7 +352,6 @@ public class cadastrar extends AppCompatActivity {
 
                                                                 @Override
                                                                 public void onError(Throwable e) {
-                                                                    Log.e("Erro cadastro:",e.getMessage());
                                                                     //Encerra barra de carregamento
                                                                     progressBar.setVisibility(View.GONE);
 
@@ -370,7 +368,7 @@ public class cadastrar extends AppCompatActivity {
                                                                         usuario.setAgenda(response.getAgenda());
                                                                         usuario.setNotificacoes(response.getNotificacoes());
                                                                         sharedPref = getBaseContext().
-                                                                                getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
+                                                                                getSharedPreferences(sharedPrefUtil.getKey(), Context.MODE_PRIVATE);
                                                                         SharedPreferences.Editor editor = sharedPref.edit();
                                                                         editor.putString("agenda",usuario.getAgenda());
                                                                         editor.putString("notificacoes",usuario.getNotificacoes());
@@ -472,47 +470,6 @@ public class cadastrar extends AppCompatActivity {
             emailmatriculaErro.setText("");
             return true;
         }
-    }
-    public boolean validaRadioGroup(String idErro,String id1,String id2,String id3,String msg){
-        //Busca referência do campo
-        int erro = getResources().getIdentifier(idErro, "id",
-                this.getBaseContext().getPackageName());
-
-        int r1 = getResources().getIdentifier(id1, "id",
-                this.getBaseContext().getPackageName());
-
-        int r2 = getResources().getIdentifier(id2, "id",
-                this.getBaseContext().getPackageName());
-
-        int r3 = getResources().getIdentifier(id3, "id",
-                this.getBaseContext().getPackageName());
-
-        RadioButton rb1 = ((RadioButton) findViewById(r1));
-        RadioButton rb2 = ((RadioButton) findViewById(r2));
-        RadioButton rb3 = ((RadioButton) findViewById(r3));
-        TextView er = ((TextView) findViewById(erro));
-
-        boolean valida = false;
-        if (rb1 != null)
-            if(rb1.isChecked())
-                valida = true;
-
-        if (rb2 != null)
-            if(rb2.isChecked())
-                valida = true;
-
-        if (rb3 != null)
-            if(rb3.isChecked())
-                valida = true;
-
-        //Caso nenhum sexo tenha sido selecionado informado msg de erro
-        if (!valida){
-            er.setText(msg);
-        }else{
-            er.setText("");
-        }
-
-        return valida;
     }
     public static class DatePickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {

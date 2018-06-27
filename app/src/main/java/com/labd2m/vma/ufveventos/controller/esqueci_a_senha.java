@@ -69,7 +69,6 @@ public class esqueci_a_senha extends AppCompatActivity {
                         ((EditText) findViewById(R.id.emailEsqueciSenha))
                                 .getBackground().mutate().setColorFilter(getResources().getColor(R.color.red), PorterDuff.Mode.SRC_ATOP);
 
-                        Log.e("Erro cadastro:",e.getMessage());
                         //Encerra barra de carregamento
                         progressBar.setVisibility(View.GONE);
                     }

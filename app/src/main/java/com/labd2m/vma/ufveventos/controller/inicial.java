@@ -30,6 +30,7 @@ import com.labd2m.vma.ufveventos.model.Evento;
 import com.labd2m.vma.ufveventos.model.EventosSingleton;
 import com.labd2m.vma.ufveventos.model.UsuarioSingleton;
 import com.labd2m.vma.ufveventos.util.RetrofitAPI;
+import com.labd2m.vma.ufveventos.util.SharedPref;
 import com.labd2m.vma.ufveventos.util.UsuarioNavigationDrawer;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -66,6 +67,8 @@ public class inicial extends AppCompatActivity
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private SharedPreferences sharedPref;
+    SharedPref sharedPrefUtil = new SharedPref();
+
     @Override
     protected void onResume(){
         super.onResume();
@@ -137,7 +140,6 @@ public class inicial extends AppCompatActivity
             json.put("token",usuario.getToken());
         }catch(Exception e){Toast.makeText(getBaseContext(),e.getMessage(),Toast.LENGTH_SHORT).show();};
 
-        Log.i("Calendar","chamando get calendar");
         //Busca dados armazenados na agenda do usuário no servidor
         Observable<Object> observableCalendar = api.getCalendar(json);
         observableCalendar.subscribeOn(Schedulers.newThread())
@@ -149,13 +151,11 @@ public class inicial extends AppCompatActivity
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.i("Retrofit error calendar", "Erro:" + e.getMessage());
                         e.printStackTrace();
                     }
 
                     @Override
                     public void onNext(Object response) {
-                        Log.i("RESPONSE CALENDAR",""+response);
                         JSONArray jsonArray = null;
                         boolean agendaVazia = false;
                         try{
@@ -240,7 +240,6 @@ public class inicial extends AppCompatActivity
                         public void onError(Throwable e) {
                             //Encerra barra de carregamento
                             progressBar.setVisibility(View.GONE);
-                            Log.i("Retrofit error eventos4", "Erro:" + e.getMessage());
                             e.printStackTrace();
                             Toast.makeText(getBaseContext(), "Não foi possível carregar os eventos.", Toast.LENGTH_SHORT).show();
                         }
@@ -304,7 +303,6 @@ public class inicial extends AppCompatActivity
                                         public void onError(Throwable e) {
                                             //Encerra barra de carregamento
                                             progressBar.setVisibility(View.GONE);
-                                            Log.i("Retrofit error eventos1", "Erro:" + e.getMessage());
                                             Toast.makeText(getBaseContext(), "Não foi possível carregar os eventos.", Toast.LENGTH_SHORT).show();
                                         }
 
@@ -383,7 +381,6 @@ public class inicial extends AppCompatActivity
                         public void onError(Throwable e) {
                             //Encerra barra de carregamento
                             progressBar.setVisibility(View.GONE);
-                            Log.i("Retrofit error eventos2", "Erro:" + e.getMessage());
                             Toast.makeText(getBaseContext(), "Não foi possível carregar os eventos.", Toast.LENGTH_SHORT).show();
                         }
 
@@ -438,7 +435,6 @@ public class inicial extends AppCompatActivity
                                         public void onError(Throwable e) {
                                             //Encerra barra de carregamento
                                             progressBar.setVisibility(View.GONE);
-                                            Log.i("Retrofit error eventos3", "Erro:" + e.getMessage());
                                             Toast.makeText(getBaseContext(), "Não foi possível carregar os eventos.", Toast.LENGTH_SHORT).show();
                                         }
 
@@ -447,7 +443,6 @@ public class inicial extends AppCompatActivity
                                             //Copia resultados para a lista de eventos
                                             for (int i = 0; i < response.size(); i++) {
                                                 eventos.add(response.get(i));
-                                                //eventosSing.addEvento(response.get(i));
                                             }
                                             //Atualiza RecyclerView
                                             adapter.notifyDataSetChanged();
@@ -510,7 +505,7 @@ public class inicial extends AppCompatActivity
             startActivity(it);
         } else if (id == R.id.nav_sair) {
             //Registra que o usuário saiu
-            SharedPreferences sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0",Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = this.getSharedPreferences(sharedPrefUtil.getKey() ,Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.clear();
             editor.apply();

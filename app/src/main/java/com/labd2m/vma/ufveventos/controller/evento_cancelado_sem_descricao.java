@@ -78,8 +78,6 @@ public class evento_cancelado_sem_descricao extends AppCompatActivity implements
         mGoogleMap = googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        //mGoogleMap.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener) this);
-
         if (isProviderAvailable() && (provider != null)) {
             locateCurrentPosition();
         }
@@ -93,7 +91,6 @@ public class evento_cancelado_sem_descricao extends AppCompatActivity implements
         if (status == PackageManager.PERMISSION_GRANTED) {
             Location location = mLocationManager.getLastKnownLocation(provider);
             updateWithNewLocation(location);
-            //mLocationManager.addGpsStatusListener(this);
             long minTime = 5000;// ms
             float minDist = 5.0f;// meter
             mLocationManager.requestLocationUpdates(provider, minTime, minDist, this);
@@ -153,15 +150,7 @@ public class evento_cancelado_sem_descricao extends AppCompatActivity implements
     private void addBoundaryToCurrentPosition(double lat, double lang) {
         MarkerOptions mMarkerOptions = new MarkerOptions();
         mMarkerOptions.position(new LatLng(lat, lang));
-        //mMarkerOptions.icon(BitmapDescriptorFactory
-        //      .fromResource(R.drawable.marker_current));
         mMarkerOptions.anchor(0.5f, 0.5f);
-
-        /*CircleOptions mOptions = new CircleOptions()
-            .center(new LatLng(lat, lang)).radius(10000)
-                .strokeColor(0x110000FF).strokeWidth(1).fillColor(0x110000FF);
-        mGoogleMap.addCircle(mOptions);
-        */
         if (mCurrentPosition != null)
             mCurrentPosition.remove();
         mCurrentPosition = mGoogleMap.addMarker(mMarkerOptions);

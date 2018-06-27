@@ -425,7 +425,6 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.i("ERRO",error.getMessage());
                     }
                 });
 
@@ -603,8 +602,6 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
     public static float getScreenHeight(Context context){
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
-        Log.i("ALTURA EM PIXEL",""+displayMetrics.heightPixels);
-        Log.i("VALOR DP",""+1/displayMetrics.density);
         return dpHeight;
     }
 

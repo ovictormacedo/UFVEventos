@@ -373,7 +373,6 @@ public class evento_cancelado_com_descricao extends AppCompatActivity implements
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.i("ERRO",error.getMessage());
                     }
                 });
 

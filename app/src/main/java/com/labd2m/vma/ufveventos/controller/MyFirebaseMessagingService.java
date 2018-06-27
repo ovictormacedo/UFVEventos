@@ -17,6 +17,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.labd2m.vma.ufveventos.model.Local;
 import com.labd2m.vma.ufveventos.model.Programacao;
 import com.labd2m.vma.ufveventos.util.Agenda;
+import com.labd2m.vma.ufveventos.util.SharedPref;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +33,7 @@ import java.util.Map;
  */
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+    SharedPref sharedPrefUtil = new SharedPref();
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage){
@@ -93,9 +95,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     Float.parseFloat(valorinscricao),linklocalinscricao,Integer.parseInt(mostrarparticipantes));
 
             Agenda calendar = new Agenda();
-
             //Verifica se o usuário deseja que a notificação seja adicionada à agenda
-            SharedPreferences sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = this.getSharedPreferences(sharedPrefUtil.getKey(), Context.MODE_PRIVATE);
             String idUsuario = sharedPref.getString("id","default");
 
             //Se o usuário está logado
@@ -154,7 +155,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
 
                     //Recupera id do evento
-                    sharedPref = getApplicationContext().getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0agenda",
+                    sharedPref = getApplicationContext().getSharedPreferences(sharedPrefUtil.getAgendaKey(),
                             Context.MODE_PRIVATE);
                     long eventID = sharedPref.getLong(""+evento.getId(),-1);
                     if (eventID != -1)
@@ -192,7 +193,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
                         Log.i("NOTI","Evento atualizado 2");
                         //Recupera id do evento
-                        sharedPref = ctx.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0agenda",
+                        sharedPref = ctx.getSharedPreferences(sharedPrefUtil.getAgendaKey(),
                                 Context.MODE_PRIVATE);
                         long eventID = sharedPref.getLong(""+evento.getId(),-1);
                         if (eventID != -1)

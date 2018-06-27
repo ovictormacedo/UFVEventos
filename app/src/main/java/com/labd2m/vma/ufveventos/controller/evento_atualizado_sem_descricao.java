@@ -78,8 +78,6 @@ public class evento_atualizado_sem_descricao extends AppCompatActivity implement
         mGoogleMap = googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        //mGoogleMap.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener) this);
-
         if (isProviderAvailable() && (provider != null)) {
             locateCurrentPosition();
         }
@@ -153,15 +151,8 @@ public class evento_atualizado_sem_descricao extends AppCompatActivity implement
     private void addBoundaryToCurrentPosition(double lat, double lang) {
         MarkerOptions mMarkerOptions = new MarkerOptions();
         mMarkerOptions.position(new LatLng(lat, lang));
-        //mMarkerOptions.icon(BitmapDescriptorFactory
-        //      .fromResource(R.drawable.marker_current));
-        mMarkerOptions.anchor(0.5f, 0.5f);
 
-        /*CircleOptions mOptions = new CircleOptions()
-            .center(new LatLng(lat, lang)).radius(10000)
-                .strokeColor(0x110000FF).strokeWidth(1).fillColor(0x110000FF);
-        mGoogleMap.addCircle(mOptions);
-        */
+        mMarkerOptions.anchor(0.5f, 0.5f);
         if (mCurrentPosition != null)
             mCurrentPosition.remove();
         mCurrentPosition = mGoogleMap.addMarker(mMarkerOptions);
@@ -263,7 +254,6 @@ public class evento_atualizado_sem_descricao extends AppCompatActivity implement
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.i("ERRO",error.getMessage());
                     }
                 });
 

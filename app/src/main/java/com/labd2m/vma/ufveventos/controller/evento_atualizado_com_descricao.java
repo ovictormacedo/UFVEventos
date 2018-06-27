@@ -375,7 +375,6 @@ public class evento_atualizado_com_descricao extends AppCompatActivity implement
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.i("ERRO",error.getMessage());
                     }
                 });
 

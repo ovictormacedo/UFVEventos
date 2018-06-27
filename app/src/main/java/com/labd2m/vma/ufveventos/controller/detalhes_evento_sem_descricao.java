@@ -90,9 +90,7 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
                     == PackageManager.PERMISSION_GRANTED) {
                 Agenda agenda = new Agenda();
-                Log.i("Agenda","Chama método");
                 agenda.addEvent(evento, getBaseContext(), getContentResolver(), getParent());
-                Log.i("Agenda","Sai do método");
                 Toast.makeText(getBaseContext(), "Evento adicionado à agenda.", Toast.LENGTH_LONG).show();
             }
         }
@@ -177,15 +175,8 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
     private void addBoundaryToCurrentPosition(double lat, double lang) {
         MarkerOptions mMarkerOptions = new MarkerOptions();
         mMarkerOptions.position(new LatLng(lat, lang));
-        //mMarkerOptions.icon(BitmapDescriptorFactory
-        //      .fromResource(R.drawable.marker_current));
         mMarkerOptions.anchor(0.5f, 0.5f);
 
-        /*CircleOptions mOptions = new CircleOptions()
-            .center(new LatLng(lat, lang)).radius(10000)
-                .strokeColor(0x110000FF).strokeWidth(1).fillColor(0x110000FF);
-        mGoogleMap.addCircle(mOptions);
-        */
         if (mCurrentPosition != null)
             mCurrentPosition.remove();
         mCurrentPosition = mGoogleMap.addMarker(mMarkerOptions);
@@ -287,7 +278,6 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.i("ERRO",error.getMessage());
                     }
                 });
 
@@ -320,7 +310,6 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
             mPolyline.setWidth(10);
     }
 
-
     public void getDirection(View view) {
         if (mSourceLatLng != null && mDestinationLatLng != null) {
             traceMe(mSourceLatLng, mDestinationLatLng);
@@ -333,8 +322,6 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
         String eventoJson = getIntent().getStringExtra("evento");
         Gson gson = new Gson();
         evento = gson.fromJson(eventoJson, Evento.class);
-
-        Log.i("EVENTO","EVENTO ATUALIZADO SEM DESC");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalhes_evento_sem_descricao);
@@ -367,8 +354,6 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
             if (googleServicesAvailable()){
                 initMap();
             }
-
-        Log.i("EVENTO","EVENTO ATUALIZADO SEM DESC 1");
 
         //Seta denominação do evento
         if (evento.getDenominacao() != null){
@@ -469,7 +454,6 @@ public class detalhes_evento_sem_descricao extends AppCompatActivity implements 
             ((TextView) findViewById(R.id.categoriaEvento)).
                     setText(categoria);
         }
-        Log.i("EVENTO","EVENTO ATUALIZADO SEM DESC 2");
     }
 
     public boolean googleServicesAvailable(){

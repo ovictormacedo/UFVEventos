@@ -26,6 +26,7 @@ import com.labd2m.vma.ufveventos.R;
 import com.labd2m.vma.ufveventos.model.Categoria;
 import com.labd2m.vma.ufveventos.model.UsuarioSingleton;
 import com.labd2m.vma.ufveventos.util.RetrofitAPI;
+import com.labd2m.vma.ufveventos.util.SharedPref;
 import com.labd2m.vma.ufveventos.util.UsuarioNavigationDrawer;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -56,6 +57,7 @@ public class categorias_pagina_inicial extends AppCompatActivity
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private List<String> categorias_preferencias;
+    SharedPref sharedPrefUtil = new SharedPref();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +110,6 @@ public class categorias_pagina_inicial extends AppCompatActivity
         adapter.setCategoriaClickListener(new OnCategoriaClickListener() {
             @Override
             public void onItemClick(Categoria item) {
-                //Toast.makeText(categorias_pagina_inicial.this, item.getNome(), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -173,7 +174,6 @@ public class categorias_pagina_inicial extends AppCompatActivity
         JSONArray json = new JSONArray(categorias_preferencias);
         String aux = json.toString();
         String data = "{\"categorias\":"+aux+"}";
-        Log.i("CAT PREF ",data);
 
         //Inicia barra de carregamento
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarCategorias);
@@ -251,7 +251,7 @@ public class categorias_pagina_inicial extends AppCompatActivity
             startActivity(it);
         } else if (id == R.id.nav_sair) {
             //Registra que o usuário saiu
-            SharedPreferences sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = this.getSharedPreferences(sharedPrefUtil.getKey(), Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.clear();
             editor.apply();

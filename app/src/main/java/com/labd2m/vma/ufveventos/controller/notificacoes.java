@@ -29,6 +29,7 @@ import com.labd2m.vma.ufveventos.model.Categoria;
 import com.labd2m.vma.ufveventos.model.UsuarioSingleton;
 import com.labd2m.vma.ufveventos.util.Permission;
 import com.labd2m.vma.ufveventos.util.RetrofitAPI;
+import com.labd2m.vma.ufveventos.util.SharedPref;
 import com.labd2m.vma.ufveventos.util.UsuarioNavigationDrawer;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -61,6 +62,7 @@ public class notificacoes extends AppCompatActivity
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private List<String> categorias_preferencias;
+    SharedPref sharedPrefUtil = new SharedPref();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +121,7 @@ public class notificacoes extends AppCompatActivity
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SharedPreferences sharedPref = getBaseContext().
-                        getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
+                        getSharedPreferences(sharedPrefUtil.getKey(), Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 if(isChecked) {
                     //Requsita permissão para utilizar a agenda
@@ -147,7 +149,7 @@ public class notificacoes extends AppCompatActivity
 
                 //Recupera o firebase token do dispositivo
                 sharedPref = getBaseContext().
-                        getSharedPreferences("UFVEVENTOS"+usuario.getId(), Context.MODE_PRIVATE);
+                        getSharedPreferences(sharedPrefUtil.getUserKey(""+usuario.getId()), Context.MODE_PRIVATE);
                 String token = sharedPref.getString("firebasetoken","default");
 
                 //Cria json object
@@ -194,7 +196,7 @@ public class notificacoes extends AppCompatActivity
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SharedPreferences sharedPref = getBaseContext().
-                        getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0", Context.MODE_PRIVATE);
+                        getSharedPreferences(sharedPrefUtil.getKey(), Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 if(isChecked) {
                     editor.putString("notificacoes", "1");
@@ -218,7 +220,7 @@ public class notificacoes extends AppCompatActivity
 
                 //Recupera o firebase token do dispositivo
                 sharedPref = getBaseContext().
-                        getSharedPreferences("UFVEVENTOS"+usuario.getId(), Context.MODE_PRIVATE);
+                        getSharedPreferences(sharedPrefUtil.getUserKey(""+usuario.getId()), Context.MODE_PRIVATE);
                 String token = sharedPref.getString("firebasetoken","default");
 
                 //Cria json object
@@ -247,7 +249,6 @@ public class notificacoes extends AppCompatActivity
                             @Override
                             public void onError(Throwable e){
                                 //Esconde barra de carregamento
-                                Log.e("ERRO NOTIFICACOES",e.getMessage());
                                 progressBar.setVisibility(View.GONE);
                                 Toast.makeText(getBaseContext(),"Não foi possível atualizar o configurações, " +
                                         "tente novamente em instantes.", Toast.LENGTH_LONG).show();
@@ -258,7 +259,6 @@ public class notificacoes extends AppCompatActivity
                                 //Esconde barra de carregamento
                                 progressBar.setVisibility(View.GONE);
                                 Toast.makeText(getBaseContext(),"Dado atualizado!",Toast.LENGTH_SHORT).show();
-                                //finish();
                             }
                         });
             }
@@ -272,7 +272,6 @@ public class notificacoes extends AppCompatActivity
         adapter.setCategoriaClickListener(new OnCategoriaClickListener() {
             @Override
             public void onItemClick(Categoria item) {
-                //Toast.makeText(notificacoes.this, item.getNome(), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -296,7 +295,6 @@ public class notificacoes extends AppCompatActivity
                     public void onError(Throwable e) {
                         //Encerra barra de carregamento
                         progressBar.setVisibility(View.GONE);
-                        Log.i("Retrofit error", "Erro:" + e.getMessage());
                         Toast.makeText(getBaseContext(), "Não foi possível carregar as categorias.", Toast.LENGTH_SHORT).show();
                     }
 
@@ -317,7 +315,6 @@ public class notificacoes extends AppCompatActivity
                                     public void onError(Throwable e) {
                                         //Encerra barra de carregamento
                                         progressBar.setVisibility(View.GONE);
-                                        Log.i("Retrofit error", "Erro:" + e.getMessage());
                                         Toast.makeText(getBaseContext(), "Por favor, verifique a sua conexão com a internet.", Toast.LENGTH_SHORT).show();
                                     }
 
@@ -340,7 +337,6 @@ public class notificacoes extends AppCompatActivity
         JSONArray json = new JSONArray(categorias_preferencias);
         String aux = json.toString();
         String data = "{\"categorias\":"+aux+"}";
-        Log.i("CAT PREF ",data);
 
         //Inicia barra de carregamento
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarCategorias);
@@ -362,7 +358,6 @@ public class notificacoes extends AppCompatActivity
                     public void onError(Throwable e) {
                         //Encerra barra de carregamento
                         progressBar.setVisibility(View.GONE);
-                        Log.i("Retrofit error", "Erro:" + e.getMessage());
                         Toast.makeText(getBaseContext(), "Não foi possível atualizar as preferências.", Toast.LENGTH_SHORT).show();
                     }
 
@@ -421,7 +416,7 @@ public class notificacoes extends AppCompatActivity
             startActivity(it);
         } else if (id == R.id.nav_sair) {
             //Registra que o usuário saiu
-            SharedPreferences sharedPref = this.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0",Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = this.getSharedPreferences(sharedPrefUtil.getKey(),Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.clear();
             editor.apply();

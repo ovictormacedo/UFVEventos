@@ -26,25 +26,17 @@ public class splash_screen extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        Log.i("DEBUG-----","ANTES DO HANDLE");
-
         new Handler().postDelayed(new Runnable() {
             /*
              * Exibindo splash com um timer.
              */
             @Override
             public void run() {
-                Log.i("DEBUG-----","DENTRO DO RUN,ANTES DAS PERMISSÕES");
-
                 //Permission permission = new Permission();
                 //permission.requestPermissionMaps(getParent(),getBaseContext());
 
-                Log.i("DEBUG-----","VAI CHAMAR LOGIN TELA");
-
                 Intent i = new Intent(splash_screen.this, login.class);
                 startActivity(i);
-
-                Log.i("DEBUG-----","CHAMOU LOGIN TELA");
                 // Fecha esta activity
                 finish();
             }
