@@ -26,7 +26,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -85,7 +84,6 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
         String eventoJson = getIntent().getStringExtra("evento");
         Gson gson = new Gson();
         evento = gson.fromJson(eventoJson, Evento.class);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalhes_evento_com_descricao);
 
@@ -104,10 +102,6 @@ public class detalhes_evento_com_descricao extends AppCompatActivity implements 
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         findViewById(R.id.addAgenda).setOnClickListener(this);
-
-        //Encerra barra de carregamento
-        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarDetalhesEvento);
-        progressBar.setVisibility(View.GONE);
 
         //Traça rota
         List<Local> locaisAux = evento.getLocais();

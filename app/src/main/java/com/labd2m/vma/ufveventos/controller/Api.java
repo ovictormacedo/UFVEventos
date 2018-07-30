@@ -38,12 +38,6 @@ public interface Api{
     @POST("getcalendar")
     Observable<Object> getCalendar(@Field("data") JSONObject data);
 
-    //Retorna dados do evento
-    @Headers(auth)
-    @GET("evento/{idEvento}")
-    Observable<Evento> getEvento(@Path("idEvento") int idEvento);
-
-    //Testado
     @Headers(auth)
     @GET("evento/indexinicial/{offset}/indexfinal/{limit}")
     Observable<List<Evento>> getEventos(@Path("offset") int offset, @Path("limit") int limit);
@@ -62,11 +56,6 @@ public interface Api{
     @Headers(auth)
     @GET("categoria")
     Observable<List<Categoria>> getCategorias();
-
-    //Não testado
-    @Headers(auth)
-    @GET("dispositivos/{idUsuario}")
-    Observable<Usuario> getDispositivos(@Path("idUsuario") String idUsuario);
 
     //Recupera senha
     @FormUrlEncoded
@@ -103,16 +92,6 @@ public interface Api{
     @POST("agenda_notificacoes")
     Observable<Dispositivo> getAgendaNotificacoes(@Field("data") JSONObject data);
 
-    @FormUrlEncoded
-    @Headers(auth)
-    @POST("agenda")
-    Observable<Void> setAgenda(@Field("data") JSONObject data);
-
-    @FormUrlEncoded
-    @Headers(auth)
-    @POST("notificacoes")
-    Observable<Void> setNotificacoes(@Field("data") JSONObject data);
-
     //Atualiza dados do cadastro do usuário
     @FormUrlEncoded
     @Headers(auth)
@@ -146,7 +125,7 @@ public interface Api{
     //Adiciona a agenda do usuário
     @FormUrlEncoded
     @Headers(auth)
-    @POST("calendar/{token}")
+    @POST("calendar")
     Observable<Void> addAgenda(@Field("data") JSONObject data);
 
     //Adiciona a agenda do usuário

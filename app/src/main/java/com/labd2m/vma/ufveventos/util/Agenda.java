@@ -106,11 +106,13 @@ public class Agenda {
             calCursor.moveToFirst();
             calendar_id = calCursor.getString(0);
             Pattern pattern = Pattern.compile(".+@.+");
-            do{
-                Matcher matcher = pattern.matcher(calCursor.getString(1));
-                if (matcher.matches())
-                    calendar_id = calCursor.getString(0);
-            }while(calCursor.moveToNext());
+            try {
+                do {
+                    Matcher matcher = pattern.matcher(calCursor.getString(1));
+                    if (matcher.matches())
+                        calendar_id = calCursor.getString(0);
+                } while (calCursor.moveToNext());
+            }catch(Exception e){Log.i("Erro de match agenda",e.getMessage());}
         }
 
         int diaInicio = Integer.parseInt(evento.getDataInicio().substring(0,2));
@@ -133,7 +135,6 @@ public class Agenda {
         SharedPreferences sharedPref = context.getSharedPreferences("UFVEVENTOS45dfd94be4b30d5844d2bcca2d997db0agenda",
                 Context.MODE_PRIVATE);
         long eventID = sharedPref.getLong(""+evento.getId(),-1);
-        Log.i("EVENT ID",""+eventID);
         if (eventID != -1) {
             ContentValues values = new ContentValues();
             TimeZone timeZone = TimeZone.getDefault();
@@ -212,7 +213,6 @@ public class Agenda {
 
         java.util.Calendar endTime = java.util.Calendar.getInstance();
         endTime.set(anoFim,mesFim-1,diaFim,horaFim,minutoFim);
-        Log.i("AGENDA","3");
         ContentValues values = new ContentValues();
         TimeZone timeZone = TimeZone.getDefault();
         values.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone.getID());
@@ -226,7 +226,6 @@ public class Agenda {
         values.put(CalendarContract.Events.EVENT_LOCATION, local);
         values.put(CalendarContract.Events.GUESTS_CAN_INVITE_OTHERS, "1");
         values.put(CalendarContract.Events.GUESTS_CAN_SEE_GUESTS, "1");
-        Log.i("AGENDA","4");
         Uri uri = null;
         try {
             uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
@@ -253,7 +252,6 @@ public class Agenda {
 
         sharedPref = context.getSharedPreferences("UFVEVENTOS"+idUsuario, Context.MODE_PRIVATE);
         String token = sharedPref.getString("firebasetoken", "falso");
-        Log.i("TOKEN",token);
         //Cria json object
         JSONObject json = new JSONObject();
         try {

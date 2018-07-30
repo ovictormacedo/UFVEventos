@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/red"
-        android:elevation="0dp"
         android:theme="@style/ToolbarThemeWhite"
         app:popupTheme="@style/ToolbarThemeWhite" />
     <ImageView
@@ -20,28 +19,44 @@
         android:src="@drawable/calendar"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
-        android:layout_alignParentRight="true"
-        android:elevation="10dp"/>
-
-        <LinearLayout
-            android:id="@+id/retanguloDetalhesEvento"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:layout_below="@+id/my_toolbar"
-            android:layout_marginTop="-10dp"
-            android:background="@drawable/rectangle_appbar"
-            android:orientation="horizontal">
-        </LinearLayout>
-
+        android:layout_alignParentRight="true" />
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="40dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom">
+            <LinearLayout
+                android:id="@+id/retanguloDetalhesEvento"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:background="@drawable/rectangle_appbar"
+                android:orientation="horizontal">
+            </LinearLayout>
+            <fragment
+                android:id="@+id/mapFragment"
+                android:name="com.google.android.gms.maps.MapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/retanguloDetalhesEvento"/>
+        </RelativeLayout>
         <LinearLayout
             android:id="@+id/firstPartDetalhesEvento"
             android:layout_width="305dp"
             android:layout_height="270dp"
-            android:layout_below="@+id/addAgenda"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="10dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
             android:background="@drawable/round_outline"
-            android:elevation="1dp"
             android:orientation="vertical"
             android:weightSum="1"
             tools:ignore="UselessLeaf"
@@ -246,10 +261,5 @@
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>
-        <fragment
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/retanguloDetalhesEvento"
-            android:name="com.google.android.gms.maps.MapFragment"
-            android:id="@+id/mapFragment"/>
+    </FrameLayout>
 </RelativeLayout>

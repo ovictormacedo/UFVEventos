@@ -26,7 +26,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -92,11 +91,6 @@ public class evento_atualizado_com_descricao extends AppCompatActivity implement
         Tracker mTracker = application.getDefaultTracker();
         mTracker.setScreenName("evento_atualizado_com_descricao");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-
-
-        //Encerra barra de carregamento
-        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarDetalhesEvento);
-        progressBar.setVisibility(View.GONE);
 
         //Traça rota
         List<Local> locaisAux = evento.getLocais();

@@ -135,7 +135,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 notificationIntent.putExtra("acao",acao);
                 PendingIntent broadcast = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.SECOND, 1); //Envia a notificação num horário agendado
+                cal.add(Calendar.SECOND, 7200); //Envia a notificação num horário agendado
                 alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
                 //Evento cancelado
             }else if (notificacoes.equals("1") && acao.equals("cancelado")) {
@@ -151,7 +151,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     notificationIntent.addCategory("android.intent.category.DEFAULT");
                     PendingIntent broadcast = PendingIntent.getBroadcast(this, 1, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                     Calendar cal = Calendar.getInstance();
-                    cal.add(Calendar.SECOND, 1);
+                    cal.add(Calendar.SECOND, 7200);
                     alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
 
                     //Recupera id do evento
@@ -189,9 +189,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         notificationIntent.addCategory("android.intent.category.DEFAULT");
                         PendingIntent broadcast = PendingIntent.getBroadcast(this, 2, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                         Calendar cal = Calendar.getInstance();
-                        cal.add(Calendar.SECOND, 1); //Envia notificação imediatamente
+                        cal.add(Calendar.SECOND, 7200); //Envia notificação imediatamente
                         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
-                        Log.i("NOTI","Evento atualizado 2");
                         //Recupera id do evento
                         sharedPref = ctx.getSharedPreferences(sharedPrefUtil.getAgendaKey(),
                                 Context.MODE_PRIVATE);

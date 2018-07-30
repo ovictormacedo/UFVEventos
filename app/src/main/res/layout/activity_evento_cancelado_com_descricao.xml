@@ -10,11 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/red"
-        android:elevation="0dp"
         android:theme="@style/ToolbarThemeWhite"
-        app:popupTheme="@style/ToolbarThemeWhite"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="0dp" />
+        app:popupTheme="@style/ToolbarThemeWhite" />
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
@@ -27,36 +24,86 @@
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintTop_creator="1">
-
-        <ImageView
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
-            android:src="@drawable/carimbo_cancelado"
-            android:elevation="2dp"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_gravity="center_vertical|right"
-            android:src="@drawable/carimbo_cancelado"/>
-
-        <ProgressBar
-            android:id="@+id/progressBarDetalhesEvento"
-            style="?android:attr/progressBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="150dp"
-            android:layout_gravity="center_horizontal"
-            android:elevation="10dp"
-            android:indeterminate="true"
-            android:indeterminateDrawable="@drawable/progress_bar"
-            android:max="100"
-            android:minHeight="43dp"
-            android:minWidth="43dp" />
-
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom">
+            <LinearLayout
+                android:id="@+id/retanguloDetalhesEvento"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:background="@drawable/rectangle_appbar"
+                android:orientation="horizontal">
+            </LinearLayout>
+            <fragment
+                android:id="@+id/mapFragment"
+                android:name="com.google.android.gms.maps.MapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/retanguloDetalhesEvento"
+                android:layout_above="@+id/thirdPartDetalhesEvento"/>
+            <LinearLayout
+                android:id="@+id/thirdPartDetalhesEvento"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/round_outline"
+                android:orientation="vertical"
+                android:weightSum="1"
+                tools:ignore="UselessLeaf">
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/expandir"/>
+                <ScrollView
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="15dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/descricaoTitulo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="20dp"
+                            android:textColor="#000000"
+                            android:text="Descrição"
+                            android:visibility="invisible"
+                            android:textSize="24dp" />
+                        <TextView
+                            android:id="@+id/descricaoEvento"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="5dp"
+                            android:textColor="#000000"
+                            android:text="" />
+                        <TextView
+                            android:id="@+id/programacaoTitulo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="20dp"
+                            android:textColor="#000000"
+                            android:text="Programação"
+                            android:visibility="invisible"
+                            android:textSize="24dp" />
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/programacaoEvento"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp">
+                        </android.support.v7.widget.RecyclerView>
+                    </LinearLayout>
+                </ScrollView>
+            </LinearLayout>
+        </RelativeLayout>
         <LinearLayout
             android:id="@+id/firstPartDetalhesEvento"
             android:layout_width="305dp"
@@ -64,7 +111,6 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="15dp"
             android:background="@drawable/round_outline"
-            android:elevation="1dp"
             android:orientation="vertical"
             android:weightSum="1"
             tools:ignore="UselessLeaf"
@@ -269,85 +315,10 @@
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>
-        <RelativeLayout
+        <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="bottom">
-            <LinearLayout
-                android:id="@+id/retanguloDetalhesEvento"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:background="@drawable/rectangle_appbar"
-                android:orientation="horizontal">
-            </LinearLayout>
-            <fragment
-                android:id="@+id/mapFragment"
-                android:name="com.google.android.gms.maps.MapFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/retanguloDetalhesEvento"
-                android:layout_above="@+id/thirdPartDetalhesEvento"/>
-            <LinearLayout
-                android:id="@+id/thirdPartDetalhesEvento"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/round_outline"
-                android:orientation="vertical"
-                android:weightSum="1"
-                tools:ignore="UselessLeaf">
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="45dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/expandir"/>
-                <ScrollView
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="15dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <TextView
-                            android:id="@+id/descricaoTitulo"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:layout_marginLeft="20dp"
-                            android:textColor="#000000"
-                            android:text="Descrição"
-                            android:visibility="invisible"
-                            android:textSize="24dp" />
-                        <TextView
-                            android:id="@+id/descricaoEvento"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginTop="5dp"
-                            android:textColor="#000000"
-                            android:text="" />
-                        <TextView
-                            android:id="@+id/programacaoTitulo"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginTop="20dp"
-                            android:textColor="#000000"
-                            android:text="Programação"
-                            android:visibility="invisible"
-                            android:textSize="24dp" />
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/programacaoEvento"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp">
-                        </android.support.v7.widget.RecyclerView>
-                    </LinearLayout>
-                </ScrollView>
-            </LinearLayout>
-        </RelativeLayout>
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:src="@drawable/carimbo_cancelado" />
     </FrameLayout>
 </RelativeLayout>

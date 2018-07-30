@@ -20,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,10 +70,6 @@ public class evento_cancelado extends AppCompatActivity implements OnMapReadyCal
         Tracker mTracker = application.getDefaultTracker();
         mTracker.setScreenName("evento_cancelado");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-
-        //Encerra barra de carregamento
-        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarDetalhesEvento);
-        progressBar.setVisibility(View.GONE);
 
         //Requisita permissão para mapas
         Permission permission = new Permission();
